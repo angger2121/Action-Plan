@@ -1269,7 +1269,7 @@ function init() {
       forms = JSON.parse(cachedForms) || [];
     }
   } else {
-    window.location.replace("MDI_ActionPlan_Dashboard.html?auto_seed=true&returnTo=admin");
+    window.location.replace("gateway.html?auto_seed=true&returnTo=admin");
     return;
   }
 
@@ -2260,7 +2260,7 @@ function savePICData() {
 
 // ── SHARE PORTAL LOGIC ──
 function openShareModal() {
-  const baseFormUrl = window.location.href.split('MDI_ActionPlan_Admin.html')[0] + 'MDI_ActionPlan_Form.html';
+  const baseFormUrl = window.location.href.split('dashboard.html')[0] + 'MDI_ActionPlan_Form.html';
   const generalUrl = `${baseFormUrl}?formId=${formId}`;
   
   document.getElementById("share-general-url").value = generalUrl;
@@ -2330,7 +2330,7 @@ function copySpecificLink(url, name) {
 function copyParticipantLink(no) {
   const p = PARTICIPANTS.find(item => item.no === no);
   if (!p) return;
-  const baseFormUrl = window.location.href.split('MDI_ActionPlan_Admin.html')[0] + 'MDI_ActionPlan_Form.html';
+  const baseFormUrl = window.location.href.split('dashboard.html')[0] + 'MDI_ActionPlan_Form.html';
   const pUrl = `${baseFormUrl}?formId=${formId}&pic=${p.no}`;
   
   copySpecificLink(pUrl, p.name);

@@ -852,7 +852,7 @@ function renderFormsList() {
       `<span class="status-label status-active" id="lbl-status-${form.id}">Aktif (Terbuka)</span>` : 
       `<span class="status-label status-inactive" id="lbl-status-${form.id}">Tutup</span>`;
 
-    const adminBtnHtml = `<a href="MDI_ActionPlan_Admin.html?formId=${form.id}" target="_blank" class="action-btn">Admin</a>`;
+    const adminBtnHtml = `<a href="dashboard.html?formId=${form.id}" target="_blank" class="action-btn">Admin</a>`;
     const viewerBtnHtml = `<a href="MDI_ActionPlan_ClientPortal.html?formId=${form.id}&bypass=true&client=${encodeURIComponent(form.client || '')}" target="_blank" class="action-btn">Portal Klien</a>`;
 
     const rowHtml = `
@@ -1290,7 +1290,7 @@ if (urlParams.get("auto_seed") === "true") {
   if (urlParams.get("returnTo") === "client") {
     window.location.replace("MDI_ActionPlan_ClientPortal.html");
   } else if (urlParams.get("returnTo") === "admin") {
-    window.location.replace("MDI_ActionPlan_Admin.html");
+    window.location.replace("dashboard.html");
   } else if (urlParams.get("returnTo") === "form") {
     const origFormId = urlParams.get("origFormId") || "";
     window.location.replace("MDI_ActionPlan_Form.html" + (origFormId ? "?formId=" + origFormId : ""));

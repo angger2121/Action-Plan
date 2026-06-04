@@ -737,7 +737,7 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         if (cachedForms && cachedForms !== '[]') {
           try { forms = JSON.parse(cachedForms); } catch (e) { forms = JSON.parse(cachedForms) || []; }
         } else {
-          window.location.replace("MDI_ActionPlan_Dashboard.html?auto_seed=true&returnTo=client");
+          window.location.replace("gateway.html?auto_seed=true&returnTo=client");
           return;
         }
         const urlParams = new URLSearchParams(window.location.search);
