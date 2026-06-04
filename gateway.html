@@ -373,7 +373,8 @@ input:checked + .slider:before {
   box-shadow: 0 4px 6px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.05);
   position: relative;
   overflow: hidden;
-  flex-shrink: 0;
+  flex: 0 0 auto;
+  min-height: min-content;
 }
 .draggable-form::before {
   content: '';
