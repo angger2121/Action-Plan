@@ -822,7 +822,7 @@ function init() {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get("auto_seed") === "true") {
     if (urlParams.get("returnTo") === "client") {
-      window.location.replace("MDI_ActionPlan_ClientPortal.html");
+      window.location.replace("clientportal.html");
     } else if (urlParams.get("returnTo") === "admin") {
       window.location.replace("dashboard.html");
     } else if (urlParams.get("returnTo") === "form") {
@@ -865,7 +865,7 @@ function renderFormsList() {
       `<span class="status-label status-inactive" id="lbl-status-${form.id}">Tutup</span>`;
 
     const adminBtnHtml = `<a href="dashboard.html?formId=${form.id}" target="_blank" class="action-btn">Admin</a>`;
-    const viewerBtnHtml = `<a href="MDI_ActionPlan_ClientPortal.html?formId=${form.id}&bypass=true&client=${encodeURIComponent(form.client || '')}" target="_blank" class="action-btn">Portal Klien</a>`;
+    const viewerBtnHtml = `<a href="clientportal.html?formId=${form.id}&bypass=true&client=${encodeURIComponent(form.client || '')}" target="_blank" class="action-btn">Portal Klien</a>`;
 
     const rowHtml = `
       <tr>
