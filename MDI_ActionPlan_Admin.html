@@ -1,0 +1,2723 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MDI TACK – Action Plan Admin Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root {
+  --mdi-dark:    #0f172a;
+  --mdi-navy:    #1e293b;
+  --mdi-navy-light: #334155;
+  --mdi-orange:  #f97316;
+  --mdi-orange-hover: #ea580c;
+  --mdi-orange-soft: #ffedd5;
+  --mdi-light:   #f8fafc;
+  --mdi-white:   #ffffff;
+  --mdi-border:  #e2e8f0;
+  --mdi-muted:   #64748b;
+  --mdi-ink:     #0f172a;
+  --mdi-soft:    #f1f5f9;
+  --done:        #10b981;
+  --done-bg:     #d1fae5;
+  --prog:        #f59e0b;
+  --prog-bg:     #fef3c7;
+  --none:        #ef4444;
+  --none-bg:     #fee2e2;
+  --overdue:     #b91c1c;
+  --overdue-bg:  #fee2e2;
+  --late:        #6366f1;
+  --late-bg:     #e0e7ff;
+  --glass:       rgba(255, 255, 255, 0.85);
+  --shadow-sm:   0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md:   0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg:   0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--mdi-light);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--mdi-ink);
+  font-size: 13px;
+  line-height: 1.5;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── SIDEBAR LAYOUT ── */
+.sidebar {
+  width: 260px;
+  background: var(--mdi-dark);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-right: 1px solid var(--mdi-navy-light);
+}
+.sidebar-brand {
+  padding: 24px;
+  border-bottom: 1px solid var(--mdi-navy-light);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand-logo {
+  background: var(--mdi-orange);
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.4);
+}
+.brand-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.brand-title span {
+  display: block;
+  font-size: 9.5px;
+  color: rgba(255,255,255,0.45);
+  font-weight: 400;
+  margin-top: 1px;
+}
+.sidebar-menu {
+  flex: 1;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.menu-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.65);
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+.menu-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+.menu-btn.active {
+  background: var(--mdi-orange);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+}
+.sidebar-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--mdi-navy-light);
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+}
+
+/* ── MAIN CONTENT AREA ── */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Main Top Bar */
+.main-topbar {
+  background: #fff;
+  min-height: 64px;\n  height: auto;\n  padding: 12px 32px;\n  flex-wrap: wrap;\n  gap: 12px;
+  border-bottom: 1px solid var(--mdi-border);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.page-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--mdi-dark);
+}
+.page-title em {
+  font-style: normal;
+  color: var(--mdi-orange);
+  font-weight: 600;
+  font-size: 13.5px;
+  background: var(--mdi-orange-soft);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Scrollable Inner Panel */
+.content-inner {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px;
+}
+
+.view-section {
+  display: none;
+}
+.view-section.active {
+  display: block;
+  animation: fadeIn 0.25s ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── KPI GRID ── */
+.kpi-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 24px; }
+.kpi {
+  background: var(--mdi-white);
+  border: 1px solid var(--mdi-border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.kpi:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.kpi::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; border-radius: var(--radius-md) var(--radius-md) 0 0; }
+.kpi.kpi-total::after { background: var(--mdi-dark); }
+.kpi.kpi-ap::after { background: var(--mdi-orange); }
+.kpi.kpi-done::after { background: var(--done); }
+.kpi.kpi-prog::after { background: var(--prog); }
+.kpi.kpi-none::after { background: var(--none); }
+.kpi.kpi-overdue::after { background: var(--overdue); }
+.kpi.kpi-late::after { background: var(--late); }
+
+.kpi-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--mdi-muted); margin-bottom: 6px; }
+.kpi-total .kpi-val { color: var(--mdi-dark); }
+.kpi-ap .kpi-val { color: var(--mdi-orange); }
+.kpi-done .kpi-val { color: var(--done); }
+.kpi-prog .kpi-val { color: var(--prog); }
+.kpi-none .kpi-val { color: var(--none); }
+
+/* ── FILTER & CONTROL BAR ── */
+.control-bar {
+  background: var(--mdi-white);
+  border: 1px solid var(--mdi-border);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+.cb-label { font-size: 11px; font-weight: 700; color: var(--mdi-muted); text-transform: uppercase; letter-spacing: 1px; margin-right: 4px; }
+.f-btn {
+  border: 1px solid var(--mdi-border); background: var(--mdi-light);
+  color: var(--mdi-muted); border-radius: 8px; padding: 6px 14px;
+  font-size: 12px; font-family: inherit; font-weight: 600;
+  cursor: pointer; transition: all .15s ease;
+}
+.f-btn:hover { background: var(--mdi-soft); color: var(--mdi-ink); }
+.f-btn.active { background: var(--mdi-dark); color: #fff; border-color: var(--mdi-dark); }
+.f-btn.f-done.active { background: var(--done); border-color: var(--done); }
+.f-btn.f-prog.active { background: var(--prog); border-color: var(--prog); }
+.f-btn.f-none.active { background: var(--none); border-color: var(--none); }
+.f-btn.f-overdue.active { background: var(--overdue); border-color: var(--overdue); color: #fff; }
+.f-btn.f-late.active { background: var(--late); border-color: var(--late); color: #fff; }
+.dept-dropdown {
+  border: 1px solid var(--mdi-border); background: var(--mdi-white);
+  color: var(--mdi-ink); border-radius: 8px; padding: 6px 14px;
+  font-size: 12px; font-family: inherit; font-weight: 600;
+  cursor: pointer; outline: none; min-width: 160px;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 30px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.dept-dropdown:hover { border-color: var(--mdi-navy-light); }
+.dept-dropdown:focus { border-color: var(--mdi-orange); box-shadow: 0 0 0 3px rgba(249,115,22,0.15); }
+.cb-sep { width: 1px; height: 24px; background: var(--mdi-border); }
+.search-wrap { flex: 1; max-width: 280px; position: relative; }
+.search-wrap input {
+  width: 100%; border: 1px solid var(--mdi-border); border-radius: 8px;
+  padding: 7px 12px 7px 32px; font-family: inherit;
+  font-size: 12.5px; color: var(--mdi-ink); background: var(--mdi-light);
+  outline: none; transition: all 0.15s ease;
+}
+.search-wrap input:focus { border-color: var(--mdi-orange); background: #fff; }
+.search-wrap::before { content: "🔍"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 11px; }
+
+/* ── TABLE CARD ── */
+.table-card {
+  background: var(--mdi-white);
+  border: 1px solid var(--mdi-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+}
+.table-head {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--mdi-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fafbff;
+}
+.th-title { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--mdi-muted); display: flex; align-items: center; gap: 8px; }
+.th-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mdi-orange); }
+.th-count { font-size: 11px; font-weight: 600; color: var(--mdi-muted); background: var(--mdi-soft); border: 1px solid var(--mdi-border); border-radius: 6px; padding: 2px 8px; }
+
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+thead tr { background: var(--mdi-soft); border-bottom: 1px solid var(--mdi-border); }
+thead th {
+  padding: 10px 14px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--mdi-muted);
+  white-space: nowrap;
+}
+tbody tr { border-bottom: 1px solid var(--mdi-soft); transition: background .15s ease; cursor: pointer; }
+tbody tr:hover { background: #f8fafc; }
+tbody tr.expanded { background: #f1f5f9; }
+td { padding: 12px 14px; vertical-align: top; }
+
+.td-num { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; font-weight: 600; color: var(--mdi-muted); text-align: center; width: 44px; }
+.td-name { font-weight: 700; font-size: 13px; color: var(--mdi-ink); }
+.td-dept { font-size: 11px; color: var(--mdi-muted); margin-top: 2px; }
+.dept-tag { display: inline-block; background: var(--mdi-soft); border: 1px solid var(--mdi-border); border-radius: 6px; padding: 2px 8px; font-size: 10.5px; font-weight: 600; color: var(--mdi-navy); white-space: nowrap; }
+
+/* Status Pill */
+.status-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 12px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
+.s-done { background: var(--done-bg); color: var(--done); }
+.s-prog { background: var(--prog-bg); color: var(--prog); }
+.s-none { background: var(--none-bg); color: var(--none); }
+.s-overdue { background: var(--overdue-bg); color: var(--overdue); }
+.s-late { background: var(--late-bg); color: var(--late); }
+.s-dot { width: 6px; height: 6px; border-radius: 50%; }
+.sd-done { background: var(--done); }
+.sd-prog { background: var(--prog); }
+.sd-none { background: var(--none); }
+.sd-overdue { background: var(--overdue); }
+.sd-late { background: var(--late); }
+.kpi-overdue .kpi-val { color: var(--overdue); }
+.kpi-late .kpi-val { color: var(--late); }
+
+/* Status Select Dropdown inside Table */
+.status-select {
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.status-select.select-done  { background-color: var(--done-bg);    color: var(--done); }
+.status-select.select-prog  { background-color: var(--prog-bg);    color: var(--prog); }
+.status-select.select-none  { background-color: var(--none-bg);    color: var(--none); }
+.status-select.select-overdue { background-color: var(--overdue-bg); color: var(--overdue); }
+.status-select.select-late  { background-color: var(--late-bg);    color: var(--late); }
+
+/* Details row */
+.expand-btn { background: none; border: none; cursor: pointer; font-size: 14px; color: var(--mdi-muted); transition: all .2s ease; padding: 4px 6px; border-radius: 4px; }
+.expand-btn.open { transform: rotate(90deg); color: var(--mdi-orange); }
+.detail-row { display: none; }
+.detail-row.open { display: table-row; }
+.detail-cell { padding: 0 14px 16px 50px; border-bottom: 1px solid var(--mdi-border); background: #f8fafc; }
+.detail-inner { background: var(--mdi-white); border-radius: var(--radius-md); padding: 18px; border-left: 4px solid var(--mdi-orange); box-shadow: var(--shadow-sm); border: 1px solid var(--mdi-border); border-left-width: 4px; }
+.di-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.di-section { }
+.di-label { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--mdi-muted); margin-bottom: 6px; }
+.di-text { font-size: 12px; color: var(--mdi-ink); line-height: 1.5; word-break: break-word; }
+
+/* Buttons */
+.btn {
+  background: var(--mdi-soft); color: var(--mdi-navy); border: 1px solid var(--mdi-border);
+  padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s ease;
+}
+.btn:hover { background: var(--mdi-border); }
+.btn-primary { background: var(--mdi-orange); color: #fff; border-color: var(--mdi-orange); }
+.btn-primary:hover { background: var(--mdi-orange-hover); border-color: var(--mdi-orange-hover); }
+.btn-danger { background: var(--none-bg); color: var(--none); border-color: rgba(239,68,68,0.2); }
+.btn-danger:hover { background: var(--none); color: #fff; border-color: var(--none); }
+
+/* ── FORM BACKEND CONFIGURATOR ── */
+.form-config-container {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+}
+.card {
+  background: #fff;
+  border: 1px solid var(--mdi-border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+}
+.card-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--mdi-navy);
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--mdi-border);
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Collapsible Section blocks in Builder */
+.section-builder-block {
+  background: #fff;
+  border: 1px solid var(--mdi-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.section-builder-header {
+  background: var(--mdi-soft);
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--mdi-border);
+  user-select: none;
+}
+.section-builder-header:hover {
+  background: #edf2f7;
+}
+.section-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-collapse-icon {
+  font-size: 12px;
+  color: var(--mdi-muted);
+  transition: transform 0.2s ease;
+}
+.section-collapse-icon.collapsed {
+  transform: rotate(-90deg);
+}
+.section-title-input {
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--mdi-navy);
+  background: transparent;
+  border: none;
+  outline: none;
+  border-bottom: 1px dashed var(--mdi-muted);
+  width: 260px;
+  padding: 2px 4px;
+}
+.section-title-input:focus {
+  border-bottom-color: var(--mdi-orange);
+  background: #fff;
+  border-radius: 4px;
+}
+.section-builder-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #fafbff;
+}
+.section-builder-body.collapsed {
+  display: none;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+.form-group label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--mdi-muted);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  border: 1px solid var(--mdi-border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 12.5px;
+  outline: none;
+  background: var(--mdi-light);
+  transition: all 0.15s ease;
+}
+.form-group input[type="text"]:focus,
+.form-group input[type="date"]:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--mdi-orange);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.q-row {
+  border: 1px solid var(--mdi-border);
+  border-radius: 8px;
+  padding: 14px;
+  background: #fff;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+}
+.q-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.q-title {
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--mdi-navy);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.q-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.q-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.options-wrap {
+  background: var(--mdi-light);
+  border: 1px solid var(--mdi-border);
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 8px;
+}
+
+/* ── GOOGLE FORMS PREVIEW ── */
+.gforms-preview {
+  background: #faece3;
+  border-radius: var(--radius-md);
+  padding: 20px 14px;
+  border: 1px solid var(--mdi-border);
+  max-height: 700px;
+  overflow-y: auto;
+}
+.gforms-doc {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.gforms-card {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #dadce0;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  position: relative;
+  overflow: hidden;
+}
+.gforms-card.header-card {
+  border-top: 10px solid var(--mdi-orange);
+  text-align: center;
+}
+.gforms-card.section-card {
+  background: var(--mdi-orange);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-top: none;
+  border-radius: 6px;
+}
+.gforms-card-title {
+  font-size: 24px;
+  color: #202124;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.gforms-card-desc {
+  font-size: 12px;
+  color: var(--mdi-muted);
+  line-height: 1.5;
+}
+.gf-req { color: #d93025; font-weight: 700; font-size: 13px; margin-left: 2px; }
+.gf-label { font-size: 13.5px; font-weight: 500; color: #202124; margin-bottom: 12px; }
+.gf-input-mock {
+  border-bottom: 1px dotted #dadce0;
+  color: #70757a;
+  font-size: 12.5px;
+  padding-bottom: 4px;
+  width: 70%;
+}
+.gf-choice-mock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #202124;
+  margin-bottom: 8px;
+}
+.gf-radio { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #5f6368; }
+
+/* ── MODALS ── */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal-card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--mdi-border);
+  width: 100%; max-width: 600px;
+  overflow: hidden;
+  animation: modalUp 0.2s ease-out both;
+}
+@keyframes modalUp {
+  from { opacity: 0; transform: scale(0.97) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal-header {
+  background: linear-gradient(135deg, var(--mdi-dark) 0%, #1e293b 100%);
+  color: #fff;
+  padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.modal-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.modal-close {
+  background: none; border: none; color: rgba(255,255,255,0.6);
+  font-size: 20px; cursor: pointer;
+  transition: color 0.15s ease;
+}
+.modal-close:hover { color: #fff; }
+.modal-body { padding: 24px; max-height: 480px; overflow-y: auto; }
+.modal-footer {
+  padding: 14px 20px; background: var(--mdi-soft);
+  border-top: 1px solid var(--mdi-border);
+  display: flex; justify-content: flex-end; gap: 8px;
+}
+
+.empty { text-align: center; padding: 40px 24px; color: var(--mdi-muted); }
+.empty-icon { font-size: 28px; margin-bottom: 8px; }
+
+/* ── TOAST NOTIFICATIONS ── */
+.mdi-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--mdi-navy);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-size: 13.5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 2000;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+  pointer-events: none;
+}
+.mdi-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.mdi-toast-icon {
+  color: var(--mdi-orange);
+  font-weight: bold;
+}
+
+#share-participants-list::-webkit-scrollbar {
+  width: 6px;
+}
+#share-participants-list::-webkit-scrollbar-track {
+  background: var(--mdi-soft);
+  border-radius: 3px;
+}
+#share-participants-list::-webkit-scrollbar-thumb {
+  background: var(--mdi-border);
+  border-radius: 3px;
+}
+#share-participants-list::-webkit-scrollbar-thumb:hover {
+  background: var(--mdi-muted);
+}
+
+/* ── SPREADSHEET STYLING ── */
+#sheetTable {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+}
+#sheetTable th {
+  background: #f1f3f4;
+  color: #5f6368;
+  font-weight: 600;
+  font-size: 11px;
+  border-right: 1px solid #c0c0c0;
+  border-bottom: 1px solid #c0c0c0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+#sheetTable th:first-child {
+  left: 0;
+  z-index: 12;
+  background: #e8eaed;
+}
+#sheetTableHeader tr:first-child th {
+  top: 0;
+  z-index: 11;
+}
+#sheetTableHeader tr:nth-child(2) th {
+  top: 23px; /* account for column letters indicator row */
+}
+#sheetTable td {
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 6px 10px;
+  color: #202124;
+  font-family: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+  cursor: cell;
+}
+#sheetTable td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 9;
+  background: #f1f3f4;
+  font-weight: bold;
+  color: #5f6368;
+  text-align: center;
+  border-right: 1px solid #c0c0c0;
+  cursor: default;
+}
+#sheetTable tr:hover td {
+  background-color: #f8f9fa;
+}
+#sheetTable tr:hover td:first-child {
+  background-color: #e8eaed;
+}
+#sheet-scroll-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+#sheet-scroll-container::-webkit-scrollbar-track {
+  background: #f1f3f4;
+}
+#sheet-scroll-container::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 4px;
+}
+#sheet-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+/* CLIENT ASSIGNMENT CSS */
+.client-box { background: #f8f9fa; border: 1px solid #c0c0c0; border-radius: 6px; margin-bottom: 12px; min-height: 100px; display:flex; flex-direction:column;}
+.client-box-header { background: #e8eaed; padding: 10px; border-bottom: 1px solid #c0c0c0; border-radius: 6px 6px 0 0; display:flex; justify-content:space-between; align-items:flex-start;}
+.client-box-body { padding: 10px; flex-grow:1; display:flex; flex-direction:column; gap:8px;}
+.drag-item { background: #fff; border: 1px solid var(--mdi-border); padding: 8px 12px; border-radius: 4px; cursor: grab; font-size: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+.drag-item.assigned { border-left: 3px solid var(--mdi-orange); }
+.drag-item:active { cursor: grabbing; }
+.unassigned-area { background: #fff8f3; border: 2px dashed var(--mdi-orange); padding: 10px; border-radius: 6px; min-height: 300px; display:flex; flex-direction:column; gap:8px;}
+
+</style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">MDI</div>
+    <div class="brand-title" id="admin-brand-title">
+      MDI TACK Indonesia
+      <span>Action Plan Admin</span>
+    </div>
+  </div>
+  
+  <div class="sidebar-menu">
+    <button class="menu-btn active" id="menu-tracker" onclick="switchTab('tracker')">
+      <span>📋</span> Dashboard Admin
+    </button>
+    <button class="menu-btn" id="menu-backend" onclick="switchTab('backend')">
+      <span>⚙️</span> Form Backend
+    </button>
+    <button class="menu-btn" id="menu-spreadsheet" onclick="switchTab('spreadsheet')">
+      <span>📊</span> Rekap Spreadsheet Awal
+    </button>
+    <button class="menu-btn" id="menu-spreadsheet2" onclick="switchTab('spreadsheet2')">
+      <span>📝</span> Rekap Penyelesaian
+    </button>
+
+    
+
+  </div>
+  
+  <div class="sidebar-footer">
+    <div>Admin Suite v2.0</div>
+    <div style="margin-top: 4px; color:var(--mdi-orange);">Confidential Tool</div>
+  </div>
+</div>
+
+<!-- MAIN WORKSPACE -->
+<div class="main-content">
+  <!-- Topbar -->
+  <div class="main-topbar">
+    <div class="page-title" id="page-head-title">Dashboard Admin <em id="head-form-title">-</em></div>
+    <div class="topbar-actions">
+      <button class="btn btn-primary" onclick="openShareModal()" style="background:var(--mdi-orange); border-color:var(--mdi-orange);">🔗 Bagikan Formulir</button>
+    </div>
+  </div>
+  
+  <!-- Content Panels -->
+  <div class="content-inner">
+    
+    <!-- SECTION 1: DASHBOARD ADMIN (PARTICIPANT TRACKER) -->
+    <div id="section-tracker" class="view-section active">
+      <!-- mini KPIs -->
+      <div class="kpi-row">
+        <div class="kpi kpi-total" onclick="filterStatus('ALL')">
+          <div class="kpi-lbl">Total Participants</div>
+          <div class="kpi-val" id="kpi-total">-</div>
+        </div>
+        <div class="kpi kpi-ap">
+          <div class="kpi-lbl">ACTION PLANS</div>
+          <div class="kpi-val" id="kpi-ap">-</div>
+        </div>
+        <div class="kpi kpi-done" onclick="filterStatus('done')">
+          <div class="kpi-lbl">Completed (Selesai)</div>
+          <div class="kpi-val" id="kpi-done">-</div>
+        </div>
+        <div class="kpi kpi-prog" onclick="filterStatus('prog')">
+          <div class="kpi-lbl">In Progress</div>
+          <div class="kpi-val" id="kpi-prog">-</div>
+        </div>
+      </div>
+      
+
+
+      <!-- Filters and search bar -->
+      <div class="control-bar">
+        <span class="cb-label">Status</span>
+        <button class="f-btn active" id="f-ALL" onclick="filterStatus('ALL')">All</button>
+        <button class="f-btn f-done" id="f-done" onclick="filterStatus('done')">✓ Completed</button>
+        <button class="f-btn f-prog" id="f-prog" onclick="filterStatus('prog')">◌ In Progress</button>
+        
+        <div class="cb-sep"></div>
+        
+        <span class="cb-label">Dept</span>
+        <select id="deptSelect" class="dept-dropdown" onchange="filterDept(this.value)">
+          <option value="ALL">All Departments</option>
+        </select>
+        
+        <div class="cb-sep"></div>
+        
+        <div class="search-wrap">
+          <input type="text" placeholder="Search participant..." oninput="doSearch(this.value)">
+        </div>
+        
+        <div style="margin-left:auto; display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="openAddPICModal()">➕ Add PIC / Participant</button>
+          <button class="btn btn-danger" id="btn-delete-selected" style="display:none;" onclick="deleteSelectedPIC()">🗑️ Hapus Terpilih</button>
+          <button class="btn" style="background:#107c41; color:#fff; border-color:#107c41; font-weight:600;" onclick="openImportModal()">📗 Import Excel</button>
+          <button class="btn" style="background:#1a73e8; color:#fff; border-color:#1a73e8; font-weight:600;" onclick="document.getElementById('stage2ExcelUpload').click()">📘 Upload Penyelesaian</button>
+          <input type="file" id="stage2ExcelUpload" accept=".xlsx, .xls, .csv" style="display:none;" onchange="handleStage2ExcelUpload(event)">
+        </div>
+      </div>
+      
+      <!-- Table -->
+      <div class="table-card">
+        <div class="table-head">
+          <div class="th-title"><span class="th-dot"></span>Participant Action Plan Tracker</div>
+          <div class="th-count" id="tracker-count">Showing 0 of 0</div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:44px">#</th>
+                <th>Participant Name</th>
+                <th>Department</th>
+                <th>Grade</th>
+                <th>Status</th>
+                <th style="width:180px; text-align:center;">Actions</th>
+                <th style="width:36px"></th>
+              </tr>
+            </thead>
+            <tbody id="trackerTableBody"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="emptyState" style="display:none">
+          <div class="empty-icon">🔍</div>
+          <div class="empty-text">No participants matched your search and filters.</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- SECTION 2: FORM BACKEND -->
+    <div id="section-backend" class="view-section">
+
+
+      <div class="form-config-container">
+        
+        <!-- Left configuration settings -->
+        <div>
+          <!-- Document Header -->
+          <div class="card">
+            <div class="card-title">📝 Google Forms Headers</div>
+            <div class="form-group">
+              <label for="cfg-title">Form Title (Judul Formulir)</label>
+              <input type="text" id="cfg-title" oninput="syncLiveFormPreview()">
+            </div>
+            <div class="form-group">
+              <label for="cfg-desc">Form Description (Deskripsi)</label>
+              <textarea id="cfg-desc" rows="3" oninput="syncLiveFormPreview()"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="cfg-training-date">Tanggal Pelatihan</label>
+              <input type="text" id="cfg-training-date" oninput="syncLiveFormPreview()">
+            </div>
+          </div>
+          
+          <!-- Questions Editor grouped by Collapsible Sections -->
+          <div class="card" style="background:transparent; border:none; padding:0; box-shadow:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; background:#fff; padding:16px 24px; border:1px solid var(--mdi-border); border-radius:var(--radius-md);">
+              <span style="font-weight:800; font-size:13.5px; color:var(--mdi-navy);">🧱 Questionnaire Fields & Sections</span>
+              <div style="display:flex; gap:8px;">
+                <button class="btn btn-primary" style="font-size:11px; padding:6px 12px;" onclick="addNewSection()">➕ Add Section</button>
+              </div>
+            </div>
+            
+            <div class="questions-sections-builder" id="sections-builder-list">
+              <!-- Dynamically populated section blocks containing question rows -->
+            </div>
+            
+            <div style="margin-top: 14px; background:#fff; border: 1px solid var(--mdi-border); border-radius:var(--radius-md); padding: 18px; display:flex; justify-content:flex-end; gap:10px;">
+              <button class="btn" onclick="resetFormSchema()">Reset to Default</button>
+              <button class="btn btn-primary" onclick="saveFormSchema()">💾 Save Form Backend Schema</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right Google Forms live preview A4 mock -->
+        <div>
+          <h4 style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--mdi-muted); margin-bottom: 12px; letter-spacing: 0.5px;">👁️ Google Forms Live Preview (Card Mock)</h4>
+          <div class="gforms-preview">
+            <div class="gforms-doc" id="gf-preview-hub">
+              <!-- Cards rendered dynamically -->
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- SECTION 3: REKAP SPREADSHEET -->
+    <div id="section-spreadsheet" class="view-section" style="display: none;">
+      <!-- Toolbar -->
+      <div style="background: var(--mdi-navy); border-radius: 8px; padding: 12px 18px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-md);">
+        <div style="display: flex; align-items: center; gap: 8px; color: #fff;">
+          <span style="font-size: 20px;">📊</span>
+          <div>
+            <h4 style="font-size: 13px; font-weight: 700; margin: 0;">Rekap Hasil Formulir (Spreadsheet View)</h4>
+            <p style="font-size: 11px; color: rgba(255,255,255,0.6); margin: 0;">Representasi data real-time dalam layout baris & kolom spreadsheet</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-primary" onclick="exportToExcel()" style="background: #107c41; border-color: #107c41; color:#fff; display: flex; align-items: center; gap: 6px;">
+            <span>📥</span> Download Excel (.xls)
+          </button>
+          <button class="btn btn-primary" onclick="exportToPDF()" style="background: #d93025; border-color: #d93025; color:#fff; display: flex; align-items: center; gap: 6px;">
+            <span>📄</span> Download PDF
+          </button>
+        </div>
+      </div>
+      
+      <!-- Excel-like Spreadsheet Grid Container -->
+      <div class="table-card" style="border: 1px solid var(--mdi-border); border-radius: 8px; overflow: hidden; background: #fff;">
+        <!-- Spreadsheet Title bar -->
+        <div style="background: var(--mdi-soft); border-bottom: 1px solid var(--mdi-border); padding: 8px 16px; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="font-family: monospace; font-size: 11px; font-weight: 700; color: var(--mdi-muted); background: #fff; border: 1px solid var(--mdi-border); padding: 2px 8px; border-radius: 4px;" id="spreadsheet-cell-indicator">A1</div>
+            <div style="font-size: 12px; font-weight: 600; color: var(--mdi-navy); text-transform: uppercase;" id="spreadsheet-doc-name">REKAP_FORM.xlsx</div>
+          </div>
+          <div style="font-size: 11px; color: var(--mdi-muted); font-weight: 500;">
+            Baris: <span id="sheet-row-count">0</span> | Kolom: <span id="sheet-col-count">0</span>
+          </div>
+        </div>
+        
+        <!-- Formula Bar Mock -->
+        <div style="display: flex; align-items: center; background: #fff; border-bottom: 1px solid var(--mdi-border); padding: 4px 12px; gap: 8px;">
+          <span style="font-style: italic; font-weight: 700; font-family: serif; color: var(--mdi-muted); font-size: 14px; padding: 0 4px; border-right: 1px solid var(--mdi-border); margin-right: 4px;">fx</span>
+          <input type="text" id="spreadsheet-formula-val" style="flex-grow: 1; border: none; outline: none; font-family: monospace; font-size: 12px; color: var(--mdi-navy);" value="Select a cell to view content">
+        </div>
+        
+        <!-- Grid Scroll Area -->
+        <div style="overflow-x: auto; overflow-y: auto; max-height: 480px;" id="sheet-scroll-container">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12px;" id="sheetTable">
+            <thead id="sheetTableHeader">
+              <!-- Column indicator and headers go here -->
+            </thead>
+            <tbody id="sheetTableBody">
+              <!-- Rows go here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- SPREADSHEET PENYELESAIAN (STAGE 2) -->
+    <div id="section-spreadsheet2" class="view-section" style="display: none;">
+      <!-- Toolbar -->
+      <div style="background: var(--mdi-navy); border-radius: 8px; padding: 12px 18px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-md);">
+        <div style="display: flex; align-items: center; gap: 8px; color: #fff;">
+          <span style="font-size: 20px;">📝</span>
+          <div>
+            <div style="font-weight: 700; font-size: 14px;">Rekapitulasi Data Penyelesaian (Editable)</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.7);">30-Day Status, Updates, & Challenges. Klik sel untuk mengedit langsung.</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-primary" onclick="exportSpreadsheet2ToExcel()" style="background: #107c41; border-color: #107c41; color:#fff; display: flex; align-items: center; gap: 6px;">
+            <span>📥</span> Download Excel (.xls)
+          </button>
+        </div>
+      </div>
+      
+      <!-- Excel-like Spreadsheet Grid Container -->
+      <div class="table-card" style="border: 1px solid var(--mdi-border); border-radius: 8px; overflow: hidden; background: #fff;">
+        <!-- Spreadsheet Title bar -->
+        <div style="background: var(--mdi-soft); border-bottom: 1px solid var(--mdi-border); padding: 8px 16px; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="font-family: monospace; font-size: 11px; font-weight: 700; color: var(--mdi-muted); background: #fff; border: 1px solid var(--mdi-border); padding: 2px 8px; border-radius: 4px;" id="spreadsheet2-cell-indicator">A1</div>
+            <div style="font-size: 12px; font-weight: 600; color: var(--mdi-navy); text-transform: uppercase;" id="spreadsheet2-doc-name">REKAP_PENYELESAIAN.xlsx</div>
+          </div>
+          <div style="font-size: 11px; color: var(--mdi-muted); font-weight: 500;">
+            Baris: <span id="sheet2-row-count">0</span> | Kolom: <span id="sheet2-col-count">0</span>
+          </div>
+        </div>
+        
+        <!-- Formula Bar Mock -->
+        <div style="display: flex; align-items: center; background: #fff; border-bottom: 1px solid var(--mdi-border); padding: 4px 12px; gap: 8px;">
+          <span style="font-style: italic; font-weight: 700; font-family: serif; color: var(--mdi-muted); font-size: 14px; padding: 0 4px; border-right: 1px solid var(--mdi-border); margin-right: 4px;">fx</span>
+          <input type="text" id="spreadsheet2-formula-val" style="flex-grow: 1; border: none; outline: none; font-family: monospace; font-size: 12px; color: var(--mdi-navy);" value="Select a cell to view content">
+        </div>
+        
+        <!-- Grid Scroll Area -->
+        <div style="overflow-x: auto; overflow-y: auto; max-height: 480px;" id="sheet2-scroll-container">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12px;" id="sheet2Table">
+            <thead id="sheet2TableHeader">
+              <!-- Column indicator and headers go here -->
+            </thead>
+            <tbody id="sheet2TableBody">
+              <!-- Rows go here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+  </div> <!-- .content-inner -->
+</div> <!-- .main-content -->
+
+<!-- Add/Edit PIC Modal -->
+<div class="modal-overlay" id="pic-modal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title" id="pic-modal-title">Add Participant</div>
+      <button class="modal-close" onclick="closePICModal()">×</button>
+    </div>
+    <div class="modal-body" id="pic-modal-form-area">
+      <!-- Render fields dynamically -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closePICModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="savePICData()">💾 Save Participant</button>
+    </div>
+  </div>
+</div>
+
+<!-- Share Form Modal -->
+<div class="modal-overlay" id="share-modal">
+  <div class="modal-card" style="max-width: 580px;">
+    <div class="modal-header">
+      <div class="modal-title">🔗 Bagikan Formulir & Tautan Peserta</div>
+      <button class="modal-close" onclick="closeShareModal()">×</button>
+    </div>
+    <div class="modal-body" style="max-height: 480px; overflow-y: auto; padding: 20px 24px; display:flex; flex-direction:column; gap:16px;">
+      
+      <!-- General Link Card -->
+      <div style="background: var(--mdi-light); border: 1px solid var(--mdi-border); border-radius: 8px; padding: 14px;">
+        <h4 style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--mdi-orange); margin-bottom: 8px; letter-spacing: 0.5px;">Tautan Umum Formulir (Default / Pengunjung)</h4>
+        <p style="font-size: 12px; color: var(--mdi-muted); margin-bottom: 10px;">Gunakan link ini untuk pengisian form oleh tamu umum atau sebagai titik masuk general.</p>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="share-general-url" readonly style="flex-grow: 1; padding: 8px 12px; border: 1px solid var(--mdi-border); border-radius: 6px; font-family: monospace; font-size: 12px; background: #fff;" onclick="this.select()">
+          <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px; white-space: nowrap;" onclick="copyGeneralLink()">📋 Salin Link</button>
+        </div>
+      </div>
+      
+      <!-- Participant Links Header -->
+      <div>
+        <h4 style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--mdi-navy); margin-bottom: 4px; letter-spacing: 0.5px;">Daftar Tautan Pengisian Peserta (Impersonated)</h4>
+        <p style="font-size: 12px; color: var(--mdi-muted); margin-bottom: 12px;">Setiap peserta memiliki token/nomor tersendiri agar jawaban tercatat dengan benar.</p>
+        <div style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto; border:1px solid var(--mdi-border); border-radius:6px; padding:10px; background:#fff;" id="share-participants-list">
+          <!-- dynamically filled list -->
+        </div>
+      </div>
+      
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="closeShareModal()">Selesai</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Excel Modal -->
+<div class="modal-overlay" id="import-modal">
+  <div class="modal-card" style="max-width: 520px; border-radius: var(--radius-md);">
+    <div class="modal-header" style="background:#107c41; color: #fff;">
+      <div class="modal-title">📥 Import Manual Database (Excel)</div>
+      <button class="modal-close" onclick="closeImportModal()">×</button>
+    </div>
+    <div class="modal-body" style="padding: 24px; display:flex; flex-direction:column; gap:16px;">
+      <p style="font-size:12.5px; color:var(--mdi-muted); line-height:1.6; margin: 0;">
+        Unggah file Excel (<strong>.xlsx</strong>, <strong>.xls</strong>) atau <strong>.csv</strong> untuk menambahkan peserta dan data jawaban secara massal. Sistem akan mencocokkan kolom Nama, Departemen, Grade, dan jawaban secara otomatis.
+      </p>
+      
+      <!-- Drag & Drop Upload Zone -->
+      <div id="drop-zone" style="border: 2px dashed #107c41; border-radius: var(--radius-md); padding: 36px 20px; text-align: center; background: #f4faf6; cursor: pointer; transition: all 0.2s ease;" onclick="triggerFileInput()">
+        <span style="font-size: 40px; display:block; margin-bottom:12px;">📄</span>
+        <span style="font-weight: 700; color: #107c41; font-size: 14px; display:block;">Pilih File Excel atau Seret & Lepas</span>
+        <span style="font-size: 11px; color: var(--mdi-muted); margin-top: 6px; display:block;">Mendukung format .xlsx, .xls, .csv</span>
+        <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" style="display:none;" onchange="handleExcelUpload(event)">
+      </div>
+      
+      <!-- Instructions / Template Download -->
+      <div style="background: var(--mdi-soft); border: 1px solid var(--mdi-border); border-radius: 8px; padding: 14px; display:flex; justify-content:space-between; align-items:center; gap: 12px;">
+        <div style="flex: 1;">
+          <h5 style="font-weight: 700; color: var(--mdi-navy); margin-bottom:2px; font-size:12px;">Gunakan Template Standar</h5>
+          <p style="font-size:11.5px; color: var(--mdi-muted); margin:0; line-height:1.4;">Unduh template Excel dengan struktur kolom yang sesuai untuk memudahkan pengisian.</p>
+        </div>
+        <button class="btn" style="background:#fff; font-size:11px; white-space:nowrap; padding:6px 10px;" onclick="downloadExcelTemplate()">📥 Unduh Template</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeImportModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+// ── STATE VARIABLES ──
+let FORM_CONFIG = {};
+let PARTICIPANTS = [];
+let formId = "form_bayan";
+
+
+
+
+let activeTab = "tracker";
+let activeStatus = "ALL";
+let activeDept = "ALL";
+let searchTerm = "";
+
+let collapsedSections = {}; // track expanded/collapsed state of section configurators
+
+let PARTICIPANTS_STAGE1 = [];
+
+function loadAndMergeParticipants() {
+  const cachedS1 = localStorage.getItem(`mdi_participants_${formId}`);
+  PARTICIPANTS_STAGE1 = cachedS1 ? JSON.parse(cachedS1) : [];
+
+  const merged = [];
+  let index = 1;
+
+  PARTICIPANTS_STAGE1.forEach(p1 => {
+    merged.push({
+      no: index++,
+      name: p1.name,
+      dept: p1.dept,
+      grade: p1.grade,
+      status: p1.status || "none",
+      submitDate: p1.submitDate || "",
+      answers: p1.answers || {},
+      s2Status: p1.s2Status || "",
+      s2Update: p1.s2Update || "",
+      s2Challenge: p1.s2Challenge || "",
+            clientCompany: p1.clientCompany || null,
+      picNoStage1: p1.no
+    });
+  });
+
+  PARTICIPANTS = merged;
+}
+
+
+function getActualStatus(p) {
+  if (p.status === "done" || (p.s2Status && p.s2Status.toLowerCase().includes("selesai")) || (p.s2Status && p.s2Status.toLowerCase().includes("completed"))) return "done";
+  return "prog";
+}
+function getActualStatus(p) {
+  if (p.status === "done" || (p.s2Status && p.s2Status.toLowerCase().includes("selesai")) || (p.s2Status && p.s2Status.toLowerCase().includes("completed"))) return "done";
+  return "prog";
+}
+
+function getActionPlans(p) {
+  if (!p.answers) return [];
+  const plans = [];
+  if (typeof FORM_CONFIG !== 'undefined' && FORM_CONFIG && FORM_CONFIG.fields) {
+    FORM_CONFIG.fields.forEach(f => {
+      if (f.id.startsWith("q_custom_")) {
+        const lbl = f.label.toLowerCase();
+        if (lbl.includes("rencana tindakan") || lbl.includes("action plan") || lbl.includes("commitment action")) {
+          const ans = p.answers[f.id];
+          if (ans && String(ans).trim() !== "" && ans !== "—") {
+            let splitted = String(ans).split(/\n|;|,|\.|\-\s+|\d+\)/).map(s => s.trim().replace(/^[\-\)]\s*/, '')).filter(s => s.length > 2 && !/^\d+$/.test(s) && s.toLowerCase() !== "null");
+            plans.push(...splitted);
+          }
+        }
+      }
+    });
+  }
+  return plans;
+}
+
+
+
+// ── INITIALIZE APPLICATION ──
+function init() {
+  const cachedForms = localStorage.getItem("mdi_forms");
+  let forms = [];
+  if (cachedForms) {
+    try {
+      forms = JSON.parse(cachedForms);
+      let updated = false;
+      forms.forEach(form => {
+        if (form.fields) {
+          form.fields.forEach(field => {
+            if (field.id === "q_dept" && field.type === "select") {
+              field.type = "text";
+              field.options = [];
+              updated = true;
+            }
+          });
+        }
+      });
+      if (updated) {
+        localStorage.setItem("mdi_forms", JSON.stringify(forms));
+      }
+    } catch (e) {
+      console.error("Migration error:", e);
+      forms = JSON.parse(cachedForms) || [];
+    }
+  } else {
+    alert("Warning: Forms database not found in local storage. Please open Dashboard Gateway first.");
+    return;
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  formId = urlParams.get('formId') || 'form_bayan';
+
+  let currentForm = forms.find(f => f.id === formId);
+  if (!currentForm && forms.length > 0) {
+    currentForm = forms[0];
+    formId = currentForm.id;
+  }
+  
+  if (!currentForm) {
+    currentForm = {
+      id: formId,
+      title: "Unknown Form",
+      desc: "Tidak ada data formulir yang ditemukan.",
+      fields: [],
+      sections: []
+    };
+  }
+
+  FORM_CONFIG = currentForm;
+
+  if (!FORM_CONFIG.sections) {
+    FORM_CONFIG.sections = ["Bagian 1 – Identitas", "Bagian 2 – Action Plan Commitments", "Bagian 3 – Progress & Challenges"];
+  }
+
+  // Load participants
+  loadAndMergeParticipants();
+  
+
+  // Set top title and header inputs
+  document.getElementById("head-form-title").textContent = FORM_CONFIG.title;
+  document.getElementById("admin-brand-title").innerHTML = `${FORM_CONFIG.title} <span>Action Plan Admin</span>`;
+  document.getElementById("cfg-title").value = FORM_CONFIG.title;
+  document.getElementById("cfg-desc").value = FORM_CONFIG.desc;
+  document.getElementById("cfg-training-date").value = FORM_CONFIG.trainingDate || "";
+
+  rebuildDeptFilters();
+  renderAll();
+  
+}
+
+window.addEventListener('storage', (e) => {
+  if (e.key === 'mdi_forms') {
+    const list = JSON.parse(e.newValue);
+    const item = list.find(f => f.id === formId);
+    if (item) {
+      FORM_CONFIG = item;
+      document.getElementById("cfg-desc").value = FORM_CONFIG.desc;
+      document.getElementById("head-form-title").textContent = FORM_CONFIG.title;
+      document.getElementById("admin-brand-title").innerHTML = `${FORM_CONFIG.title} <span>Action Plan Admin</span>`;
+      if (activeTab === "backend") {
+        renderConfiguratorUI();
+      }
+    }
+  }
+});
+
+// ── RENDER CORE ──
+function renderAll() {
+  rebuildDeptFilters();
+  if (activeTab === "tracker") {
+    renderTrackerTable();
+  } else if (activeTab === "backend") {
+    renderConfiguratorUI();
+  } else if (activeTab === "spreadsheet") {
+    renderSpreadsheet();
+  } else if (activeTab === "spreadsheet2") {
+    renderSpreadsheet2();
+  }
+  updateMiniKPIs();
+}
+
+// ── PORTAL NAVIGATION ──
+function switchTab(tabId) {
+  activeTab = tabId;
+  document.getElementById("menu-tracker").classList.remove("active");
+  document.getElementById("menu-backend").classList.remove("active");
+  document.getElementById("menu-spreadsheet").classList.remove("active");
+  document.getElementById("menu-spreadsheet2").classList.remove("active");
+  const mc = document.getElementById("menu-clients"); if(mc) mc.classList.remove("active");
+  
+  document.getElementById("section-tracker").style.display = "none";
+  document.getElementById("section-backend").style.display = "none";
+  document.getElementById("section-spreadsheet").style.display = "none";
+  document.getElementById("section-spreadsheet2").style.display = "none";
+  const sc = document.getElementById("section-clients"); if(sc) sc.style.display = "none";
+
+  if (tabId === "tracker") {
+    document.getElementById("menu-tracker").classList.add("active");
+    document.getElementById("section-tracker").style.display = "block";
+    document.getElementById("page-head-title").innerHTML = `Dashboard Admin <em style="font-style:normal; color:var(--mdi-orange); font-weight:600; font-size:13.5px; background:var(--mdi-orange-soft); padding:2px 8px; border-radius:4px; margin-left:8px;">${FORM_CONFIG.title}</em>`;
+    renderTrackerTable();
+  } else if (tabId === "backend") {
+    document.getElementById("menu-backend").classList.add("active");
+    document.getElementById("section-backend").style.display = "block";
+    document.getElementById("page-head-title").innerHTML = `Form Backend Settings <em style="font-style:normal; color:var(--mdi-orange); font-weight:600; font-size:13.5px; background:var(--mdi-orange-soft); padding:2px 8px; border-radius:4px; margin-left:8px;">${FORM_CONFIG.title}</em>`;
+    renderConfiguratorUI();
+  } else if (tabId === "spreadsheet") {
+    document.getElementById("menu-spreadsheet").classList.add("active");
+    document.getElementById("section-spreadsheet").style.display = "block";
+    document.getElementById("page-head-title").innerHTML = `Rekap Spreadsheet Awal <em style="font-style:normal; color:var(--mdi-orange); font-weight:600; font-size:13.5px; background:var(--mdi-orange-soft); padding:2px 8px; border-radius:4px; margin-left:8px;">${FORM_CONFIG.title}</em>`;
+    renderSpreadsheet();
+  } else if (tabId === "spreadsheet2") {
+    document.getElementById("menu-spreadsheet2").classList.add("active");
+    document.getElementById("section-spreadsheet2").style.display = "block";
+    document.getElementById("page-head-title").innerHTML = `Rekap Penyelesaian <em style="font-style:normal; color:var(--mdi-orange); font-weight:600; font-size:13.5px; background:var(--mdi-orange-soft); padding:2px 8px; border-radius:4px; margin-left:8px;">${FORM_CONFIG.title}</em>`;
+    renderSpreadsheet2();
+  }
+}
+
+
+
+// ── DASHBOARD ADMIN: TRACKER LOGIC ──
+function updateMiniKPIs() {
+  const total = PARTICIPANTS.length;
+  const done = PARTICIPANTS.filter(p => getActualStatus(p) === "done").length;
+  const prog = PARTICIPANTS.filter(p => getActualStatus(p) === "prog").length;
+
+  let totalAP = 0;
+  PARTICIPANTS.forEach(p => {
+    totalAP += getActionPlans(p).length;
+  });
+
+  document.getElementById("kpi-total").textContent = total;
+  document.getElementById("kpi-ap").textContent = totalAP;
+  document.getElementById("kpi-done").textContent = done;
+  document.getElementById("kpi-prog").textContent = prog;
+}
+
+function rebuildDeptFilters() {
+  const depts = [...new Set(PARTICIPANTS.map(p => p.dept))].sort();
+  const select = document.getElementById("deptSelect");
+  const currentVal = select.value;
+  select.innerHTML = '<option value="ALL">All Departments</option>';
+  depts.forEach(d => {
+    if (!d) return;
+    const opt = document.createElement("option");
+    opt.value = d;
+    opt.textContent = d;
+    if (d === currentVal) opt.selected = true;
+    select.appendChild(opt);
+  });
+}
+
+function filterStatus(s) {
+  activeStatus = s;
+  document.querySelectorAll("#f-ALL, #f-done, #f-prog, #f-none, #f-overdue, #f-late").forEach(b => b.classList.remove("active"));
+  const btn = document.getElementById("f-" + s);
+  if (btn) btn.classList.add("active");
+  renderTrackerTable();
+}
+
+function filterDept(d) {
+  activeDept = d;
+  renderTrackerTable();
+}
+
+function doSearch(v) {
+  searchTerm = v.toLowerCase();
+  renderTrackerTable();
+}
+
+function getFilteredData() {
+  return PARTICIPANTS.filter(p => {
+    const actStatus = getActualStatus(p);
+    const sOk = activeStatus === "ALL" || actStatus === activeStatus;
+    const dOk = activeDept === "ALL" || p.dept === activeDept;
+    const qOk = searchTerm === "" ||
+      p.name.toLowerCase().includes(searchTerm) ||
+      p.dept.toLowerCase().includes(searchTerm) ||
+      (p.grade && p.grade.toLowerCase().includes(searchTerm));
+    return sOk && dOk && qOk;
+  });
+}
+
+function formatDisplayDate(val) {
+  if (!val) return "";
+  const match = String(val).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) return `${match[3]}/${match[2]}/${match[1]}`;
+  return val;
+}
+
+function renderTrackerTable() {
+  const data = getFilteredData();
+  const body = document.getElementById("trackerTableBody");
+  const empty = document.getElementById("emptyState");
+  const thead = document.querySelector(".table-card table thead");
+
+  // Unified header rendering
+  thead.innerHTML = `
+    <tr>
+      <th style="width:40px; text-align:center;"><input type="checkbox" id="selectAllCb" onclick="toggleSelectAll(this)"></th>
+      <th style="width:44px">#</th>
+      <th style="width:160px">PARTICIPANT</th>
+      <th style="width:120px">DEPARTMENT</th>
+      <th style="width:250px">ACTION PLAN (COMMITMENT)</th>
+      <th style="width:140px; text-align:center;">30-DAY STATUS</th>
+      <th style="width:200px">UPDATE & NOTES</th>
+      <th style="width:200px">CHALLENGE</th>
+      <th style="width:180px; text-align:center;">ACTIONS</th>
+      <th style="width:36px"></th>
+    </tr>
+  `;
+
+  if (data.length === 0) {
+    body.innerHTML = "";
+    empty.style.display = "block";
+  } else {
+    empty.style.display = "none";
+    body.innerHTML = data.map(p => {
+      // Action Plans Extraction
+      const plans = getActionPlans(p);
+      const firstPlan = plans.length > 0 ? plans[0] : "No action plan recorded";
+      const moreText = plans.length > 1 ? `<div style="font-size:11px; color:var(--mdi-muted); margin-top:4px;">+${plans.length - 1} more actions</div>` : "";
+
+      // Dynamic rendering of unified dropdown status select
+      const displayStatus = getActualStatus(p);
+      
+      let statusSelectHtml = `
+        <td style="text-align:center;">
+          <select onchange="updateParticipantStatus(${p.no}, this.value)" onclick="event.stopPropagation();" class="status-select select-${displayStatus}">
+            <option value="prog" ${displayStatus === 'prog' ? 'selected' : ''}>In Progress</option>
+            <option value="done" ${displayStatus === 'done' ? 'selected' : ''}>Completed</option>
+          </select>
+        </td>
+      `;
+
+      const s2Update = p.s2Update || "—";
+      const s2Challenge = p.s2Challenge || `<span style="color:var(--mdi-danger); font-size:12px;">⚠️ None reported</span>`;
+
+      return `
+      <tr onclick="toggleRow(${p.no})" id="row-${p.no}">
+        <td style="text-align:center;" onclick="event.stopPropagation();"><input type="checkbox" class="row-cb" value="${p.no}" onclick="checkSelected()"></td>
+        <td class="td-num">${p.no}</td>
+        <td><div class="td-name">${p.name}</div></td>
+        <td><span class="dept-tag">${p.dept}</span></td>
+        <td>
+          <div style="font-size:13px; color:var(--mdi-ink); line-height:1.4;">${firstPlan}</div>
+          ${moreText}
+        </td>
+        ${statusSelectHtml}
+        <td><div style="font-size:12.5px; color:var(--mdi-muted); line-height:1.4;">${s2Update}</div></td>
+        <td><div style="font-size:12.5px; color:var(--mdi-muted); line-height:1.4;">${s2Challenge}</div></td>
+        <td>
+          <div style="display:flex; gap:6px; justify-content:center;" onclick="event.stopPropagation();">
+            <button class="btn" style="padding: 4px 8px; font-size:11px;" onclick="openEditPICModal(${p.no})">✏️ Edit</button>
+            <button class="btn" style="padding: 4px 8px; font-size:11px; background:var(--mdi-orange); border-color:var(--mdi-orange); color:#fff;" onclick="copyParticipantLink(${p.no})">🔗 Salin Link</button>
+            <button class="btn btn-danger" style="padding: 4px 8px; font-size:11px;" onclick="deletePIC(${p.no})">🗑️ Delete</button>
+          </div>
+        </td>
+        <td><button class="expand-btn" id="btn-${p.no}" onclick="event.stopPropagation();toggleRow(${p.no})">›</button></td>
+      </tr>
+      <tr class="detail-row" id="detail-${p.no}">
+        <td colspan="10" class="detail-cell" style="background:#f8f9fa; border-left: 3px solid #d95d39;">
+          <div class="detail-inner" style="padding:0;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; padding: 16px 8px;">
+              <div>
+                <div style="font-size:10px; font-weight:800; color:var(--mdi-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">ALL ${plans.length} ACTION PLANS</div>
+                <ol style="margin:0; padding-left:16px; font-size:13px; color:var(--mdi-ink); line-height:1.6; font-weight:600; color:#d95d39;">
+                  ${plans.map(pl => `<li style="margin-bottom:8px;"><span style="color:var(--mdi-ink); font-weight:400;">${pl}</span></li>`).join("")}
+                </ol>
+              </div>
+              <div>
+                <div style="font-size:10px; font-weight:800; color:var(--mdi-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">30-DAY UPDATE</div>
+                <div style="font-size:13px; color:var(--mdi-ink); line-height:1.5;">${p.s2Update || "No update reported."}</div>
+              </div>
+              <div>
+                <div style="font-size:10px; font-weight:800; color:var(--mdi-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">CHALLENGE / BARRIER</div>
+                <div style="font-size:13px; color:var(--mdi-ink); line-height:1.5;">${p.s2Challenge || "No challenges reported."}</div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+      `;
+    }).join("");
+  }
+  document.getElementById("tracker-count").textContent = `Showing ${data.length} of ${PARTICIPANTS.length}`;
+  checkSelected(); // Reset bulk action UI
+}
+
+function toggleSelectAll(el) {
+  document.querySelectorAll('.row-cb').forEach(cb => cb.checked = el.checked);
+  checkSelected();
+}
+
+function checkSelected() {
+  const cbs = document.querySelectorAll('.row-cb:checked');
+  const btn = document.getElementById('btn-delete-selected');
+  if (btn) {
+    btn.style.display = cbs.length > 0 ? 'inline-block' : 'none';
+    btn.textContent = `🗑️ Hapus Terpilih (${cbs.length})`;
+  }
+}
+
+function deleteSelectedPIC() {
+  const checked = document.querySelectorAll('.row-cb:checked');
+  if (checked.length === 0) return;
+  if (confirm(`Apakah Anda yakin ingin menghapus ${checked.length} data terpilih secara permanen?`)) {
+    const idsToDelete = Array.from(checked).map(cb => parseInt(cb.value));
+    PARTICIPANTS_STAGE1 = PARTICIPANTS_STAGE1.filter(p => !idsToDelete.includes(p.no));
+    saveState();
+    loadAndMergeParticipants();
+    renderAll();
+    showToast(`${checked.length} data berhasil dihapus.`);
+  }
+}
+
+function toggleRow(no) {
+  const detail = document.getElementById("detail-"+no);
+  const btn    = document.getElementById("btn-"+no);
+  const row    = document.getElementById("row-"+no);
+  const isOpen = detail.classList.contains("open");
+
+  document.querySelectorAll("#trackerTableBody .detail-row").forEach(r => r.classList.remove("open"));
+  document.querySelectorAll("#trackerTableBody .expand-btn").forEach(b => b.classList.remove("open"));
+  document.querySelectorAll("#trackerTableBody tr:not(.detail-row)").forEach(r => r.classList.remove("expanded"));
+
+  if(!isOpen) {
+    detail.classList.add("open");
+    btn.classList.add("open");
+    row.classList.add("expanded");
+  }
+}
+
+// ── CRUD ACTIONS ──
+function updateParticipantStatus(no, newStatus) {
+  const p = PARTICIPANTS.find(item => item.no === no);
+  if (!p) return;
+
+  // Always save to Stage 1
+  let p1 = PARTICIPANTS_STAGE1.find(item => item.name.trim().toLowerCase() === p.name.trim().toLowerCase());
+  if (!p1) {
+    const newNo = PARTICIPANTS_STAGE1.length > 0 ? Math.max(...PARTICIPANTS_STAGE1.map(x => x.no)) + 1 : 1;
+    p1 = { no: newNo, name: p.name, dept: p.dept, grade: p.grade, status: newStatus, answers: {} };
+    PARTICIPANTS_STAGE1.push(p1);
+  } else {
+    p1.status = newStatus;
+  }
+  localStorage.setItem(`mdi_participants_${formId}`, JSON.stringify(PARTICIPANTS_STAGE1));
+
+  showToast(`Status ${p.name} berhasil diperbarui!`);
+  loadAndMergeParticipants();
+  renderAll();
+}
+
+function deletePIC(no) {
+  const p = PARTICIPANTS.find(item => item.no === no);
+  if (p && confirm(`Apakah Anda yakin ingin menghapus peserta "${p.name}" secara permanen?`)) {
+    PARTICIPANTS_STAGE1 = PARTICIPANTS_STAGE1.filter(item => item.name.trim().toLowerCase() !== p.name.trim().toLowerCase());
+    PARTICIPANTS_STAGE1.forEach((x, idx) => x.no = idx + 1);
+    localStorage.setItem(`mdi_participants_${formId}`, JSON.stringify(PARTICIPANTS_STAGE1));
+
+    loadAndMergeParticipants();
+    rebuildDeptFilters();
+    renderAll();
+    showToast(`Peserta "${p.name}" berhasil dihapus.`);
+  }
+}
+
+function saveState() {
+  localStorage.setItem(`mdi_participants_${formId}`, JSON.stringify(PARTICIPANTS_STAGE1));
+}
+
+
+// ── FORM BACKEND CONFIGURATOR LOGIC ──
+function renderConfiguratorUI() {
+  const container = document.getElementById("sections-builder-list");
+  container.innerHTML = "";
+
+  const config = FORM_CONFIG;
+
+  // Render collapsible sections
+  config.sections.forEach((secName, secIdx) => {
+    const isCollapsed = collapsedSections[secIdx] || false;
+    const arrowIcon = isCollapsed ? "►" : "▼";
+    const bodyClass = isCollapsed ? "section-builder-body collapsed" : "section-builder-body";
+
+    const sectionFields = config.fields.filter(f => f.section === secName);
+
+    let questionsHtml = "";
+    if (sectionFields.length === 0) {
+      questionsHtml = `<div style="text-align:center; padding: 20px; color:var(--mdi-muted); font-style:italic;">Belum ada pertanyaan di bagian ini. Silakan klik Tambah Pertanyaan.</div>`;
+    } else {
+      sectionFields.forEach(f => {
+        const globalIdx = config.fields.findIndex(field => field.id === f.id);
+        const isCore = ["q_nama", "q_grade", "q_dept"].includes(f.id);
+
+        questionsHtml += `
+          <div class="q-row" id="q-row-${globalIdx}">
+            <div class="q-row-header">
+              <div class="q-title">
+                <span>📍</span> Question in <em>${secName}</em>
+                ${f.required ? '<span style="color:#d93025; font-size:9.5px; font-weight:800; background:#fee2e2; padding:2px 6px; border-radius:4px; margin-left:8px;">REQUIRED</span>' : ''}
+              </div>
+              <div class="q-actions">
+                <button class="btn" style="padding:2px 6px; font-size:11px;" onclick="moveQuestion(${globalIdx}, -1)" ${globalIdx === 0 ? 'disabled' : ''}>▲ Up</button>
+                <button class="btn" style="padding:2px 6px; font-size:11px;" onclick="moveQuestion(${globalIdx}, 1)" ${globalIdx === config.fields.length - 1 ? 'disabled' : ''}>▼ Down</button>
+                ${isCore ? `<span style="font-size:9px; font-weight:700; color:var(--mdi-muted); padding-left:10px;">CORE FIELD</span>` : `<button class="btn btn-danger" style="padding:2px 6px; font-size:11px;" onclick="deleteQuestion(${globalIdx})">🗑️ Remove</button>`}
+              </div>
+            </div>
+            
+            <div class="q-grid">
+              <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:9px;">Pertanyaan (Label)</label>
+                <input type="text" id="q-lbl-${globalIdx}" value="${f.label}" oninput="syncLiveFormPreview()">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:9px;">Jenis Jawaban</label>
+                <select id="q-type-${globalIdx}" onchange="toggleOptionsArea(${globalIdx}); syncLiveFormPreview();">
+                  <option value="text" ${f.type === 'text' ? 'selected' : ''}>Jawaban Singkat (Text)</option>
+                  <option value="textarea" ${f.type === 'textarea' ? 'selected' : ''}>Jawaban Panjang (Paragraph)</option>
+                  <option value="radio" ${f.type === 'radio' ? 'selected' : ''}>Pilihan Ganda (Radio)</option>
+                  <option value="select" ${f.type === 'select' ? 'selected' : ''}>Dropdown (Pilih)</option>
+                  <option value="date" ${f.type === 'date' ? 'selected' : ''}>Pilih Tanggal (Date)</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0; display:flex; align-items:center; gap:8px; padding-top:20px; padding-left:14px;">
+                <input type="checkbox" id="q-req-${globalIdx}" ${f.required ? 'checked' : ''} onchange="syncLiveFormPreview()">
+                <label for="q-req-${globalIdx}" style="margin-bottom:0; cursor:pointer; font-size:11px;">Wajib Diisi</label>
+              </div>
+            </div>
+            
+            <div class="options-wrap" id="options-wrap-${globalIdx}" style="display: ${['radio', 'select'].includes(f.type) ? 'block' : 'none'};">
+              <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:9px; color:var(--mdi-orange);">Pilihan Opsi (Pisahkan dengan koma, misal: Pilihan A, Pilihan B)</label>
+                <input type="text" id="q-opts-${globalIdx}" value="${f.options ? f.options.join(', ') : ''}" oninput="syncLiveFormPreview()" placeholder="e.g. Opsi 1, Opsi 2">
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    const sectionBlock = document.createElement("div");
+    sectionBlock.className = "section-builder-block";
+    sectionBlock.innerHTML = `
+      <div class="section-builder-header" onclick="toggleSectionCollapse(${secIdx})">
+        <div class="section-header-left">
+          <span class="section-collapse-icon" id="sec-arrow-${secIdx}">${arrowIcon}</span>
+          <input type="text" class="section-title-input" value="${secName}" id="sec-name-${secIdx}" onclick="event.stopPropagation();" onchange="renameSection(${secIdx}, this.value)" title="Klik untuk ubah nama bagian">
+          <span style="font-size:10px; font-weight:600; color:var(--mdi-muted);">(${sectionFields.length} Pertanyaan)</span>
+        </div>
+        <div onclick="event.stopPropagation();" style="display:flex; gap:8px;">
+          <button class="btn btn-primary" style="font-size:11px; padding:3px 10px;" onclick="addNewQuestionToSection('${secName}')">➕ Add Question</button>
+          ${secIdx > 0 ? `<button class="btn btn-danger" style="font-size:11px; padding:3px 10px;" onclick="deleteSection(${secIdx})">🗑️ Delete Section</button>` : ''}
+        </div>
+      </div>
+      <div class="${bodyClass}" id="sec-body-${secIdx}">
+        ${questionsHtml}
+      </div>
+    `;
+    container.appendChild(sectionBlock);
+  });
+
+  config.fields.forEach((f, idx) => {
+    toggleOptionsArea(idx);
+  });
+
+  syncLiveFormPreview();
+}
+
+function toggleSectionCollapse(secIdx) {
+  collapsedSections[secIdx] = !collapsedSections[secIdx];
+  const body = document.getElementById(`sec-body-${secIdx}`);
+  const arrow = document.getElementById(`sec-arrow-${secIdx}`);
+  if (collapsedSections[secIdx]) {
+    body.classList.add("collapsed");
+    arrow.textContent = "►";
+  } else {
+    body.classList.remove("collapsed");
+    arrow.textContent = "▼";
+  }
+}
+
+function toggleOptionsArea(idx) {
+  const typeEl = document.getElementById(`q-type-${idx}`);
+  if (!typeEl) return;
+  const type = typeEl.value;
+  const wrap = document.getElementById(`options-wrap-${idx}`);
+  if (wrap) {
+    if (['radio', 'select'].includes(type)) {
+      wrap.style.display = "block";
+    } else {
+      wrap.style.display = "none";
+    }
+  }
+}
+
+function syncDOMToState(config) {
+  if (activeTab !== "backend") return;
+
+  const targetConfig = config || FORM_CONFIG;
+  const titleEl = document.getElementById("cfg-title");
+  const descEl = document.getElementById("cfg-desc");
+  const tDateEl = document.getElementById("cfg-training-date");
+  if (titleEl) targetConfig.title = titleEl.value.trim();
+  if (descEl) targetConfig.desc = descEl.value.trim();
+  if (tDateEl) targetConfig.trainingDate = tDateEl.value.trim();
+
+  targetConfig.fields.forEach((f, idx) => {
+    const lblEl = document.getElementById(`q-lbl-${idx}`);
+    const typeEl = document.getElementById(`q-type-${idx}`);
+    const reqEl = document.getElementById(`q-req-${idx}`);
+    const optsEl = document.getElementById(`q-opts-${idx}`);
+
+    if (lblEl) f.label = lblEl.value.trim();
+    if (typeEl) f.type = typeEl.value;
+    if (reqEl) f.required = reqEl.checked;
+    
+    if (['radio', 'select'].includes(f.type) && optsEl) {
+      const rawOpts = optsEl.value;
+      f.options = rawOpts.split(',').map(o => o.trim()).filter(o => o !== "");
+    } else {
+      if (typeEl && !['radio', 'select'].includes(f.type)) {
+        f.options = [];
+      }
+    }
+  });
+}
+
+function renameSection(secIdx, newName) {
+  const config = FORM_CONFIG;
+  const oldName = config.sections[secIdx];
+  if (!newName.trim()) {
+    alert("Nama bagian tidak boleh kosong!");
+    renderConfiguratorUI();
+    return;
+  }
+  
+  syncDOMToState();
+  config.sections[secIdx] = newName.trim();
+  
+  // Re-map all fields in this section to the new name
+  config.fields.forEach(f => {
+    if (f.section === oldName) {
+      f.section = newName.trim();
+    }
+  });
+
+  renderConfiguratorUI();
+}
+
+function addNewSection() {
+  const config = FORM_CONFIG;
+  const sectionName = prompt("Masukkan nama bagian baru:");
+  if (sectionName && sectionName.trim() !== "") {
+    if (config.sections.includes(sectionName.trim())) {
+      alert("Nama bagian tersebut sudah terdaftar!");
+      return;
+    }
+    syncDOMToState();
+    config.sections.push(sectionName.trim());
+    
+    // Auto add a first custom field in it so it doesn't render empty
+    const newQ = {
+      id: "q_custom_" + Date.now(),
+      label: "Pertanyaan Baru",
+      type: "text",
+      required: false,
+      section: sectionName.trim(),
+      options: ["Opsi A", "Opsi B"]
+    };
+    config.fields.push(newQ);
+    
+    renderConfiguratorUI();
+  }
+}
+
+function deleteSection(secIdx) {
+  const config = FORM_CONFIG;
+  const secName = config.sections[secIdx];
+  if (confirm(`Apakah Anda yakin ingin menghapus bagian "${secName}"? Semua pertanyaan di dalamnya akan ikut dihapus.`)) {
+    syncDOMToState();
+    config.sections.splice(secIdx, 1);
+    config.fields = config.fields.filter(f => f.section !== secName);
+    
+    renderConfiguratorUI();
+  }
+}
+
+function addNewQuestionToSection(secName) {
+  const config = FORM_CONFIG;
+  syncDOMToState();
+  const newQ = {
+    id: "q_custom_" + Date.now(),
+    label: "Pertanyaan Baru",
+    type: "text",
+    required: false,
+    section: secName,
+    options: ["Opsi A", "Opsi B"]
+  };
+  config.fields.push(newQ);
+  renderConfiguratorUI();
+  
+  // Expand section body if it was collapsed
+  const secIdx = config.sections.indexOf(secName);
+  if (secIdx !== -1 && collapsedSections[secIdx]) {
+    collapsedSections[secIdx] = false;
+    const body = document.getElementById(`sec-body-${secIdx}`);
+    const arrow = document.getElementById(`sec-arrow-${secIdx}`);
+    if (body) body.classList.remove("collapsed");
+    if (arrow) arrow.textContent = "▼";
+  }
+}
+
+function deleteQuestion(idx) {
+  const config = FORM_CONFIG;
+  syncDOMToState();
+  config.fields.splice(idx, 1);
+  renderConfiguratorUI();
+}
+
+function moveQuestion(idx, direction) {
+  const config = FORM_CONFIG;
+  const target = idx + direction;
+  if (target >= 0 && target < config.fields.length) {
+    syncDOMToState();
+    const temp = config.fields[idx];
+    config.fields[idx] = config.fields[target];
+    config.fields[target] = temp;
+    
+    renderConfiguratorUI();
+  }
+}
+
+function syncLiveFormPreview() {
+  const previewHub = document.getElementById("gf-preview-hub");
+  previewHub.innerHTML = "";
+
+  const config = FORM_CONFIG;
+  const title = document.getElementById("cfg-title").value.trim() || "Untitled Google Form";
+  const desc = document.getElementById("cfg-desc").value.trim() || "Form description...";
+  const trainingDate = document.getElementById("cfg-training-date") ? document.getElementById("cfg-training-date").value.trim() : (config.trainingDate || "");
+
+  // Render header card
+  let dateHtml = trainingDate ? `<div style="font-size: 13px; color: var(--mdi-navy); margin-top: 8px; font-weight: 600;">📅 Tanggal Pelatihan: ${trainingDate}</div>` : '';
+  
+  previewHub.innerHTML += `
+    <div class="gforms-card header-card">
+      <div class="gforms-card-title">${title}</div>
+      <div class="gforms-card-desc">${desc}</div>
+      ${dateHtml}
+      <div style="color:#d93025; font-size:11px; margin-top:14px;">* Menunjukkan pertanyaan yang wajib diisi</div>
+    </div>
+  `;
+
+  // Render section by section with titles
+  config.sections.forEach(secName => {
+    const fields = config.fields.map((f, idx) => {
+      return { ...f, globalIndex: idx };
+    }).filter(f => f.section === secName);
+
+    if (fields.length > 0) {
+      // Add section card header
+      previewHub.innerHTML += `
+        <div class="gforms-card section-card">
+          ${secName}
+        </div>
+      `;
+
+      fields.forEach(f => {
+        const titleInput = document.getElementById(`q-lbl-${f.globalIndex}`);
+        const typeInput = document.getElementById(`q-type-${f.globalIndex}`);
+        const reqInput = document.getElementById(`q-req-${f.globalIndex}`);
+        const optsInput = document.getElementById(`q-opts-${f.globalIndex}`);
+
+        const customLabel = titleInput ? titleInput.value : f.label;
+        const isRequired = reqInput ? reqInput.checked : f.required;
+        const qType = typeInput ? typeInput.value : f.type;
+        const rawOpts = optsInput ? optsInput.value : (f.options ? f.options.join(', ') : '');
+        const options = rawOpts.split(',').map(o => o.trim()).filter(o => o !== "");
+
+        let previewContent = "";
+        if (qType === "text") {
+          previewContent = `<div class="gf-input-mock">Jawaban singkat Anda</div>`;
+        } else if (qType === "textarea") {
+          previewContent = `<div class="gf-input-mock" style="width:90%; height:40px; border-bottom-style:dashed;">Jawaban panjang Anda</div>`;
+        } else if (qType === "radio") {
+          previewContent = options.map(o => `
+            <div class="gf-choice-mock">
+              <div class="gf-radio"></div>
+              <span>${o}</span>
+            </div>
+          `).join("");
+        } else if (qType === "select") {
+          previewContent = `
+            <div style="border: 1px solid var(--mdi-border); border-radius:4px; padding:8px 12px; width: 180px; background:var(--mdi-light); font-size:12px; color:var(--mdi-muted); display:flex; justify-content:space-between;">
+              <span>Pilih</span>
+              <span>▼</span>
+            </div>
+          `;
+        } else if (qType === "date") {
+          previewContent = `
+            <div style="border: 1px solid var(--mdi-border); border-radius:4px; padding:8px 12px; width: 180px; background:var(--mdi-light); font-size:12px; color:var(--mdi-muted); display:flex; justify-content:space-between;">
+              <span>Pilih Tanggal</span>
+              <span>📅</span>
+            </div>
+          `;
+        }
+
+        previewHub.innerHTML += `
+          <div class="gforms-card">
+            <div class="gf-label">${customLabel} ${isRequired ? '<span class="gf-req">*</span>' : ''}</div>
+            <div>${previewContent}</div>
+          </div>
+        `;
+      });
+    }
+  });
+}
+
+function resetFormSchema() {
+  const config = FORM_CONFIG;
+  if (confirm("Apakah Anda yakin ingin mengembalikan struktur formulir ke struktur bawaan?")) {
+    const INITIAL_FORM_CONFIG = {
+      title: config.title,
+      desc: config.desc,
+      status: config.status,
+      owner: config.owner,
+      createdAt: config.createdAt,
+      group: config.group,
+      sections: ["Bagian 1 – Identitas", "Bagian 2 – Action Plan Commitments", "Bagian 3 – Progress & Challenges"],
+      fields: [
+        {id: "q_nama", label: "Nama", type: "text", required: true, section: "Bagian 1 – Identitas", options: []},
+        {id: "q_grade", label: "Grade", type: "text", required: true, section: "Bagian 1 – Identitas", options: []},
+        {id: "q_dept", label: "Departemen", type: "text", required: true, section: "Bagian 1 – Identitas", options: []},
+        {id: "q_action1", label: "Commitment Action 1", type: "textarea", required: true, section: "Bagian 2 – Action Plan Commitments", options: []},
+        {id: "q_action2", label: "Commitment Action 2", type: "textarea", required: true, section: "Bagian 2 – Action Plan Commitments", options: []},
+        {id: "q_action3", label: "Commitment Action 3", type: "textarea", required: true, section: "Bagian 2 – Action Plan Commitments", options: []},
+        {id: "q_notes", label: "30-Day Progress Update & Notes", type: "textarea", required: false, section: "Bagian 3 – Progress & Challenges", options: []},
+        {id: "q_challenge", label: "Challenges / Roadblocks Encountered", type: "textarea", required: false, section: "Bagian 3 – Progress & Challenges", options: []}
+      ]
+    };
+    
+    FORM_CONFIG = INITIAL_FORM_CONFIG;
+    
+    const cachedForms = JSON.parse(localStorage.getItem("mdi_forms") || "[]");
+    const idx = cachedForms.findIndex(f => f.id === formId);
+    if (idx !== -1) {
+      cachedForms[idx] = INITIAL_FORM_CONFIG;
+      localStorage.setItem("mdi_forms", JSON.stringify(cachedForms));
+    }
+    
+    document.getElementById("cfg-title").value = INITIAL_FORM_CONFIG.title;
+    document.getElementById("cfg-desc").value = INITIAL_FORM_CONFIG.desc;
+    document.getElementById("cfg-training-date").value = INITIAL_FORM_CONFIG.trainingDate || "";
+    renderConfiguratorUI();
+    alert("Struktur formulir di-reset!");
+  }
+}
+
+function saveFormSchema() {
+  const newTitle = document.getElementById("cfg-title").value.trim();
+  const newDesc = document.getElementById("cfg-desc").value.trim();
+  const newTDate = document.getElementById("cfg-training-date").value.trim();
+
+  if (!newTitle) {
+    alert("Judul form tidak boleh kosong.");
+    return;
+  }
+
+  const cachedForms = JSON.parse(localStorage.getItem("mdi_forms") || "[]");
+  const idx = cachedForms.findIndex(f => f.id === formId);
+  
+  if (idx !== -1) {
+    const targetConfig = cachedForms[idx];
+    targetConfig.title = newTitle;
+    targetConfig.desc = newDesc;
+    targetConfig.trainingDate = newTDate;
+
+    syncDOMToState(targetConfig);
+
+    localStorage.setItem("mdi_forms", JSON.stringify(cachedForms));
+    
+    FORM_CONFIG = targetConfig;
+    
+    document.getElementById("head-form-title").textContent = FORM_CONFIG.title;
+    document.getElementById("admin-brand-title").innerHTML = `${FORM_CONFIG.title} <span>Action Plan Admin</span>`;
+    alert("Form Backend settings successfully saved!");
+    renderAll();
+  }
+}
+
+// ── ADD / EDIT PIC MODAL LOGIC ──
+function openAddPICModal() {
+  document.getElementById("pic-modal-title").textContent = "Add Participant (PIC)";
+  renderPICModalFormFields(null);
+  document.getElementById("pic-modal").classList.add("active");
+}
+
+function openEditPICModal(no) {
+  const p = PARTICIPANTS.find(item => item.no === no);
+  if (!p) return;
+
+  document.getElementById("pic-modal-title").textContent = "Edit Participant Profile";
+  renderPICModalFormFields(p);
+  document.getElementById("pic-modal").classList.add("active");
+}
+
+function renderPICModalFormFields(pic) {
+  const area = document.getElementById("pic-modal-form-area");
+  area.innerHTML = "";
+
+  const hiddenInput = document.createElement("input");
+  hiddenInput.type = "hidden";
+  hiddenInput.id = "pm-no";
+  hiddenInput.value = pic ? pic.no : "";
+  area.appendChild(hiddenInput);
+
+  const activeStatusVal = pic ? getActualStatus(pic) : 'none';
+
+  // 1. Profil Utama
+  const profileCard = document.createElement("div");
+  profileCard.className = "card";
+  profileCard.style.cssText = "border-top: 4px solid var(--mdi-navy); margin-bottom: 20px; padding: 16px;";
+  profileCard.innerHTML = `
+    <div style="font-weight: 800; font-size: 12px; color: var(--mdi-navy); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">👤 Profil Utama Peserta</div>
+    <div class="form-group">
+      <label>Nama Lengkap <span style="color:#d93025;">*</span></label>
+      <input type="text" id="pm-profile-name" value="${pic ? pic.name : ''}">
+    </div>
+    <div class="form-group">
+      <label>Departemen <span style="color:#d93025;">*</span></label>
+      <input type="text" id="pm-profile-dept" value="${pic ? pic.dept : ''}">
+    </div>
+    <div class="form-group">
+      <label>Grade / Jabatan <span style="color:#d93025;">*</span></label>
+      <input type="text" id="pm-profile-grade" value="${pic ? (pic.grade || '') : ''}">
+    </div>
+    <div class="form-group">
+      <label>Status</label>
+      <select id="pm-profile-status">
+        <option value="prog" ${activeStatusVal === 'prog' ? 'selected' : ''}>In Progress</option>
+        <option value="done" ${activeStatusVal === 'done' ? 'selected' : ''}>Completed</option>
+      </select>
+    </div>
+  `;
+  area.appendChild(profileCard);
+
+  // Helper function to render a single field input HTML
+  const getFieldInputHtml = (f, val, prefix) => {
+    if (f.type === "text") {
+      return `<input type="text" id="${prefix}-val-${f.id}" value="${val}">`;
+    } else if (f.type === "textarea") {
+      return `<textarea id="${prefix}-val-${f.id}" rows="3">${val}</textarea>`;
+    } else if (f.type === "radio") {
+      return f.options.map(o => `
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+          <input type="radio" name="${prefix}-radio-${f.id}" id="${prefix}-radio-${f.id}-${o}" value="${o}" ${val === o ? 'checked' : ''}>
+          <label for="${prefix}-radio-${f.id}-${o}" style="margin-bottom:0; font-size:12.5px; text-transform:none; color:var(--mdi-ink); cursor:pointer;">${o}</label>
+        </div>
+      `).join("");
+    } else if (f.type === "select") {
+      const optionsHtml = f.options.map(o => `<option value="${o}" ${val === o ? 'selected' : ''}>${o}</option>`).join("");
+      return `
+        <select id="${prefix}-val-${f.id}">
+          <option value="">-- Pilih --</option>
+          ${optionsHtml}
+        </select>
+      `;
+    } else if (f.type === "date") {
+      return `<input type="date" id="${prefix}-val-${f.id}" value="${val}">`;
+    }
+    return "";
+  };
+
+  // 2. Tahap 1 Card
+  const t1Card = document.createElement("div");
+  t1Card.className = "card";
+  t1Card.style.cssText = "border-top: 4px solid var(--mdi-orange); margin-bottom: 20px; padding: 16px;";
+  
+  const s1SubmitDate = pic ? (pic.submitDate || '') : '';
+  
+  let t1FieldsHtml = "";
+  (FORM_CONFIG.fields || []).forEach(f => {
+    if (["q_nama", "q_dept", "q_grade"].includes(f.id)) return; // skip profile questions
+    const val = pic && pic.answers ? (pic.answers[f.id] || "") : "";
+    t1FieldsHtml += `
+      <div class="form-group">
+        <label>${f.label} ${f.required ? '<span style="color:#d93025;">*</span>' : ''}</label>
+        ${getFieldInputHtml(f, val, "pm-s1")}
+      </div>
+    `;
+  });
+
+  t1Card.innerHTML = `
+    <div style="font-weight: 800; font-size: 12px; color: var(--mdi-orange); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">🍊 Tahap 1: Komitmen Awal</div>
+    <div class="form-group">
+      <label>Tanggal Submit Tahap 1</label>
+      <input type="date" id="pm-s1-submitDate" value="${s1SubmitDate}">
+    </div>
+    <div style="border-top:1px solid var(--mdi-border); margin-top:12px; padding-top:12px;">
+      ${t1FieldsHtml}
+    </div>
+  `;
+  area.appendChild(t1Card);
+
+}
+
+function closePICModal() {
+  document.getElementById("pic-modal").classList.remove("active");
+}
+
+function savePICData() {
+  const no = document.getElementById("pm-no").value;
+  
+  // Profile values
+  const nameVal = document.getElementById("pm-profile-name").value.trim();
+  const deptVal = document.getElementById("pm-profile-dept").value.trim();
+  const gradeVal = document.getElementById("pm-profile-grade").value.trim();
+  const unifiedStatus = document.getElementById("pm-profile-status").value;
+  
+  if (!nameVal || !deptVal || !gradeVal) {
+    alert("Nama, Departemen, dan Grade wajib diisi!");
+    return;
+  }
+  
+  // 1. Compile Stage 1 Answers and Status
+  const s1Status = unifiedStatus;
+  const s1SubmitDate = document.getElementById("pm-s1-submitDate") ? document.getElementById("pm-s1-submitDate").value : "";
+  const s1Answers = {};
+  
+  (FORM_CONFIG.fields || []).forEach(f => {
+    let val = "";
+    if (f.id === "q_nama") val = nameVal;
+    else if (f.id === "q_dept") val = deptVal;
+    else if (f.id === "q_grade") val = gradeVal;
+    else {
+      if (f.type === "radio") {
+        const checked = document.querySelector(`input[name="pm-s1-radio-${f.id}"]:checked`);
+        val = checked ? checked.value : "";
+      } else {
+        const el = document.getElementById(`pm-s1-val-${f.id}`);
+        val = el ? el.value.trim() : "";
+      }
+    }
+    s1Answers[f.id] = val;
+  });
+  
+  // Update PARTICIPANTS_STAGE1
+  if (no === "") {
+    // Adding new participant to Stage 1
+    const s1No = PARTICIPANTS_STAGE1.length > 0 ? Math.max(...PARTICIPANTS_STAGE1.map(p => p.no)) + 1 : 1;
+    const newP1 = {
+      no: s1No,
+      name: nameVal,
+      dept: deptVal,
+      grade: gradeVal,
+      status: s1Status,
+      submitDate: s1SubmitDate || (s1Status === "done" ? new Date().toISOString().split('T')[0] : ""),
+      answers: s1Answers
+    };
+    PARTICIPANTS_STAGE1.push(newP1);
+  } else {
+    // Editing existing participant
+    const mergedP = PARTICIPANTS.find(item => item.no === parseInt(no));
+    if (mergedP) {
+      // Find and update inside Stage 1
+      let p1 = PARTICIPANTS_STAGE1.find(item => item.name.trim().toLowerCase() === mergedP.name.trim().toLowerCase());
+      if (!p1) {
+        const s1No = PARTICIPANTS_STAGE1.length > 0 ? Math.max(...PARTICIPANTS_STAGE1.map(p => p.no)) + 1 : 1;
+        p1 = { no: s1No, name: nameVal, dept: deptVal, grade: gradeVal, answers: {} };
+        PARTICIPANTS_STAGE1.push(p1);
+      }
+      p1.name = nameVal;
+      p1.dept = deptVal;
+      p1.grade = gradeVal;
+      p1.status = s1Status;
+      p1.submitDate = s1SubmitDate || (s1Status === "done" ? (p1.submitDate || new Date().toISOString().split('T')[0]) : "");
+      p1.answers = s1Answers;
+    }
+  }
+  
+  // Persist stage 1
+  saveState();
+  
+  // Reload
+  loadAndMergeParticipants();
+  closePICModal();
+  rebuildDeptFilters();
+  renderAll();
+  showToast(`Peserta "${nameVal}" berhasil disimpan!`);
+}
+
+// ── SHARE PORTAL LOGIC ──
+function openShareModal() {
+  const baseFormUrl = window.location.href.split('MDI_ActionPlan_Admin.html')[0] + 'MDI_ActionPlan_Form.html';
+  const generalUrl = `${baseFormUrl}?formId=${formId}`;
+  
+  document.getElementById("share-general-url").value = generalUrl;
+  
+  const listContainer = document.getElementById("share-participants-list");
+  if (listContainer) {
+    listContainer.innerHTML = "";
+    PARTICIPANTS.forEach(p => {
+      const pUrl = `${baseFormUrl}?formId=${formId}&pic=${p.no}`;
+      const row = document.createElement("div");
+      row.style.display = "flex";
+      row.style.alignItems = "center";
+      row.style.justifyContent = "space-between";
+      row.style.padding = "8px 12px";
+      row.style.background = "var(--mdi-soft)";
+      row.style.border = "1px solid var(--mdi-border)";
+      row.style.borderRadius = "6px";
+      row.style.fontSize = "12.5px";
+      row.style.gap = "10px";
+      row.style.marginBottom = "4px";
+      
+      row.innerHTML = `
+        <div style="font-weight: 600; color: var(--mdi-navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 120px;" title="${p.name}">${p.name}</div>
+        <div style="font-family: monospace; font-size: 11px; color: var(--mdi-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-grow: 1; text-align: left; cursor: pointer;" onclick="window.open('${pUrl}', '_blank')" title="Klik untuk membuka">${pUrl}</div>
+        <button class="btn" style="padding: 4px 10px; font-size: 11px; background: var(--mdi-orange); border-color: var(--mdi-orange); color: #fff; white-space: nowrap; border-radius: 4px; cursor: pointer;" onclick="copySpecificLink('${pUrl}', '${p.name.replace(/'/g, "\\'")}')">📋 Salin</button>
+      `;
+      listContainer.appendChild(row);
+    });
+  }
+  
+  document.getElementById("share-modal").classList.add("active");
+}
+
+function closeShareModal() {
+  document.getElementById("share-modal").classList.remove("active");
+}
+
+function copyGeneralLink() {
+  const inputEl = document.getElementById("share-general-url");
+  if (inputEl) {
+    inputEl.select();
+    navigator.clipboard.writeText(inputEl.value).then(() => {
+      showToast("Tautan umum formulir berhasil disalin ke clipboard!");
+    }).catch(err => {
+      // Fallback
+      document.execCommand('copy');
+      showToast("Tautan umum formulir berhasil disalin!");
+    });
+  }
+}
+
+function copySpecificLink(url, name) {
+  navigator.clipboard.writeText(url).then(() => {
+    showToast(`Tautan untuk ${name} berhasil disalin!`);
+  }).catch(err => {
+    // Fallback
+    const tempInput = document.createElement("input");
+    tempInput.value = url;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+    showToast(`Tautan untuk ${name} berhasil disalin!`);
+  });
+}
+
+function copyParticipantLink(no) {
+  const p = PARTICIPANTS.find(item => item.no === no);
+  if (!p) return;
+  const baseFormUrl = window.location.href.split('MDI_ActionPlan_Admin.html')[0] + 'MDI_ActionPlan_Form.html';
+  const pUrl = `${baseFormUrl}?formId=${formId}&pic=${p.no}`;
+  
+  copySpecificLink(pUrl, p.name);
+}
+
+function showToast(msg) {
+  let toast = document.getElementById("mdi-toast-container");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "mdi-toast-container";
+    toast.className = "mdi-toast";
+    toast.innerHTML = `<span class="mdi-toast-icon">✓</span> <span id="mdi-toast-message"></span>`;
+    document.body.appendChild(toast);
+  }
+  
+  document.getElementById("mdi-toast-message").textContent = msg;
+  toast.classList.add("show");
+  
+  // Clear previous timeouts if any
+  if (window.toastTimeout) {
+    clearTimeout(window.toastTimeout);
+  }
+  
+  window.toastTimeout = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
+}
+
+// ── SPREADSHEET VIEW & REKAP LOGIC ──
+function getExcelColumnLabel(colIndex) {
+  let label = '';
+  let temp = colIndex;
+  while (temp >= 0) {
+    label = String.fromCharCode((temp % 26) + 65) + label;
+    temp = Math.floor(temp / 26) - 1;
+  }
+  return label;
+}
+
+function renderSpreadsheet() {
+  const data = PARTICIPANTS;
+  
+  let fields1 = FORM_CONFIG.fields || [];
+  
+  let totalCols = 5 + fields1.length;
+  
+  document.getElementById("sheet-col-count").textContent = totalCols;
+  document.getElementById("sheet-row-count").textContent = data.length;
+  document.getElementById("spreadsheet-doc-name").textContent = `${FORM_CONFIG.title.replace(/\s+/g, "_").toUpperCase()}_REKAP.xlsx`;
+  
+  // Excel indicator row (A, B, C...)
+  let colIndicatorHtml = `<tr style="background: #f1f3f4; border-bottom: 1px solid #c0c0c0;"><th style="width:40px; background: #e8eaed; border-right: 1px solid #c0c0c0; text-align: center; font-size: 10px; color: #5f6368; padding: 4px;"></th>`;
+  for (let i = 0; i < totalCols; i++) {
+    colIndicatorHtml += `<th style="border-right: 1px solid #c0c0c0; text-align: center; font-size: 10px; color: #5f6368; font-weight: bold; padding: 4px;">${getExcelColumnLabel(i)}</th>`;
+  }
+  colIndicatorHtml += `</tr>`;
+  
+  // Main header row
+  let mainHeaderHtml = `<tr style="background: #f8f9fa; border-bottom: 2px solid #c0c0c0;"><th style="background: #f1f3f4; border-right: 1px solid #c0c0c0; text-align: center; font-weight: bold; color: #5f6368; width: 40px; padding: 6px;"></th>`;
+  mainHeaderHtml += `<th style="border-right: 1px solid #c0c0c0; padding: 8px 12px; font-weight: bold; color: var(--mdi-navy); min-width: 50px;">No</th>`;
+  mainHeaderHtml += `<th style="border-right: 1px solid #c0c0c0; padding: 8px 12px; font-weight: bold; color: var(--mdi-navy); min-width: 150px;">Nama Lengkap</th>`;
+  mainHeaderHtml += `<th style="border-right: 1px solid #c0c0c0; padding: 8px 12px; font-weight: bold; color: var(--mdi-navy); min-width: 100px;">Departemen</th>`;
+  mainHeaderHtml += `<th style="border-right: 1px solid #c0c0c0; padding: 8px 12px; font-weight: bold; color: var(--mdi-navy); min-width: 100px;">Grade</th>`;
+  mainHeaderHtml += `<th style="border-right: 1px solid #c0c0c0; padding: 8px 12px; font-weight: bold; color: var(--mdi-navy); min-width: 120px; background: #fff8f3;">Status</th>`;
+  
+  fields1.forEach(f => {
+    mainHeaderHtml += `<th style="border-right: 1px solid #c0c0c0; padding: 8px 12px; font-weight: bold; color: var(--mdi-navy); min-width: 200px;">${f.label}</th>`;
+  });
+  mainHeaderHtml += `</tr>`;
+  
+  document.getElementById("sheetTableHeader").innerHTML = colIndicatorHtml + mainHeaderHtml;
+  
+  // Body
+  const bodyHtml = [];
+  data.forEach((p, rIndex) => {
+    let rowHtml = `<tr style="border-bottom: 1px solid #e0e0e0; height: 32px;"><td style="background: #f1f3f4; border-right: 1px solid #c0c0c0; text-align: center; font-weight: bold; color: #5f6368; font-size: 10px; width: 40px; cursor: default;">${rIndex + 1}</td>`;
+    
+    const actStatus = getActualStatus(p);
+    const statusText = actStatus === 'done' ? 'Selesai' : (actStatus === 'prog' ? 'In Progress' : (actStatus === 'overdue' ? 'Tidak Selesai' : (actStatus === 'late' ? 'Telat' : 'Belum Mulai')));
+    
+    let cellsData = [
+      { val: p.no, field: 'no', isAnswer: false, editable: false },
+      { val: p.name, field: 'name', isAnswer: false, editable: false },
+      { val: p.dept, field: 'dept', isAnswer: false, editable: false },
+      { val: p.grade || '—', field: 'grade', isAnswer: false, editable: false },
+      { val: statusText, field: 'status', isAnswer: false, editable: false }
+    ];
+    
+    fields1.forEach(f => {
+      cellsData.push({ val: p.answers ? (p.answers[f.id] || '') : '', field: f.id, isAnswer: true, editable: true });
+    });
+    
+    cellsData.forEach((cellDef, cIndex) => {
+      const colLabel = getExcelColumnLabel(cIndex);
+      const cellId = `${colLabel}${rIndex + 1}`;
+      const escapedVal = String(cellDef.val).replace(/"/g, '&quot;').replace(/`/g, '\\`');
+      
+      const editableAttr = cellDef.editable ? `contenteditable="true" onblur="updateSpreadsheetCellData(${p.no}, '${cellDef.field}', ${cellDef.isAnswer}, this)"` : '';
+      const bgStyle = cellDef.editable ? 'background: #fff; cursor: text;' : 'background: #f8f9fa; cursor: cell;';
+      
+      rowHtml += `
+        <td id="cell-${cellId}" 
+            ${editableAttr}
+            onclick="selectSheetCell('${cellId}', this.innerText)" 
+            style="border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; padding: 6px 10px; color: var(--mdi-navy); white-space: pre-wrap; word-wrap: break-word; min-width: 150px; ${bgStyle}" 
+            title="${escapedVal}">${escapedVal}</td>
+      `;
+    });
+    
+    rowHtml += `</tr>`;
+    bodyHtml.push(rowHtml);
+  });
+  
+  document.getElementById("sheetTableBody").innerHTML = bodyHtml.join("");
+  
+  if (data.length > 0) {
+    selectSheetCell('A1', data[0].no);
+  }
+}
+
+let activeSheet2CellId = null;
+function updateSpreadsheetCellData(participantNo, field, isAnswer, element) {
+  const p = PARTICIPANTS.find(item => item.no === participantNo);
+  let p1 = PARTICIPANTS_STAGE1.find(item => item.name.trim().toLowerCase() === p.name.trim().toLowerCase());
+  
+  if (!p || !p1) return;
+  
+  let newValue = element.innerText.trim();
+  if (newValue === "—" || newValue === "-" || newValue === "None reported" || newValue === "🤷‍♂️ None reported") {
+    newValue = "";
+  }
+  
+  if (newValue === "") {
+    if (field === "s2Challenge") {
+      element.innerText = "None reported";
+    } else if (!isAnswer && (field === "s2Update" || field === "s2Status")) {
+      element.innerText = "—";
+    } else if (!isAnswer && field === "grade") {
+      element.innerText = "—";
+    }
+  }
+  
+  if (isAnswer) {
+    if (!p.answers) p.answers = {};
+    p.answers[field] = newValue;
+    if (!p1.answers) p1.answers = {};
+    p1.answers[field] = newValue;
+  } else {
+    p[field] = newValue;
+    p1[field] = newValue;
+  }
+  
+  // Update formula bar if cell is active
+  if (typeof activeSheetCellId !== 'undefined' && activeSheetCellId && element.id === `cell-${activeSheetCellId}`) {
+    const fb = document.getElementById("spreadsheet-formula-val");
+    if(fb) fb.value = newValue;
+  }
+  if (typeof activeSheet2CellId !== 'undefined' && activeSheet2CellId && element.id === `cell-${activeSheet2CellId}`) {
+    const fb2 = document.getElementById("spreadsheet2-formula-val");
+    if(fb2) fb2.value = newValue;
+  }
+  
+  saveState();
+  updateMiniKPIs();
+  showToast("Perubahan tersimpan!");
+}
+
+let activeSheetCellId = null;
+
+function selectSheetCell(cellId, val) {
+  if (activeSheetCellId) {
+    const prevCell = document.getElementById(`cell-${activeSheetCellId}`);
+    if (prevCell) {
+      prevCell.style.outline = "";
+      prevCell.style.background = prevCell.hasAttribute("contenteditable") ? "#fff" : "#f8f9fa";
+    }
+  }
+  
+  activeSheetCellId = cellId;
+  const currCell = document.getElementById(`cell-${cellId}`);
+  if (currCell) {
+    currCell.style.outline = "2px solid #1a73e8";
+    currCell.style.outlineOffset = "-2px";
+    currCell.style.background = "#e8f0fe";
+  }
+  
+  const indicator = document.getElementById("spreadsheet-cell-indicator");
+  if (indicator) indicator.innerText = cellId;
+  
+  const fb = document.getElementById("spreadsheet-formula-val");
+  if (fb) {
+    fb.value = val;
+    if (currCell && currCell.hasAttribute("contenteditable")) {
+      fb.readOnly = false;
+      fb.style.background = "#fff";
+      fb.style.cursor = "text";
+    } else {
+      fb.readOnly = true;
+      fb.style.background = "#f1f3f4";
+      fb.style.cursor = "not-allowed";
+    }
+  }
+}
+
+function selectSheet2Cell(cellId, val) {
+  if (activeSheet2CellId) {
+    const prevCell = document.getElementById(`cell-${activeSheet2CellId}`);
+    if (prevCell) {
+      prevCell.style.outline = "";
+      prevCell.style.background = prevCell.hasAttribute("contenteditable") ? "#fff" : "#f8f9fa";
+    }
+  }
+  
+  activeSheet2CellId = cellId;
+  const currCell = document.getElementById(`cell-${cellId}`);
+  if (currCell) {
+    currCell.style.outline = "2px solid #107c41";
+    currCell.style.outlineOffset = "-2px";
+    currCell.style.background = "#e2f0d9";
+  }
+  
+  const indicator = document.getElementById("spreadsheet2-cell-indicator");
+  if (indicator) indicator.innerText = cellId;
+  
+  const fb = document.getElementById("spreadsheet2-formula-val");
+  if (fb) {
+    fb.value = val;
+    if (currCell && currCell.hasAttribute("contenteditable")) {
+      fb.readOnly = false;
+      fb.style.background = "#fff";
+      fb.style.cursor = "text";
+    } else {
+      fb.readOnly = true;
+      fb.style.background = "#f1f3f4";
+      fb.style.cursor = "not-allowed";
+    }
+  }
+}
+
+function renderSpreadsheet2() {
+  const data = PARTICIPANTS;
+  
+  let totalCols = 6; // No, Nama, Dept, 30-Day Status, Update & Notes, Challenge
+  
+  document.getElementById("sheet2-col-count").textContent = totalCols;
+  document.getElementById("sheet2-row-count").textContent = data.length;
+  document.getElementById("spreadsheet2-doc-name").textContent = `${FORM_CONFIG.title.replace(/\s+/g, "_").toUpperCase()}_PENYELESAIAN.xlsx`;
+  
+  // Excel indicator row
+  let colIndicatorHtml = `<tr style="background: #f1f3f4; border-bottom: 1px solid #c0c0c0;"><th style="width:40px; background: #e8eaed; border-right: 1px solid #c0c0c0; text-align: center; font-size: 10px; color: #5f6368; padding: 4px;"></th>`;
+  for (let i = 0; i < totalCols; i++) {
+    colIndicatorHtml += `<th style="border-right: 1px solid #c0c0c0; text-align: center; font-size: 10px; color: #5f6368; font-weight: bold; padding: 4px;">${getExcelColumnLabel(i)}</th>`;
+  }
+  colIndicatorHtml += `</tr>`;
+  
+  // Main header row
+  let mainHeaderHtml = `<tr style="background: #f8f9fa; border-bottom: 2px solid #c0c0c0;"><th style="background: #f1f3f4; border-right: 1px solid #c0c0c0; text-align: center; font-weight: bold; color: #5f6368; width: 40px; padding: 6px;"></th>`;
+  mainHeaderHtml += `<th style="border-right: 1px solid #c0c0c0; padding: 8px 12px; font-weight: bold; color: var(--mdi-navy); min-width: 50px;">No</th>`;
+  mainHeaderHtml += `<th style="border-right: 1px solid #c0c0c0; padding: 8px 12px; font-weight: bold; color: var(--mdi-navy); min-width: 150px;">Nama Lengkap</th>`;
+  mainHeaderHtml += `<th style="border-right: 1px solid #c0c0c0; padding: 8px 12px; font-weight: bold; color: var(--mdi-navy); min-width: 100px;">Departemen</th>`;
+  mainHeaderHtml += `<th style="border-right: 1px solid #c0c0c0; padding: 8px 12px; font-weight: bold; color: var(--mdi-navy); min-width: 150px; background: #e2f0d9;">30-Day Status</th>`;
+  mainHeaderHtml += `<th style="border-right: 1px solid #c0c0c0; padding: 8px 12px; font-weight: bold; color: var(--mdi-navy); min-width: 250px; background: #e2f0d9;">Update & Notes</th>`;
+  mainHeaderHtml += `<th style="border-right: 1px solid #c0c0c0; padding: 8px 12px; font-weight: bold; color: var(--mdi-navy); min-width: 250px; background: #e2f0d9;">Challenge</th>`;
+  mainHeaderHtml += `</tr>`;
+  
+  document.getElementById("sheet2TableHeader").innerHTML = colIndicatorHtml + mainHeaderHtml;
+  
+  // Body
+  const bodyHtml = [];
+  data.forEach((p, rIndex) => {
+    let rowHtml = `<tr style="border-bottom: 1px solid #e0e0e0; height: 32px;"><td style="background: #f1f3f4; border-right: 1px solid #c0c0c0; text-align: center; font-weight: bold; color: #5f6368; font-size: 10px; width: 40px; cursor: default;">${rIndex + 1}</td>`;
+    
+    let cellsData = [
+      { val: p.no, field: 'no', isAnswer: false, editable: false },
+      { val: p.name, field: 'name', isAnswer: false, editable: false },
+      { val: p.dept, field: 'dept', isAnswer: false, editable: false },
+      { val: p.s2Status || '—', field: 's2Status', isAnswer: false, editable: true },
+      { val: p.s2Update || '—', field: 's2Update', isAnswer: false, editable: true },
+      { val: p.s2Challenge || 'None reported', field: 's2Challenge', isAnswer: false, editable: true }
+    ];
+    
+    cellsData.forEach((cellDef, cIndex) => {
+      const colLabel = getExcelColumnLabel(cIndex);
+      const cellId = `S2_${colLabel}${rIndex + 1}`;
+      const escapedVal = String(cellDef.val).replace(/"/g, '&quot;').replace(/`/g, '\\`');
+      
+      const editableAttr = cellDef.editable ? `contenteditable="true" onblur="updateSpreadsheetCellData(${p.no}, '${cellDef.field}', false, this)"` : '';
+      const bgStyle = cellDef.editable ? 'background: #fff; cursor: text;' : 'background: #f8f9fa; cursor: cell;';
+      
+      rowHtml += `
+        <td id="cell-${cellId}" 
+            ${editableAttr}
+            onclick="selectSheet2Cell('${cellId}', this.innerText)" 
+            style="border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; padding: 6px 10px; color: var(--mdi-navy); white-space: pre-wrap; word-wrap: break-word; min-width: 150px; ${bgStyle}" 
+            title="${escapedVal}">${escapedVal}</td>
+      `;
+    });
+    
+    rowHtml += `</tr>`;
+    bodyHtml.push(rowHtml);
+  });
+  
+  document.getElementById("sheet2TableBody").innerHTML = bodyHtml.join("");
+  
+  if (data.length > 0) {
+    selectSheet2Cell('S2_A1', data[0].no);
+  }
+}
+
+
+      window.addEventListener('storage', (e) => {
+  if (e.key === 'mdi_forms') {
+    const list = JSON.parse(e.newValue);
+    const item = list.find(f => f.id === formId);
+    if (item) {
+      FORM_CONFIG = item;
+      document.getElementById("cfg-desc").value = FORM_CONFIG.desc;
+      document.getElementById("head-form-title").textContent = FORM_CONFIG.title;
+      document.getElementById("admin-brand-title").innerHTML = `${FORM_CONFIG.title} <span>Action Plan Admin</span>`;
+      if (activeTab === "backend") {
+        renderConfiguratorUI();
+      }
+    }
+  }
+});
+
+function exportToExcel() {
+  const table = document.getElementById("sheetTable");
+  if (!table) return;
+  const wb = XLSX.utils.table_to_book(table, {sheet: "Rekap"});
+  XLSX.writeFile(wb, (FORM_CONFIG.title || "Formulir").replace(/\s+/g, "_") + "_Rekap.xlsx");
+}
+
+function exportSpreadsheet2ToExcel() {
+  const table = document.getElementById("sheet2Table");
+  if (!table) return;
+  const wb = XLSX.utils.table_to_book(table, {sheet: "Penyelesaian"});
+  XLSX.writeFile(wb, (FORM_CONFIG.title || "Formulir").replace(/\s+/g, "_") + "_Penyelesaian.xlsx");
+}
+
+function exportToPDF() {
+  alert("Fitur download PDF sedang dalam tahap pengembangan.");
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const fb1 = document.getElementById("spreadsheet-formula-val");
+  if (fb1) {
+    fb1.addEventListener('input', function() {
+      if (activeSheetCellId) {
+        const cell = document.getElementById(`cell-${activeSheetCellId}`);
+        if (cell && cell.hasAttribute("contenteditable")) {
+          cell.innerText = this.value;
+        }
+      }
+    });
+    fb1.addEventListener('blur', function() {
+      if (activeSheetCellId) {
+        const cell = document.getElementById(`cell-${activeSheetCellId}`);
+        if (cell && cell.hasAttribute("contenteditable") && typeof cell.onblur === "function") {
+          cell.onblur();
+        }
+      }
+    });
+  }
+  
+  const fb2 = document.getElementById("spreadsheet2-formula-val");
+  if (fb2) {
+    fb2.addEventListener('input', function() {
+      if (activeSheet2CellId) {
+        const cell = document.getElementById(`cell-${activeSheet2CellId}`);
+        if (cell && cell.hasAttribute("contenteditable")) {
+          cell.innerText = this.value;
+        }
+      }
+    });
+    fb2.addEventListener('blur', function() {
+      if (activeSheet2CellId) {
+        const cell = document.getElementById(`cell-${activeSheet2CellId}`);
+        if (cell && cell.hasAttribute("contenteditable") && typeof cell.onblur === "function") {
+          cell.onblur();
+        }
+      }
+    });
+  }
+});
+
+window.onload = init;
+</script>
+</body>
+</html>

@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Action Plan – Google Forms</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gf-bg:          #faece3; /* Soft warm peach pastel background */
+  --gf-card-bg:     #ffffff;
+  --gf-border:      #dadce0;
+  --gf-text-dark:   #202124;
+  --gf-text-muted:  #5f6368;
+  --gf-purple:      #70757a;
+  --gf-red:         #d93025;
+  --gf-blue:        #1a73e8;
+  
+  --mdi-orange:     #e8641a; /* Corporate Orange */
+  --mdi-orange-hover: #d15410;
+  --mdi-orange-soft: #fdf2ec;
+  --shadow-sm:      0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+  --shadow-card:    0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--gf-bg);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--gf-text-dark);
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 24px 12px 60px;
+  display: flex;
+  justify-content: center;
+  overflow-y: scroll;
+}
+
+/* ── GOOGLE FORMS CONTAINER ── */
+.gforms-layout {
+  width: 100%;
+  max-width: 770px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Standard Card Module */
+.gf-card {
+  background: var(--gf-card-bg);
+  border: 1px solid var(--gf-border);
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Top Branding Card */
+.gf-card.brand-card {
+  border-top: 10px solid var(--mdi-orange);
+  padding: 24px;
+}
+.brand-title {
+  font-size: 32px;
+  font-weight: 800; /* BOLD & CENTERED */
+  color: var(--gf-text-dark);
+  margin-bottom: 12px;
+  text-align: center;
+}
+.brand-desc {
+  font-size: 13.5px;
+  color: var(--gf-text-muted);
+  line-height: 1.6;
+  margin-bottom: 8px;
+  word-break: break-word;
+  text-align: center; /* CENTERED DESCRIPTION */
+}
+.brand-divider {
+  height: 1px;
+  background: var(--gf-border);
+  margin: 16px 0;
+}
+
+/* Section Header Card */
+.gf-card.section-card {
+  background: var(--mdi-orange);
+  color: #fff;
+  padding: 12px 24px;
+  border-top: none;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Question Cards */
+.gf-card.question-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.gf-card.question-card.error {
+  border-color: var(--gf-red);
+  box-shadow: 0 0 0 1px var(--gf-red);
+}
+.q-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--gf-text-dark);
+  line-height: 1.4;
+}
+.q-req {
+  color: var(--gf-red);
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+/* ── INPUT TYPES STYLING ── */
+/* Short Text Underline */
+.gf-input-text {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--gf-border);
+  padding: 8px 0;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--gf-text-dark);
+  outline: none;
+  background: transparent;
+  transition: border-color 0.25s ease;
+}
+.gf-input-text:focus {
+  border-bottom: 2px solid var(--mdi-orange);
+}
+
+/* Paragraph Area */
+.gf-input-textarea {
+  width: 100%;
+  border: none;
+  border-bottom: 1px dashed var(--gf-border);
+  padding: 8px 0;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--gf-text-dark);
+  outline: none;
+  background: transparent;
+  resize: vertical;
+  min-height: 40px;
+  line-height: 1.5;
+  transition: border-color 0.25s ease;
+}
+.gf-input-textarea:focus {
+  border-bottom: 2px solid var(--mdi-orange);
+}
+
+/* Radio Buttons */
+.gf-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+.gf-radio-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: var(--gf-text-dark);
+}
+.gf-radio-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--mdi-orange);
+}
+
+/* Dropdown Menu */
+.gf-select {
+  border: 1px solid var(--gf-border);
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--gf-text-dark);
+  outline: none;
+  background: #fff;
+  cursor: pointer;
+  min-width: 180px;
+  max-width: 100%;
+  transition: border-color 0.15s;
+}
+.gf-select:focus {
+  border-color: var(--mdi-orange);
+}
+
+/* Error Warning Message */
+.gf-error-msg {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  color: var(--gf-red);
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 4px;
+}
+.gf-card.error .gf-error-msg {
+  display: flex;
+}
+
+/* ── WIZARD PAGES & TRANSITIONS ── */
+.section-page {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeInPage 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SUBMIT BUTTONS & PROGRESS FOOTER ── */
+.form-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  margin-top: 24px;
+  border-top: 1px solid var(--gf-border);
+  padding-top: 20px;
+}
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.btn-submit {
+  background: var(--mdi-orange);
+  color: #fff;
+  border: 1px solid var(--mdi-orange);
+  border-radius: 4px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.btn-submit:hover {
+  background: var(--mdi-orange-hover);
+  border-color: var(--mdi-orange-hover);
+}
+.btn-clear {
+  background: transparent;
+  color: var(--mdi-orange);
+  border: 1px solid transparent;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 18px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+.btn-clear:hover {
+  background: var(--mdi-orange-soft);
+}
+.btn-clear.btn-back {
+  border: 1px solid var(--gf-border);
+  color: var(--gf-text-muted);
+}
+.btn-clear.btn-back:hover {
+  background: #f1f3f4;
+  color: var(--gf-text-dark);
+}
+
+.progress-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.progress-bar-bg {
+  flex-grow: 1;
+  max-width: 180px;
+  background: #e0e0e0;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-right: 12px;
+}
+.progress-bar-fill {
+  background: var(--mdi-orange);
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.progress-text {
+  font-size: 12px;
+  color: var(--gf-text-muted);
+  font-weight: 500;
+}
+
+/* ── SUCCESS VIEW CARD ── */
+.success-layout {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+.success-layout.active {
+  display: flex;
+  animation: scaleUp 0.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+.success-text {
+  font-size: 14px;
+  color: var(--gf-text-dark);
+  line-height: 1.6;
+}
+.success-link {
+  color: var(--gf-blue);
+  text-decoration: none;
+  font-size: 13.5px;
+  display: inline-block;
+  margin-top: 12px;
+  cursor: pointer;
+}
+.success-link:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="gforms-layout">
+  
+  <!-- INTERACTIVE WORKING FORM PANEL -->
+  <div id="form-fill-hub" style="display:flex; flex-direction:column; gap:12px;">
+    <!-- Top Brand Card -->
+    <div class="gf-card brand-card">
+      <!-- absolute positioned auto-save status indicator -->
+      <div id="save-indicator-badge" title="Draf disimpan otomatis" style="position: absolute; top: 18px; right: 18px; font-size: 18px; color: var(--gf-text-muted); cursor: default;">☁️</div>
+      
+      <!-- Centered MDI Corporate Logo -->
+      <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <img src="Asset 8-8.png" alt="MDI Logo" style="max-height: 55px; object-fit: contain;">
+      </div>
+      
+      <!-- BOLD & CENTERED TITLE AND DESCRIPTION -->
+      <h1 class="brand-title" id="gf-title">Action Plan - Bayan Group</h1>
+      <div class="brand-desc" id="gf-desc">Deskripsi form...</div>
+    </div>
+
+    <!-- Container for wizard dynamic pages -->
+    <div id="dynamic-cards-container" style="display:flex; flex-direction:column; gap:12px;">
+      <!-- Sections and Question Cards injected dynamically into pages by JS -->
+    </div>
+
+    <!-- Footer Controls (Next, Previous, and Progress) -->
+    <div class="form-footer">
+      <div class="nav-buttons">
+        <button class="btn-clear btn-back" id="btn-prev" onclick="goToPrevSection()" style="visibility: hidden;">Kembali</button>
+        <button class="btn-submit" id="btn-next" onclick="handleNextOrSubmit()">Berikutnya</button>
+      </div>
+      
+      <div class="progress-row">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-bar-fill"></div>
+        </div>
+        <span class="progress-text" id="progress-text">Halaman 1 dari 3</span>
+      </div>
+      
+      <button class="btn-clear" onclick="clearGFormInputs()" style="font-size: 12px; color: var(--gf-text-muted); margin-top: 8px;">Kosongkan formulir</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS CONGRATULATIONS SCREEN (MOCKED GOOGLE FORMS SUCCESS) -->
+  <div class="success-layout" id="success-screen-hub">
+    <div class="gf-card brand-card">
+      <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <img src="Asset 8-8.png" alt="MDI Logo" style="max-height: 55px; object-fit: contain;">
+      </div>
+      <h1 class="brand-title" id="success-brand-title">Action Plan - Bayan Group</h1>
+      <div class="success-text" style="margin-top: 14px; text-align: center;">
+        Tanggapan Anda telah direkam. Terima kasih atas partisipasi Anda dalam program evaluasi Action Plan.
+      </div>
+      <div class="brand-divider"></div>
+      <div style="text-align: center;">
+        <a class="success-link" onclick="reloadFormForEditing()">✏️ Edit tanggapan Anda</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLOSED FORM SCREEN (MOCKED GOOGLE FORMS CLOSED CARD) -->
+  <div class="success-layout" id="closed-form-hub">
+    <div class="gf-card brand-card" style="border-top: 10px solid var(--gf-red);">
+      <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <img src="Asset 8-8.png" alt="MDI Logo" style="max-height: 55px; object-fit: contain;">
+      </div>
+      <h1 class="brand-title" id="closed-brand-title">Action Plan - Bayan Group</h1>
+      <div class="success-text" style="margin-top: 14px; font-weight: 800; font-size: 18px; color: var(--gf-red); text-align: center;">
+        Formulir ini sudah tidak menerima tanggapan lagi / Formulir telah ditutup.
+      </div>
+      <div style="margin-top: 8px; color: var(--gf-text-muted); font-size: 13.5px; line-height: 1.6; text-align: center;">
+        Hubungi administrator jika Anda merasa ini adalah kesalahan. Tanggapan draf Anda sebelumnya tetap aman di database admin.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── DEFAULT MOCK DATABASES (FOR INITIAL SEEDING OR DIRECT ACCESSIBILITY) ──
+const DEFAULT_FIELDS = [
+  {id: "q_nama", label: "Nama", type: "text", required: true, section: "Bagian 1 – Identitas", options: []},
+  {id: "q_grade", label: "Grade", type: "text", required: true, section: "Bagian 1 – Identitas", options: []},
+  {id: "q_dept", label: "Departemen", type: "text", required: true, section: "Bagian 1 – Identitas", options: []},
+  {id: "q_action1", label: "Commitment Action 1", type: "textarea", required: true, section: "Bagian 2 – Action Plan Commitments", options: []},
+  {id: "q_action2", label: "Commitment Action 2", type: "textarea", required: true, section: "Bagian 2 – Action Plan Commitments", options: []},
+  {id: "q_action3", label: "Commitment Action 3", type: "textarea", required: true, section: "Bagian 2 – Action Plan Commitments", options: []},
+  {id: "q_notes", label: "30-Day Progress Update & Notes", type: "textarea", required: false, section: "Bagian 3 – Progress & Challenges", options: []},
+  {id: "q_challenge", label: "Challenges / Roadblocks Encountered", type: "textarea", required: false, section: "Bagian 3 – Progress & Challenges", options: []}
+];
+
+const PRELOADED_PARTICIPANTS_RAW = [];
+
+const MOCK_PARTICIPANTS_AURI = [];
+
+const PRELOADED_FORMS = [
+  {
+    id: "form_bayan",
+    title: "Action Plan - Bayan Group",
+    desc: "Silakan lengkapi identitas diri dan komitmen rencana tindakan kepemimpinan Anda secara seksama. Draf disimpan otomatis.",
+    status: "active",
+    owner: "saya",
+    createdAt: "22 Mei 2026",
+    fields: DEFAULT_FIELDS
+  },
+  {
+    id: "form_auri_post",
+    title: "Post Test Leadership Essentials - Auri Steel Metalindo",
+    desc: "Formulir pengerjaan post-test kepemimpinan dan komitmen implementasi tindakan kerja nyata bagi staf PT Auri Steel Metalindo.",
+    status: "active",
+    owner: "saya",
+    createdAt: "29 Jan 2026",
+    fields: DEFAULT_FIELDS
+  },
+  {
+    id: "form_auri_pre",
+    title: "Pre Test Leadership Essentials - Auri Steel Metalindo",
+    desc: "Evaluasi awal kesiapan kepemimpinan (Pre-Test) sebelum dimulainya program Bootcamp Leadership Essentials.",
+    status: "active",
+    owner: "--",
+    createdAt: "29 Jan 2026",
+    fields: DEFAULT_FIELDS.slice(0, 3)
+  },
+  {
+    id: "form_prdc_sentiment",
+    title: "Topik Analisis Sentimen - PRDC EXCL",
+    desc: "Kuisioner riset analisis sentimen dan kepuasan publik terhadap kinerja divisi PRDC.",
+    status: "active",
+    owner: "--",
+    createdAt: "31 Jan 2026",
+    fields: DEFAULT_FIELDS
+  },
+  {
+    id: "form_kpi_matrix",
+    title: "KPI & MATRIX",
+    desc: "Formulir penetapan KPI dan matriks koordinasi antar lini manajerial perusahaan.",
+    status: "inactive",
+    owner: "saya",
+    createdAt: "29 Jan 2026",
+    fields: DEFAULT_FIELDS
+  },
+  {
+    id: "form_auri_eval",
+    title: "Evaluasi Leadership Essentials - Auri Steel Metalindo 2026",
+    desc: "Formulir evaluasi akhir program pelatihan komprehensif Leadership Essentials Batch 1 PT Auri Steel Metalindo.",
+    status: "active",
+    owner: "--",
+    createdAt: "26 Jan 2026",
+    fields: DEFAULT_FIELDS
+  },
+  {
+    id: "form_mushola_monitor",
+    title: "MATRIX MONITORING ROBOHNYA MUSHOLA PONPES AL-KHOZINY",
+    desc: "Monitoring tanggapan bencana, kontribusi donasi, serta rencana aksi pembangunan mushola Pondok Pesantren Al-Khoziny.",
+    status: "inactive",
+    owner: "--",
+    createdAt: "6 Nov 2025",
+    fields: DEFAULT_FIELDS
+  }
+];
+
+// ── STATE VARIABLES ──
+let PARTICIPANTS = [];
+let FORM_CONFIG = {};
+let currentPICNo = 1;
+let formId = "form_bayan";
+
+let currentSectionIndex = 0; // TRACK CURRENT ACTIVE PAGE WIZARD
+let autosaveTimeout = null;
+
+// ── INIT ──
+function init() {
+  // One-time cleanup to clear existing mock data in user's browser
+  if (!localStorage.getItem("mdi_data_cleared_v3")) {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith("mdi_participants_")) {
+        localStorage.removeItem(key);
+        i--;
+      }
+    }
+    localStorage.setItem("mdi_data_cleared_v3", "true");
+  }
+
+  // Dynamic schema migration: upgrade q_dept field from select to text
+  const cachedForms = localStorage.getItem("mdi_forms");
+  let forms = null;
+  if (cachedForms) {
+    try {
+      forms = JSON.parse(cachedForms);
+      let updated = false;
+      forms.forEach(form => {
+        if (form.fields) {
+          form.fields.forEach(field => {
+            if (field.id === "q_dept" && field.type === "select") {
+              field.type = "text";
+              field.options = [];
+              updated = true;
+            }
+          });
+        }
+      });
+      if (updated) {
+        localStorage.setItem("mdi_forms", JSON.stringify(forms));
+      }
+    } catch (e) {
+      console.error("Migration error:", e);
+      forms = JSON.parse(cachedForms);
+    }
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  formId = urlParams.get('formId') || 'form_bayan';
+  
+  // Load from mdi_forms
+  if (!forms) {
+    const cachedFormsReload = localStorage.getItem("mdi_forms");
+    forms = cachedFormsReload ? JSON.parse(cachedFormsReload) : null;
+  }
+  if (!forms) {
+    forms = PRELOADED_FORMS;
+    localStorage.setItem("mdi_forms", JSON.stringify(forms));
+  }
+
+  let currentForm = forms.find(f => f.id === formId);
+  if (!currentForm) {
+    currentForm = forms.find(f => f.id === "form_bayan") || forms[0];
+    formId = currentForm.id;
+  }
+  FORM_CONFIG = currentForm;
+
+  // Load correct participants specific to this formId
+  const cachedParticipants = localStorage.getItem(`mdi_participants_${formId}`);
+  if (cachedParticipants) {
+    PARTICIPANTS = JSON.parse(cachedParticipants);
+  } else {
+    PARTICIPANTS = [];
+    localStorage.setItem(`mdi_participants_${formId}`, JSON.stringify(PARTICIPANTS));
+  }
+
+  const picParam = urlParams.get('pic');
+  if (!picParam) {
+    // ALWAYS generate a brand new participant record for clean submissions!
+    currentPICNo = Date.now();
+    const newPic = {
+      no: currentPICNo,
+      name: "",
+      dept: "",
+      grade: "",
+      status: "none",
+      answers: {}
+    };
+    localStorage.setItem(`mdi_draft_${formId}_${currentPICNo}`, JSON.stringify(newPic));
+    
+    // Silently update the URL to append the &pic parameter
+    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?formId=${formId}&pic=${currentPICNo}`;
+    window.history.replaceState({ path: newUrl }, '', newUrl);
+  } else {
+    currentPICNo = parseInt(picParam);
+    let picExists = PARTICIPANTS.some(p => p.no === currentPICNo);
+    if (!picExists) {
+      const cachedDraft = localStorage.getItem(`mdi_draft_${formId}_${currentPICNo}`);
+      if (!cachedDraft) {
+        // Create draft
+        const newPic = {
+          no: currentPICNo,
+          name: "",
+          dept: "",
+          grade: "",
+          status: "none",
+          answers: {}
+        };
+        localStorage.setItem(`mdi_draft_${formId}_${currentPICNo}`, JSON.stringify(newPic));
+      }
+    }
+  }
+
+  // Active State Check
+  if (FORM_CONFIG.status === "inactive") {
+    showClosedFormScreen();
+  } else {
+    hideClosedFormScreen();
+    // Load participant's responses
+    loadParticipantAnswers();
+  }
+}
+
+// ── CLOSED SCREEN TOGGLES ──
+function showClosedFormScreen() {
+  document.getElementById("form-fill-hub").style.display = "none";
+  document.querySelector(".form-footer").style.display = "none";
+  document.getElementById("success-screen-hub").classList.remove("active");
+  
+  // Set closed brand title
+  document.getElementById("closed-brand-title").textContent = FORM_CONFIG.title;
+  
+  document.getElementById("closed-form-hub").classList.add("active");
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function hideClosedFormScreen() {
+  document.getElementById("closed-form-hub").classList.remove("active");
+  document.getElementById("form-fill-hub").style.display = "flex";
+  document.querySelector(".form-footer").style.display = "flex";
+}
+
+// ── LOAD PARTICIPANT RESPONSES & INJECT DYNAMIC CARDS ──
+function loadParticipantAnswers() {
+  let isPreRegistered = PARTICIPANTS.some(p => p.no === currentPICNo);
+  let pic;
+  
+  if (isPreRegistered) {
+    pic = PARTICIPANTS.find(p => p.no === currentPICNo);
+  } else {
+    const cachedDraft = localStorage.getItem(`mdi_draft_${formId}_${currentPICNo}`);
+    if (cachedDraft) {
+      pic = JSON.parse(cachedDraft);
+    } else {
+      pic = {
+        no: currentPICNo,
+        name: "",
+        dept: "",
+        grade: "",
+        status: "none",
+        answers: {}
+      };
+    }
+  }
+  
+  if (!pic) return;
+
+  // Sync brand details
+  document.getElementById("gf-title").textContent = FORM_CONFIG.title;
+  document.getElementById("gf-desc").textContent = FORM_CONFIG.desc;
+  document.getElementById("success-brand-title").textContent = FORM_CONFIG.title;
+
+  // Render dynamic Cards grouped into separate page containers
+  const container = document.getElementById("dynamic-cards-container");
+  container.innerHTML = "";
+
+  // Reset section index to start
+  currentSectionIndex = 0;
+
+  // Make sure sections list exists
+  if (!FORM_CONFIG.sections || FORM_CONFIG.sections.length === 0) {
+    FORM_CONFIG.sections = ["Bagian 1 – Identitas", "Bagian 2 – Action Plan Commitments", "Bagian 3 – Progress & Challenges"];
+  }
+
+  // Group and render questions by section
+  FORM_CONFIG.sections.forEach((secName, secIdx) => {
+    // Gather fields belonging to this section
+    const sectionFields = FORM_CONFIG.fields.filter(f => f.section === secName);
+    
+    // Create section page wrapper
+    const secPage = document.createElement("div");
+    secPage.className = "section-page";
+    secPage.id = `section-page-${secIdx}`;
+    
+    // Only render section card if the section contains questions
+    if (sectionFields.length > 0) {
+      secPage.appendChild(createSectionCard(secName));
+      
+      sectionFields.forEach(f => {
+        const val = pic.answers ? (pic.answers[f.id] || "") : "";
+        const card = document.createElement("div");
+        card.className = "gf-card question-card";
+        card.id = `q-card-${f.id}`;
+
+        let inputHtml = "";
+        if (f.type === "text") {
+          inputHtml = `<input type="text" class="gf-input-text gf-answer-input" data-qid="${f.id}" id="input-${f.id}" value="${escapeHtml(val)}" oninput="triggerAutosave()" placeholder="Jawaban Anda">`;
+        } else if (f.type === "textarea") {
+          inputHtml = `<textarea class="gf-input-textarea gf-answer-input" data-qid="${f.id}" id="input-${f.id}" rows="1" oninput="triggerAutosave(); autoGrow(this);" placeholder="Jawaban Anda">${escapeHtml(val)}</textarea>`;
+        } else if (f.type === "radio") {
+          const radioOptions = f.options.map(o => `
+            <label class="gf-radio-option">
+              <input type="radio" name="radio-${f.id}" class="gf-answer-radio" data-qid="${f.id}" value="${escapeHtml(o)}" ${val === o ? 'checked' : ''} onchange="triggerAutosave()">
+              <span>${escapeHtml(o)}</span>
+            </label>
+          `).join("");
+          inputHtml = `<div class="gf-radio-group">${radioOptions}</div>`;
+        } else if (f.type === "select") {
+          const selectOptions = f.options.map(o => `<option value="${escapeHtml(o)}" ${val === o ? 'selected' : ''}>${escapeHtml(o)}</option>`).join("");
+          inputHtml = `
+            <select class="gf-select gf-answer-input" data-qid="${f.id}" id="input-${f.id}" onchange="triggerAutosave()">
+              <option value="">Pilih</option>
+              ${selectOptions}
+            </select>
+          `;
+        } else if (f.type === "date") {
+          inputHtml = `<input type="date" class="gf-input-text gf-answer-input" data-qid="${f.id}" id="input-${f.id}" value="${escapeHtml(val)}" onchange="triggerAutosave()">`;
+        }
+
+        card.innerHTML = `
+          <div class="q-label">${escapeHtml(f.label)} ${f.required ? '<span class="q-req">*</span>' : ''}</div>
+          ${inputHtml}
+          <div class="gf-error-msg">
+            <span>⚠️</span> Pertanyaan ini wajib diisi
+          </div>
+        `;
+        secPage.appendChild(card);
+      });
+    }
+    container.appendChild(secPage);
+  });
+
+  // Re-adjust textarea heights
+  document.querySelectorAll('textarea.gf-input-textarea').forEach(el => autoGrow(el));
+
+  // Render navigation wizard progress
+  updateWizardNavigation();
+}
+
+function createSectionCard(title) {
+  const sc = document.createElement("div");
+  sc.className = "gf-card section-card";
+  sc.textContent = title;
+  return sc;
+}
+
+function autoGrow(element) {
+  element.style.height = "5px";
+  element.style.height = (element.scrollHeight) + "px";
+}
+
+// ── WIZARD NAVIGATION SYSTEM ──
+function updateWizardNavigation() {
+  const totalSections = FORM_CONFIG.sections.length;
+  
+  // Toggle visible section page with fade transitions
+  for (let i = 0; i < totalSections; i++) {
+    const el = document.getElementById(`section-page-${i}`);
+    if (el) {
+      el.style.display = (i === currentSectionIndex) ? "flex" : "none";
+    }
+  }
+  
+  // Show / Hide previous button
+  const btnPrev = document.getElementById("btn-prev");
+  if (currentSectionIndex === 0) {
+    btnPrev.style.visibility = "hidden";
+  } else {
+    btnPrev.style.visibility = "visible";
+  }
+  
+  // Toggle next / submit button text
+  const btnNext = document.getElementById("btn-next");
+  if (currentSectionIndex === totalSections - 1) {
+    btnNext.textContent = "Kirim";
+  } else {
+    btnNext.textContent = "Berikutnya";
+  }
+  
+  // Update progress bar width
+  const fill = document.getElementById("progress-bar-fill");
+  const pct = ((currentSectionIndex + 1) / totalSections) * 100;
+  fill.style.width = `${pct}%`;
+  
+  // Update progress text description
+  const text = document.getElementById("progress-text");
+  text.textContent = `Halaman ${currentSectionIndex + 1} dari ${totalSections}`;
+  
+  // Scroll smoothly to top of form to ease transitions
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goToPrevSection() {
+  if (currentSectionIndex > 0) {
+    currentSectionIndex--;
+    updateWizardNavigation();
+  }
+}
+
+function validateSection(secIdx) {
+  const pic = PARTICIPANTS.find(p => p.no === currentPICNo);
+  if (!pic) return false;
+
+  const secName = FORM_CONFIG.sections[secIdx];
+  const sectionFields = FORM_CONFIG.fields.filter(f => f.section === secName);
+  
+  let isValid = true;
+  let firstErrorElement = null;
+
+  // Clear previous errors in active page
+  sectionFields.forEach(f => {
+    const card = document.getElementById(`q-card-${f.id}`);
+    if (card) card.classList.remove("error");
+  });
+
+  // Verify requirements based directly on live DOM inputs for immediate validation
+  sectionFields.forEach(f => {
+    let val = "";
+    if (f.type === "radio") {
+      const checked = document.querySelector(`input[name="radio-${f.id}"]:checked`);
+      val = checked ? checked.value : "";
+    } else {
+      const el = document.getElementById(`input-${f.id}`);
+      val = el ? el.value.trim() : "";
+    }
+
+    if (f.required && !val) {
+      isValid = false;
+      const card = document.getElementById(`q-card-${f.id}`);
+      if (card) {
+        card.classList.add("error");
+        if (!firstErrorElement) firstErrorElement = card;
+      }
+    }
+  });
+
+  if (!isValid && firstErrorElement) {
+    firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  return isValid;
+}
+
+function handleNextOrSubmit() {
+  const btnNext = document.getElementById("btn-next");
+  if (btnNext.disabled) return;
+  
+  // Disable button to prevent double-click / multiple rapid clicks
+  btnNext.disabled = true;
+  setTimeout(() => {
+    btnNext.disabled = false;
+  }, 600);
+
+  // Force draft save to get DOM values into memory first
+  executeAutosave();
+
+  // Validate current active section before moving forward
+  if (!validateSection(currentSectionIndex)) {
+    return;
+  }
+
+  const totalSections = FORM_CONFIG.sections.length;
+  if (currentSectionIndex < totalSections - 1) {
+    currentSectionIndex++;
+    updateWizardNavigation();
+  } else {
+    // Final submit trigger
+    submitFormFinal();
+  }
+}
+
+function submitFormFinal() {
+  let isPreRegistered = PARTICIPANTS.some(p => p.no === currentPICNo);
+  let pic;
+  
+  if (isPreRegistered) {
+    pic = PARTICIPANTS.find(p => p.no === currentPICNo);
+  } else {
+    const cachedDraft = localStorage.getItem(`mdi_draft_${formId}_${currentPICNo}`);
+    if (cachedDraft) {
+      pic = JSON.parse(cachedDraft);
+    }
+  }
+  
+  if (!pic) return;
+
+  pic.status = "done";
+  pic.submitDate = new Date().toLocaleDateString('en-CA');
+  
+  if (!isPreRegistered) {
+    // Push new anonymous participants into the tracking database only when submitted
+    PARTICIPANTS.push(pic);
+    localStorage.removeItem(`mdi_draft_${formId}_${currentPICNo}`);
+  }
+  
+  localStorage.setItem(`mdi_participants_${formId}`, JSON.stringify(PARTICIPANTS));
+
+  // Show Success Screen
+  document.getElementById("form-fill-hub").style.display = "none";
+  document.querySelector(".form-footer").style.display = "none";
+  document.getElementById("closed-form-hub").classList.remove("active");
+  document.getElementById("success-screen-hub").classList.add("active");
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── UTILITIES ──
+function escapeHtml(text) {
+  if (!text) return "";
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// ── DEBOUNCED AUTOSAVE ENGINE ──
+function triggerAutosave() {
+  document.getElementById("save-indicator-badge").textContent = "🔄";
+  document.getElementById("save-indicator-badge").title = "Menyimpan draf...";
+
+  if (autosaveTimeout) clearTimeout(autosaveTimeout);
+  autosaveTimeout = setTimeout(executeAutosave, 1000);
+}
+
+function executeAutosave() {
+  if (autosaveTimeout) clearTimeout(autosaveTimeout);
+  
+  let isPreRegistered = PARTICIPANTS.some(p => p.no === currentPICNo);
+  let pic;
+  
+  if (isPreRegistered) {
+    pic = PARTICIPANTS.find(p => p.no === currentPICNo);
+  } else {
+    const cachedDraft = localStorage.getItem(`mdi_draft_${formId}_${currentPICNo}`);
+    pic = cachedDraft ? JSON.parse(cachedDraft) : {
+      no: currentPICNo,
+      name: "",
+      dept: "",
+      grade: "",
+      status: "none",
+      answers: {}
+    };
+  }
+  
+  if (!pic) return;
+
+  // Gather values dynamically
+  if (!pic.answers) pic.answers = {};
+  
+  FORM_CONFIG.fields.forEach(f => {
+    let val = "";
+    if (f.type === "radio") {
+      const checked = document.querySelector(`input[name="radio-${f.id}"]:checked`);
+      val = checked ? checked.value : "";
+    } else {
+      const el = document.getElementById(`input-${f.id}`);
+      val = el ? el.value.trim() : "";
+    }
+    pic.answers[f.id] = val;
+  });
+
+  // Keep core properties synchronized in case the admin edited them
+  pic.name = pic.answers["q_nama"] || pic.name;
+  pic.dept = pic.answers["q_dept"] || pic.dept;
+  pic.grade = pic.answers["q_grade"] || pic.grade;
+
+  // If there is typing, advance from none to In Progress
+  let fillCount = 0;
+  FORM_CONFIG.fields.forEach(f => {
+    if (pic.answers[f.id]) fillCount++;
+  });
+
+  if (fillCount === 0) {
+    pic.status = "none";
+  } else if (pic.status === "none") {
+    pic.status = "prog";
+  }
+
+  // Save either to active database or isolated draft area
+  if (isPreRegistered) {
+    localStorage.setItem(`mdi_participants_${formId}`, JSON.stringify(PARTICIPANTS));
+  } else {
+    localStorage.setItem(`mdi_draft_${formId}_${currentPICNo}`, JSON.stringify(pic));
+  }
+
+  // Update timestamps indicator in the pager corner!
+  const now = new Date();
+  const pad = (n) => String(n).padStart(2, '0');
+  const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  window.lastSaveTime = timeStr;
+  
+  document.getElementById("progress-text").textContent = `Draf disimpan otomatis: ${timeStr}`;
+  document.getElementById("save-indicator-badge").textContent = "☁️";
+  document.getElementById("save-indicator-badge").title = "Draf disimpan otomatis";
+}
+
+function clearGFormInputs() {
+  if (confirm("Apakah Anda yakin ingin mengosongkan semua jawaban Anda?")) {
+    let isPreRegistered = PARTICIPANTS.some(p => p.no === currentPICNo);
+    let pic;
+    
+    if (isPreRegistered) {
+      pic = PARTICIPANTS.find(p => p.no === currentPICNo);
+    } else {
+      const cachedDraft = localStorage.getItem(`mdi_draft_${formId}_${currentPICNo}`);
+      if (cachedDraft) pic = JSON.parse(cachedDraft);
+    }
+    
+    if (!pic) return;
+
+    pic.answers = {};
+    pic.status = "none";
+    
+    if (isPreRegistered) {
+      localStorage.setItem(`mdi_participants_${formId}`, JSON.stringify(PARTICIPANTS));
+    } else {
+      localStorage.setItem(`mdi_draft_${formId}_${currentPICNo}`, JSON.stringify(pic));
+    }
+    
+    // Reload fields
+    loadParticipantAnswers();
+  }
+}
+
+function reloadFormForEditing() {
+  // Check first if closed
+  if (FORM_CONFIG.status === "inactive") {
+    showClosedFormScreen();
+    return;
+  }
+
+  document.getElementById("success-screen-hub").classList.remove("active");
+  document.getElementById("closed-form-hub").classList.remove("active");
+  document.getElementById("form-fill-hub").style.display = "flex";
+  document.querySelector(".form-footer").style.display = "flex";
+  
+  // Re-adjust textarea heights
+  document.querySelectorAll('textarea.gf-input-textarea').forEach(el => autoGrow(el));
+}
+
+window.onload = init;
+
+// Cross-tab live synchronization
+window.addEventListener('storage', (e) => {
+  if (e.key === `mdi_participants_${formId}`) {
+    PARTICIPANTS = JSON.parse(e.newValue);
+    // Don't overwrite if the user is currently typing
+    if (document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
+      loadParticipantAnswers();
+    }
+  }
+  
+  if (e.key === 'mdi_forms') {
+    const forms = JSON.parse(e.newValue);
+    const updatedForm = forms.find(f => f.id === formId);
+    if (updatedForm) {
+      FORM_CONFIG = updatedForm;
+      
+      // Dynamic active/inactive state check on storage changes
+      if (FORM_CONFIG.status === "inactive") {
+        showClosedFormScreen();
+      } else {
+        // If it transitions back to active, restore working view
+        if (document.getElementById("closed-form-hub").classList.contains("active")) {
+          hideClosedFormScreen();
+        }
+        loadParticipantAnswers();
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>MDI TACK - Client Viewer Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --mdi-dark:    #0f172a;
+  --mdi-navy:    #1e293b;
+  --mdi-navy-light: #334155;
+  --mdi-orange:  #f97316;
+  --mdi-orange-hover: #ea580c;
+  --mdi-light:   #f8fafc;
+  --mdi-white:   #ffffff;
+  --mdi-border:  #e2e8f0;
+  --mdi-muted:   #64748b;
+  --mdi-ink:     #0f172a;
+  --mdi-danger:  #ef4444;
+  --done:        #10b981;
+  --prog:        #f59e0b;
+  --bg-color:    #f8fafc;
+  --card-bg:     #ffffff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--mdi-ink);
+  line-height: 1.5;
+}
+
+
+/* PROFILE VIEW */
+#profile-view {
+  background: #f8fafc;
+  min-height: 100vh;
+}
+.pv-header {
+  background: #ffffff;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--mdi-border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.pv-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.pv-logo {
+  background: var(--mdi-orange);
+  color: white;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+.pv-brand-text {
+  font-weight: 700;
+  color: var(--mdi-ink);
+  font-size: 16px;
+}
+.pv-brand-text span {
+  color: var(--mdi-muted);
+  font-weight: 400;
+}
+.pv-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 32px;
+}
+.profile-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid var(--mdi-border);
+  box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.pc-banner {
+  height: 120px;
+  background: linear-gradient(135deg, var(--mdi-navy) 0%, var(--mdi-navy-light) 100%);
+}
+.pc-body {
+  padding: 0 40px 40px 40px;
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  position: relative;
+}
+.profile-avatar {
+  width: 140px;
+  height: 140px;
+  background: #ffffff;
+  border: 4px solid #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  flex-shrink: 0;
+  margin-top: -60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 64px;
+}
+.profile-info {
+  margin-top: 20px;
+  flex: 1;
+}
+.profile-info h1 {
+  font-size: 32px;
+  color: var(--mdi-ink);
+  margin-bottom: 8px;
+  font-weight: 800;
+}
+.pv-stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mdi-muted);
+  margin-bottom: 16px;
+}
+.pv-stats strong {
+  color: var(--mdi-orange);
+  font-size: 14px;
+}
+.profile-info p {
+  color: var(--mdi-muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.ap-list-header {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--mdi-ink);
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ap-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ap-item {
+  background: #ffffff;
+  border: 1px solid var(--mdi-border);
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.ap-item:hover {
+  border-color: var(--mdi-orange);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1);
+  transform: translateY(-2px);
+}
+.ap-item-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--mdi-ink);
+  margin-bottom: 4px;
+}
+.ap-item-meta {
+  font-size: 13px;
+  color: var(--mdi-muted);
+}
+.ap-item-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  color: var(--mdi-muted);
+  transition: 0.2s;
+}
+.ap-item:hover .ap-item-arrow {
+  background: var(--mdi-orange);
+  color: #fff;
+}
+
+/* LOGIN */
+#login-view {
+  display: flex; justify-content: center; align-items: center; min-height: 100vh;
+}
+.login-card {
+  background: var(--card-bg); border: 1px solid var(--mdi-border); padding: 40px;
+  border-radius: 12px; width: 100%; max-width: 400px; text-align: center;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+}
+.login-card h2 { color: var(--mdi-ink); margin-bottom: 8px; }
+.login-card p { color: var(--mdi-muted); font-size: 14px; margin-bottom: 24px; }
+.login-input {
+  width: 100%; padding: 12px; margin-bottom: 16px; border-radius: 6px;
+  background: #f1f5f9; border: 1px solid var(--mdi-border);
+  color: var(--mdi-ink); font-family: inherit; font-size: 14px; outline: none;
+}
+.login-input:focus { border-color: var(--mdi-orange); background: #fff; }
+.login-btn {
+  width: 100%; padding: 12px; background: var(--mdi-orange); color: #fff;
+  border: none; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s;
+}
+.login-btn:hover { background: var(--mdi-orange-hover); }
+
+/* TOPBAR */
+.topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 32px; background: var(--card-bg);
+  border-bottom: 1px solid var(--mdi-border);
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-logo { background: var(--mdi-orange); padding: 4px 10px; border-radius: 6px; font-weight: 800; color: #fff; font-size: 12px; }
+.brand-name { font-weight: 700; color: var(--mdi-ink); font-size: 14px; }
+.brand-name span { color: var(--mdi-muted); font-weight: 400; margin-left: 6px; }
+.tb-badge { background: rgba(16, 185, 129, 0.1); color: var(--done); border: 1px solid rgba(16, 185, 129, 0.2); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+
+/* HEADER */
+.page-header { padding: 40px 32px; background: var(--mdi-navy); color: #fff; border-bottom: none; }
+.header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.header-text h1 { font-size: 28px; color: #fff; margin-bottom: 8px; font-weight: 800; }
+.header-text h1 em { color: #cbd5e1; font-style: normal; font-weight: 400; font-size: 22px; }
+.header-text p { color: #94a3b8; font-size: 14px; margin-top: 4px; }
+.header-meta { display: flex; gap: 24px; }
+.hm { text-align: right; }
+.hm-val { font-size: 24px; font-weight: 800; color: #fff; }
+.hm-val.highlight { color: var(--done); }
+.hm-lbl { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* BODY */
+.body-wrap { max-width: 1200px; margin: 32px auto; padding: 0 32px; }
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+.kpi { background: var(--card-bg); border: 1px solid var(--mdi-border); padding: 20px; border-radius: 12px; cursor: pointer; transition: 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+.kpi:hover { background: #f8fafc; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+.kpi.active-filter { border-color: var(--mdi-orange); box-shadow: 0 0 0 1px var(--mdi-orange); background: #fff5f0; }
+.kpi-lbl { font-size: 12px; font-weight: 700; color: var(--mdi-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.kpi-val { font-size: 32px; font-weight: 800; color: var(--mdi-ink); margin-bottom: 4px; }
+.kpi-val.highlight { color: var(--mdi-orange); }
+.kpi-val.done { color: var(--done); }
+.kpi-val.prog { color: var(--prog); }
+
+.kpi-total { border-top: 4px solid var(--mdi-ink); }
+.kpi-total .kpi-val { color: var(--mdi-ink); }
+.kpi-ap { border-top: 4px solid var(--mdi-orange); }
+.kpi-ap .kpi-val { color: var(--mdi-orange); }
+.kpi-done { border-top: 4px solid var(--done); }
+.kpi-done .kpi-val { color: var(--done); }
+.kpi-prog { border-top: 4px solid var(--prog); }
+.kpi-prog .kpi-val { color: var(--prog); }
+.kpi-sub { font-size: 12px; color: var(--mdi-muted); }
+
+.progress-summary { margin-bottom: 32px; background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--mdi-border); }
+.ps-label { font-size: 12px; font-weight: 700; color: var(--mdi-muted); text-transform: uppercase; margin-bottom: 12px; }
+.ps-bar { height: 16px; border-radius: 8px; background: #f1f5f9; display: flex; overflow: hidden; margin-bottom: 16px; }
+.ps-done-seg { background: var(--done); transition: width 0.5s; }
+.ps-prog-seg { background: var(--prog); transition: width 0.5s; }
+.ps-legend { display: flex; gap: 16px; }
+.ps-leg { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--mdi-muted); font-weight: 600; }
+.ps-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+.viewer-filterbar { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; background: var(--card-bg); padding: 12px 16px; border-radius: 8px; border: 1px solid var(--mdi-border); box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+.dept-dropdown { background: #f1f5f9; border: 1px solid var(--mdi-border); color: var(--mdi-ink); padding: 6px 12px; border-radius: 4px; outline: none; font-weight: 500; }
+.search-wrap input { background: #f1f5f9; border: 1px solid var(--mdi-border); color: var(--mdi-ink); padding: 6px 12px; border-radius: 4px; outline: none; width: 100%; font-weight: 500; }
+.search-wrap input:focus { border-color: var(--mdi-orange); background: #fff; }
+
+.table-card { background: var(--card-bg); border: 1px solid var(--mdi-border); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+.table-head { padding: 16px 24px; border-bottom: 1px solid var(--mdi-border); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+.th-title { font-weight: 700; color: var(--mdi-ink); display: flex; align-items: center; gap: 8px; }
+.th-dot { width: 8px; height: 8px; background: var(--mdi-orange); border-radius: 50%; }
+.th-count { font-size: 12px; color: var(--mdi-muted); font-weight: 600; }
+
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th { padding: 12px 24px; font-size: 11px; font-weight: 700; color: var(--mdi-muted); text-transform: uppercase; border-bottom: 1px solid var(--mdi-border); background: #f8fafc; }
+td { padding: 16px 24px; border-bottom: 1px solid var(--mdi-border); vertical-align: top; }
+tr:hover td { background: #f8fafc; }
+
+.td-num { font-family: monospace; color: var(--mdi-muted); font-weight: 600; }
+.td-name { font-weight: 600; color: var(--mdi-ink); }
+.dept-tag { background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: var(--mdi-muted); font-weight: 600; }
+.status-pill { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.s-done { background: rgba(16, 185, 129, 0.1); color: var(--done); }
+.s-prog { background: rgba(245, 158, 11, 0.1); color: var(--prog); }
+.expand-btn { background: none; border: none; color: var(--mdi-muted); font-size: 20px; cursor: pointer; transition: transform 0.2s; }
+.expand-btn.open { transform: rotate(90deg); color: var(--mdi-ink); }
+
+.detail-row { display: none; }
+.detail-row.open { display: table-row; }
+.detail-cell { background: #f8fafc; padding: 0 !important; border-bottom: 1px solid var(--mdi-border) !important; border-left: 3px solid var(--mdi-orange); }
+.detail-inner { padding: 24px; }
+
+.empty { text-align: center; padding: 48px; color: var(--mdi-muted); }
+.empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+
+footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 12px; margin-top: 32px; border-top: 1px solid var(--mdi-border); }
+
+/* Interactive Hover Effects */
+.logout-btn { transition: color 0.2s, transform 0.2s; }
+.logout-btn:hover { color: var(--mdi-orange) !important; transform: translateY(-1px); }
+
+.back-btn { transition: all 0.2s ease !important; }
+.back-btn:hover { background: #f8fafc !important; color: var(--mdi-orange) !important; border-color: var(--mdi-orange) !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+</style>
+</head>
+<body>
+
+  <div id="login-view">
+    <div class="login-card">
+      <div style="font-size:36px; margin-bottom:16px;">🏢</div>
+      <h2>Client Portal</h2>
+      <p>Masuk untuk melacak Action Plan perusahaan Anda.</p>
+      <input type="text" id="login-username" class="login-input" placeholder="Masukkan Nama Perusahaan / Username">
+      <input type="password" id="login-pin" class="login-input" placeholder="Masukkan 4-digit PIN" maxlength="10" onkeypress="if(event.key === 'Enter') attemptLogin()">
+      <button class="login-btn" onclick="attemptLogin()">Log In</button>
+      <div id="login-error" style="color:var(--mdi-danger); font-size:12px; margin-top:12px; display:none;">PIN salah atau perusahaan tidak dipilih.</div>
+    </div>
+  </div>
+
+  
+  <div id="profile-view" style="display:none;">
+    <div class="pv-header">
+      <div class="pv-brand">
+        <img src="Asset%207-0.png" alt="MDI Logo" style="height: 32px; object-fit: contain;">
+        <div class="pv-brand-text"><span>| Client Portal</span></div>
+      </div>
+      <div>
+        <button class="logout-btn" onclick="location.reload()" style="background:transparent; border:none; color:var(--mdi-muted); font-weight:600; cursor:pointer;">Logout</button>
+      </div>
+    </div>
+    
+    <div class="pv-container">
+      <div class="profile-card">
+        <div class="pc-banner"></div>
+        <div class="pc-body">
+          <div class="profile-avatar">🏢</div>
+          <div class="profile-info">
+            <h1 id="pv-client-name">(Nama Client)</h1>
+            <div class="pv-stats">
+              <span id="pv-total-ap-badge">Total Action Plan: <strong>0</strong></span>
+            </div>
+            <p>Memantau perkembangan action plan kepemimpinan dari peserta perusahaan Anda yang mengikuti program ini. Seluruh rencana tindakan di bawah ini adalah komitmen resmi yang telah disepakati.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="ap-list-header">
+        <span>Action Plan Terdaftar</span>
+      </div>
+      <div class="ap-list" id="pv-ap-list">
+        <!-- filled dynamically -->
+      </div>
+    </div>
+  </div>
+<div id="dashboard-view" style="display:none;">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="brand">
+        <img src="Asset%207-0.png" alt="MDI Logo" style="height: 28px; object-fit: contain; margin-right: 8px;">
+        <div class="brand-name" id="viewer-brand-name">
+          MDI TACK
+        </div>
+      </div>
+      <div class="topbar-right" style="display: flex; align-items: center; gap: 16px;">
+        <button id="back-btn" class="back-btn" onclick="goBackToProfile()" style="display:none; background: #fff; border: 1px solid var(--mdi-border); color: var(--mdi-text); border-radius: 6px; padding: 6px 12px; font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; outline: none; align-items: center; justify-content: center; transition: background 0.2s;">&larr; Kembali</button>
+        <div id="batch-selector-container" style="display: none; align-items: center; gap: 8px;">
+          <span style="font-size: 11px; font-weight: 700; color: var(--mdi-muted); text-transform: uppercase; letter-spacing: 0.8px;">Program / Batch:</span>
+          <select id="batch-select" onchange="changeBatch(this.value)" style="background: #fff; border: 1px solid var(--mdi-border); color: #fff; border-radius: 6px; padding: 6px 12px; font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; outline: none; transition: border-color 0.2s;">
+            <!-- filled dynamically with forms that have participants for this client -->
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="header-inner">
+        <div class="header-text">
+          <h1 id="gf-view-title">-</h1>
+          <p id="gf-view-desc">-</p>
+          <div id="gf-view-training-date" style="font-size: 13px; margin-top: 10px; font-weight: 600; color: #fff; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 4px; display: inline-block;"></div>
+        </div>
+        <div class="header-meta">
+          <div class="hm">
+            <div class="hm-val" id="hdr-total">-</div>
+            <div class="hm-lbl">Total Participants</div>
+          </div>
+          <div class="hm">
+            <div class="hm-val highlight" id="hdr-done-pct">-%</div>
+            <div class="hm-lbl">Completed</div>
+          </div>
+          <div class="hm">
+            <div class="hm-val" id="hdr-review">30</div>
+            <div class="hm-lbl">Days Review</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="body-wrap">
+      <!-- Executive KPIs -->
+      <div class="kpi-row">
+        <div class="kpi kpi-total active-filter" onclick="filterStatus('ALL')">
+          <div class="kpi-lbl">Total Participants</div>
+          <div class="kpi-val" id="k-total">-</div>
+          <div class="kpi-sub">Registered PICs</div>
+        </div>
+        <div class="kpi kpi-ap">
+          <div class="kpi-lbl">ACTION PLANS</div>
+          <div class="kpi-val" id="k-ap">-</div>
+          <div class="kpi-sub" id="k-ap-avg">- per participant</div>
+        </div>
+        <div class="kpi kpi-done" onclick="filterStatus('done')">
+          <div class="kpi-lbl">Completed (Selesai)</div>
+          <div class="kpi-val" id="k-done">-</div>
+          <div class="kpi-sub" id="k-done-pct">-% of batch</div>
+        </div>
+        <div class="kpi kpi-prog" onclick="filterStatus('prog')">
+          <div class="kpi-lbl">In Progress</div>
+          <div class="kpi-val" id="k-prog">-</div>
+          <div class="kpi-sub" id="k-prog-pct">-% of batch</div>
+        </div>
+      </div>
+
+      <!-- Overall Progress Bar -->
+      <div class="progress-summary">
+        <div class="ps-label">Batch Accomplishment</div>
+        <div class="ps-bar">
+          <div class="ps-seg ps-done-seg" id="bar-done" style="width: 0%"></div>
+          <div class="ps-seg ps-prog-seg" id="bar-prog" style="width: 0%"></div>
+        </div>
+        <div class="ps-legend">
+          <div class="ps-leg">
+            <div class="ps-dot" style="background: var(--done)"></div>
+            <span id="leg-done">-% Completed</span>
+          </div>
+          <div class="ps-leg">
+            <div class="ps-dot" style="background: var(--prog)"></div>
+            <span id="leg-prog">-% In Progress</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter & Search table -->
+      <div class="viewer-filterbar" style="display: flex; align-items: center; gap: 16px;">
+        <div style="font-weight: 700; font-size: 13px; color: #fff; flex-shrink: 0;">
+          🔎 Search Participant Records
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
+          <span style="font-size: 11px; font-weight: 700; color: var(--mdi-muted); text-transform: uppercase; letter-spacing: 1px;">Dept</span>
+          <select id="deptSelect" class="dept-dropdown" onchange="filterDept(this.value)">
+            <option value="ALL">All Departments</option>
+          </select>
+        </div>
+        <div class="search-wrap" style="flex: unset; width: 240px;">
+          <input
+            type="text"
+            placeholder="Type name..."
+            oninput="doSearch(this.value)"
+          />
+        </div>
+      </div>
+
+      <!-- Locked Table -->
+      <div class="table-card">
+        <div class="table-head">
+          <div class="th-title">
+            <span class="th-dot"></span>Executive Participant Tracking Database
+          </div>
+          <div class="th-count" id="table-showing-count">Showing 0 of 0</div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 44px">#</th>
+                <th>Participant Name</th>
+                <th>Department</th>
+                <th>Action Plan (Commitment)</th>
+                <th style="text-align:center;">Status</th>
+                <th>Updates & Notes</th>
+                <th>Challenge</th>
+                <th style="width: 36px"></th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="emptyState" style="display: none">
+          <div class="empty-icon">🔍</div>
+          <div class="empty-text">No matching records found.</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div>
+        <em>MDI TACK Indonesia</em> &nbsp;·&nbsp; Action Plan Executive Viewer Portal
+      </div>
+      <div style="margin-top:4px;">Confidential – Live Data Sync Active</div>
+    </footer>
+
+    <script>
+      // ── STATE VARIABLES ──
+      let formId = "";
+      let searchTerm = "";
+      let activeStatus = "ALL";
+      let activeDept = "ALL";
+      let PARTICIPANTS = [];
+      let FORM_CONFIG = {};
+      let PARTICIPANTS_STAGE1 = [];
+
+      function loadAndMergeParticipants() {
+        const cachedS1 = localStorage.getItem(`mdi_participants_${formId}`);
+        PARTICIPANTS_STAGE1 = cachedS1 ? JSON.parse(cachedS1) : [];
+
+        const merged = [];
+        let index = 1;
+
+        PARTICIPANTS_STAGE1.forEach(p1 => {
+          if (!loggedInClient) return; // Block data if not logged in
+          
+          merged.push({
+            no: index++,
+            name: p1.name,
+            dept: p1.dept,
+            grade: p1.grade,
+            status: p1.status || "none",
+            submitDate: p1.submitDate || "",
+            answers: p1.answers || {},
+            s2Status: p1.s2Status || "",
+            s2Update: p1.s2Update || "",
+            s2Challenge: p1.s2Challenge || "",
+            clientCompany: p1.clientCompany || null,
+            picNoStage1: p1.no
+          });
+        });
+
+        PARTICIPANTS = merged;
+      }
+
+      function rebuildDeptFilters() {
+        const depts = [...new Set(PARTICIPANTS.map(p => p.dept))].sort();
+        const select = document.getElementById("deptSelect");
+        if (!select) return;
+        const currentVal = select.value || "ALL";
+        select.innerHTML = '<option value="ALL">All Departments</option>';
+        depts.forEach(d => {
+          if (!d) return;
+          const opt = document.createElement("option");
+          opt.value = d;
+          opt.textContent = d;
+          if (d === currentVal) opt.selected = true;
+          select.appendChild(opt);
+        });
+      }
+
+      function getActualStatus(p) {
+        if (p.status === "done" || (p.s2Status && p.s2Status.toLowerCase().includes("selesai")) || (p.s2Status && p.s2Status.toLowerCase().includes("completed"))) return "done";
+        return "prog";
+      }
+
+      function getActionPlans(p) {
+        if (!p.answers) return [];
+        const plans = [];
+        if (typeof FORM_CONFIG !== 'undefined' && FORM_CONFIG && FORM_CONFIG.fields) {
+          FORM_CONFIG.fields.forEach(f => {
+            if (f.id.startsWith("q_custom_")) {
+              const lbl = f.label.toLowerCase();
+              if (lbl.includes("rencana tindakan") || lbl.includes("action plan") || lbl.includes("commitment action")) {
+                const ans = p.answers[f.id];
+                if (ans && String(ans).trim() !== "" && ans !== "—") {
+                  let splitted = String(ans).split(/\n|;|,|\.|\-\s+|\d+\)/).map(s => s.trim().replace(/^[\-\)]\s*/, '')).filter(s => s.length > 2 && !/^\d+$/.test(s) && s.toLowerCase() !== "null");
+                  plans.push(...splitted);
+                }
+              }
+            }
+          });
+        }
+        return plans;
+      }
+
+      // ── INIT ──
+      let loggedInClient = null;
+      let CLIENTS = [];
+
+      function populateBatchSelector() {
+        const batchSelect = document.getElementById("batch-select");
+        const container = document.getElementById("batch-selector-container");
+        if (!batchSelect || !container) return;
+        
+        batchSelect.innerHTML = "";
+        
+        const cachedForms = localStorage.getItem("mdi_forms");
+        let formsList = [];
+        if (cachedForms) {
+          try { formsList = JSON.parse(cachedForms); } catch (e) { formsList = []; }
+        }
+        
+        const clientForms = formsList.filter(f => f && f.client && f.client.toLowerCase() === loggedInClient.name.toLowerCase());
+        
+        if (clientForms.length > 0) {
+          clientForms.forEach(form => {
+            const opt = document.createElement("option");
+            opt.value = form.id;
+            opt.textContent = form.title;
+            if (form.id === formId) {
+              opt.selected = true;
+            }
+            batchSelect.appendChild(opt);
+          });
+          
+          container.style.display = "flex";
+          
+          const hasCurrentForm = clientForms.some(f => f.id === formId);
+          if (!hasCurrentForm) {
+            formId = clientForms[0].id;
+            FORM_CONFIG = clientForms[0];
+            batchSelect.value = formId;
+          }
+        } else {
+          const opt = document.createElement("option");
+          opt.value = formId;
+          opt.textContent = FORM_CONFIG ? FORM_CONFIG.title : "Default Batch";
+          batchSelect.appendChild(opt);
+          container.style.display = "flex";
+        }
+      }
+
+      function changeBatch(newFormId) {
+        formId = newFormId;
+        const cachedForms = localStorage.getItem("mdi_forms");
+        let formsList = [];
+        if (cachedForms) {
+          try { formsList = JSON.parse(cachedForms); } catch (e) { formsList = []; }
+        }
+        const selectedForm = formsList.find(f => f.id === formId);
+        if (selectedForm) { FORM_CONFIG = selectedForm; }
+        
+        document.getElementById("viewer-brand-name").innerHTML = `${FORM_CONFIG.title} <span style="font-weight:600; color:var(--mdi-orange);">| Portal ${loggedInClient.name}</span>`;
+        
+        loadAndMergeParticipants();
+        rebuildDeptFilters();
+        renderAll();
+      }
+
+      function initLogin() {
+        const c = localStorage.getItem("mdi_clients");
+        CLIENTS = c ? JSON.parse(c) : [];
+      }
+
+      
+      function renderProfile() {
+        document.getElementById("pv-client-name").textContent = loggedInClient.name;
+        
+        const cachedForms = localStorage.getItem("mdi_forms");
+        let formsList = [];
+        if (cachedForms) {
+          try { formsList = JSON.parse(cachedForms); } catch (e) { formsList = []; }
+        }
+        
+        const clientForms = formsList.filter(f => f && f.client && f.client.toLowerCase() === loggedInClient.name.toLowerCase());
+        const listContainer = document.getElementById("pv-ap-list");
+        
+        document.getElementById("pv-total-ap-badge").innerHTML = `Total Program: <strong>${clientForms.length}</strong>`;
+        
+        if (clientForms.length === 0) {
+          listContainer.innerHTML = '<div style="padding:32px; text-align:center; background:#fff; border-radius:12px; border:1px solid var(--mdi-border); color:var(--mdi-muted);">Belum ada Action Plan yang ditugaskan untuk perusahaan Anda.</div>';
+          return;
+        }
+        
+        listContainer.innerHTML = clientForms.map(form => `
+          <div class="ap-item" onclick="openDashboard('${form.id}')">
+            <div>
+              <div class="ap-item-title">${form.title}</div>
+              ${form.trainingDate ? `<div style="font-size: 13px; color: var(--mdi-navy); margin-top: 4px; font-weight: 600;">📅 ${form.trainingDate}</div>` : ''}
+              <div class="ap-item-meta" style="margin-top: 4px;">Klik untuk melihat detail & metrik progress</div>
+            </div>
+            <div class="ap-item-arrow">&rarr;</div>
+          </div>
+        `).join("");
+      }
+
+      function openDashboard(targetFormId) {
+        document.getElementById("profile-view").style.display = "none";
+        document.getElementById("dashboard-view").style.display = "block";
+        document.getElementById("back-btn").style.display = "flex";
+        document.getElementById("batch-selector-container").style.display = "none"; // Use profile instead
+        
+        changeBatch(targetFormId);
+      }
+
+      function goBackToProfile() {
+        document.getElementById("dashboard-view").style.display = "none";
+        document.getElementById("profile-view").style.display = "block";
+      }
+
+      function attemptLogin() {
+        const clientName = document.getElementById("login-username").value.trim();
+        const pin = document.getElementById("login-pin").value;
+        const err = document.getElementById("login-error");
+        
+        if(!clientName || !pin) {
+          err.textContent = "Silakan masukkan Username dan PIN.";
+          err.style.display = "block";
+          return;
+        }
+        
+        const targetClient = CLIENTS.find(c => c.name.toLowerCase() === clientName.toLowerCase());
+        if(targetClient && targetClient.pin === pin) {
+          loggedInClient = targetClient;
+          document.getElementById("login-view").style.display = "none";
+          document.getElementById("profile-view").style.display = "block";
+          renderProfile();
+        } else {
+          err.textContent = "Username tidak ditemukan atau PIN salah. Silakan coba lagi.";
+          err.style.display = "block";
+        }
+      }
+
+      function init() {
+        const cachedForms = localStorage.getItem("mdi_forms");
+        let forms = [];
+        if (cachedForms) {
+          try { forms = JSON.parse(cachedForms); } catch (e) { forms = JSON.parse(cachedForms) || []; }
+        }
+        const urlParams = new URLSearchParams(window.location.search);
+        formId = urlParams.get('formId') || 'form_bayan';
+
+        let currentForm = forms.find(f => f.id === formId);
+        if (!currentForm) {
+          currentForm = forms[0];
+          formId = currentForm ? currentForm.id : 'form_bayan';
+        }
+        FORM_CONFIG = currentForm;
+        
+        document.getElementById("viewer-brand-name").innerHTML = `${FORM_CONFIG ? FORM_CONFIG.title : 'Portal'}`;
+        initLogin();
+
+        // Admin bypass logic
+        const bypass = urlParams.get('bypass');
+        const bypassClient = urlParams.get('client');
+        if (bypass === 'true') {
+          if (bypassClient && bypassClient !== 'null' && bypassClient !== '') {
+            const targetClient = CLIENTS.find(c => c.name.toLowerCase() === bypassClient.toLowerCase());
+            if (targetClient) {
+              loggedInClient = targetClient;
+            }
+          }
+          
+          if (!loggedInClient) {
+            loggedInClient = { name: "Admin (Viewer)", pin: "0000" };
+          }
+
+          document.getElementById("login-view").style.display = "none";
+          document.getElementById("dashboard-view").style.display = "block";
+          document.getElementById("back-btn").style.display = "none"; // No back button for bypass
+          document.getElementById("batch-selector-container").style.display = "flex";
+          
+          document.getElementById("viewer-brand-name").innerHTML = `${FORM_CONFIG ? FORM_CONFIG.title : 'Action Plan Dashboard'} <span style="font-weight:600; color:var(--mdi-orange);">| Portal ${loggedInClient.name}</span>`;
+          
+          populateBatchSelector();
+          loadAndMergeParticipants();
+          rebuildDeptFilters();
+          renderAll();
+          return;
+        }
+      }
+
+      function renderAll() {
+        rebuildDeptFilters();
+        
+        if (FORM_CONFIG) {
+          document.getElementById("gf-view-title").innerHTML = FORM_CONFIG.title.replace(" - ", "<br><em>") + "</em>";
+          document.getElementById("viewer-brand-name").innerHTML = `${FORM_CONFIG.title}`;
+          document.getElementById("gf-view-desc").textContent = FORM_CONFIG.desc;
+          const tDateEl = document.getElementById("gf-view-training-date");
+          if (FORM_CONFIG.trainingDate) {
+            tDateEl.innerHTML = `📅 Tanggal Pelatihan: ${FORM_CONFIG.trainingDate}`;
+            tDateEl.style.display = "inline-block";
+          } else {
+            tDateEl.style.display = "none";
+          }
+        } else {
+          document.getElementById("gf-view-title").innerHTML = "Action Plan Dashboard";
+          document.getElementById("viewer-brand-name").innerHTML = `MDI TACK Indonesia`;
+          document.getElementById("gf-view-desc").textContent = "Tidak ada konfigurasi formulir.";
+          document.getElementById("gf-view-training-date").style.display = "none";
+        }
+
+        if (PARTICIPANTS.length === 0) {
+          document.getElementById("hdr-total").textContent = "0";
+          document.getElementById("hdr-done-pct").textContent = "0%";
+          document.getElementById("k-total").textContent = "0";
+          document.getElementById("k-ap").textContent = "0";
+          document.getElementById("k-ap-avg").textContent = "0 per participant";
+          document.getElementById("k-done").textContent = "0";
+          document.getElementById("k-done-pct").textContent = "0% of batch";
+          document.getElementById("k-prog").textContent = "0";
+          document.getElementById("k-prog-pct").textContent = "0% of batch";
+          document.getElementById("bar-done").style.width = "0%";
+          document.getElementById("bar-prog").style.width = "0%";
+          document.getElementById("leg-done").textContent = "0% Completed";
+          document.getElementById("leg-prog").textContent = "0% In Progress";
+          document.getElementById("tableBody").innerHTML = "";
+          document.getElementById("emptyState").style.display = "block";
+          return;
+        }
+
+        const total = PARTICIPANTS.length;
+        const done = PARTICIPANTS.filter(p => getActualStatus(p) === "done").length;
+        const donePctRaw = total > 0 ? Math.round((done / total) * 100) : 0;
+        const prog = PARTICIPANTS.filter(p => getActualStatus(p) === "prog").length;
+        const donePct = ((done / total) * 100).toFixed(0);
+        const progPct = ((prog / total) * 100).toFixed(0);
+
+        document.getElementById("hdr-total").textContent = total;
+        document.getElementById("hdr-done-pct").textContent = donePctRaw + "%";
+        document.getElementById("k-total").textContent = total;
+        document.getElementById("k-done").textContent = done;
+        document.getElementById("k-done-pct").textContent = donePct + "% of batch";
+        document.getElementById("k-prog").textContent = prog;
+        document.getElementById("k-prog-pct").textContent = progPct + "% of batch";
+        document.getElementById("bar-done").style.width = donePct + "%";
+        document.getElementById("bar-prog").style.width = progPct + "%";
+        document.getElementById("leg-done").textContent = donePct + "% Completed";
+        document.getElementById("leg-prog").textContent = progPct + "% In Progress";
+
+        let totalAP = 0;
+        PARTICIPANTS.forEach(p => { totalAP += getActionPlans(p).length; });
+        document.getElementById("k-ap").textContent = totalAP;
+        let avgAP = total > 0 ? Math.round(totalAP / total) : 0;
+        document.getElementById("k-ap-avg").textContent = avgAP + " per participant";
+
+        document.querySelectorAll('.kpi-row .kpi').forEach(k => k.classList.remove('active-filter'));
+        if (activeStatus === 'ALL') document.querySelector('.kpi-row .kpi-total').classList.add('active-filter');
+        else if (activeStatus === 'done') document.querySelector('.kpi-row .kpi-done').classList.add('active-filter');
+        else if (activeStatus === 'prog') document.querySelector('.kpi-row .kpi-prog').classList.add('active-filter');
+
+        renderTable();
+      }
+
+      function doSearch(v) { searchTerm = v.toLowerCase(); renderTable(); }
+      function filterDept(d) { activeDept = d; renderTable(); }
+      function filterStatus(status) {
+        activeStatus = status;
+        document.querySelectorAll('.kpi-row .kpi').forEach(k => k.classList.remove('active-filter'));
+        if (status === 'ALL') document.querySelector('.kpi-row .kpi-total').classList.add('active-filter');
+        else if (status === 'done') document.querySelector('.kpi-row .kpi-done').classList.add('active-filter');
+        else if (status === 'prog') document.querySelector('.kpi-row .kpi-prog').classList.add('active-filter');
+        renderTable();
+      }
+
+      function renderTable() {
+        const filtered = PARTICIPANTS.filter(p => {
+          const matchesStatus = (activeStatus === "ALL" || getActualStatus(p) === activeStatus);
+          const matchesDept = (activeDept === "ALL" || p.dept === activeDept);
+          const matchesSearch = (searchTerm === "" || p.name.toLowerCase().includes(searchTerm) || p.dept.toLowerCase().includes(searchTerm));
+          return matchesStatus && matchesDept && matchesSearch;
+        });
+
+        const body = document.getElementById("tableBody");
+        const empty = document.getElementById("emptyState");
+
+        if (filtered.length === 0) {
+          body.innerHTML = "";
+          empty.style.display = "block";
+        } else {
+          empty.style.display = "none";
+          body.innerHTML = filtered.map(p => {
+            const plans = getActionPlans(p);
+            const firstPlan = plans.length > 0 ? plans[0] : "No action plan recorded";
+            const moreText = plans.length > 1 ? `<div style="font-size:11px; color:var(--mdi-orange); margin-top:4px;">+${plans.length - 1} more actions</div>` : "";
+            const activeStatusVal = getActualStatus(p);
+            const statusPillCol = `<td style="text-align:center;">${statusPillHtml(activeStatusVal)}</td>`;
+            const s2UpdateVal = (p.s2Update || "").trim();
+            const s2Update = s2UpdateVal ? s2UpdateVal : `<span style="color:var(--mdi-muted); font-size:12px; font-style: italic;">None</span>`;
+            
+            const s2ChallengeVal = (p.s2Challenge || "").trim();
+            const s2Challenge = s2ChallengeVal ? s2ChallengeVal : `<span style="color:var(--mdi-danger); font-size:12px;">⚠️ None</span>`;
+
+            return `
+            <tr onclick="toggleRow(${p.no})" id="row-${p.no}">
+              <td class="td-num">${p.no}</td>
+              <td><div class="td-name">${p.name}</div></td>
+              <td><span class="dept-tag">${p.dept}</span></td>
+              <td>
+                <div style="font-size:13px; color:var(--mdi-ink); line-height:1.4;">${firstPlan}</div>
+                ${moreText}
+              </td>
+              ${statusPillCol}
+              <td><div style="font-size:12px; color:var(--mdi-muted); line-height:1.4;">${s2Update}</div></td>
+              <td><div style="font-size:12px; color:var(--mdi-muted); line-height:1.4;">${s2Challenge}</div></td>
+              <td><button class="expand-btn" id="btn-${p.no}" onclick="event.stopPropagation();toggleRow(${p.no})">›</button></td>
+            </tr>
+            <tr class="detail-row" id="detail-${p.no}">
+              <td colspan="8" class="detail-cell">
+                <div class="detail-inner">
+                  <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;">
+                    <div>
+                      <div style="font-size:10px; font-weight:800; color:var(--mdi-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">ALL ${plans.length} ACTION PLANS</div>
+                      <ol style="margin:0; padding-left:16px; font-size:13px; color:var(--mdi-ink); line-height:1.6; font-weight:600;">
+                        ${plans.map(pl => `<li style="margin-bottom:8px;"><span style="color:var(--mdi-ink); font-weight:400;">${pl}</span></li>`).join("")}
+                      </ol>
+                    </div>
+                    <div>
+                      <div style="font-size:10px; font-weight:800; color:var(--mdi-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">30-DAY UPDATE</div>
+                      <div style="font-size:13px; color:var(--mdi-ink); line-height:1.5;">${s2UpdateVal ? s2UpdateVal : `<span style="color:var(--mdi-muted); font-style: italic;">None</span>`}</div>
+                    </div>
+                    <div>
+                      <div style="font-size:10px; font-weight:800; color:var(--mdi-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">CHALLENGE / BARRIER</div>
+                      <div style="font-size:13px; color:var(--mdi-ink); line-height:1.5;">${s2ChallengeVal ? s2ChallengeVal : `<span style="color:var(--mdi-danger);">⚠️ None</span>`}</div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            `;
+          }).join("");
+        }
+        document.getElementById("table-showing-count").textContent = `Showing ${filtered.length} of ${PARTICIPANTS.length}`;
+      }
+
+      function toggleRow(no) {
+        const detail = document.getElementById("detail-"+no);
+        const btn    = document.getElementById("btn-"+no);
+        const row    = document.getElementById("row-"+no);
+        const isOpen = detail.classList.contains("open");
+
+        document.querySelectorAll("#tableBody .detail-row").forEach(r => r.classList.remove("open"));
+        document.querySelectorAll("#tableBody .expand-btn").forEach(b => b.classList.remove("open"));
+        document.querySelectorAll("#tableBody tr:not(.detail-row)").forEach(r => r.classList.remove("expanded"));
+
+        if(!isOpen) {
+          detail.classList.add("open");
+          btn.classList.add("open");
+          row.classList.add("expanded");
+        }
+      }
+
+      function statusPillHtml(s) {
+        if (s === "done") return `<span class="status-pill s-done">● Completed</span>`;
+        return `<span class="status-pill s-prog">● In Progress</span>`;
+      }
+
+      window.onload = init;
+
+      window.addEventListener('storage', (e) => {
+        const s1Key = `mdi_participants_${formId}`;
+        if (e.key === s1Key) {
+          loadAndMergeParticipants();
+          rebuildDeptFilters();
+          renderAll();
+        }
+        if (e.key === 'mdi_forms') {
+          const list = JSON.parse(e.newValue);
+          const item = list.find(f => f.id === formId);
+          if (item) {
+            FORM_CONFIG = item;
+            renderAll();
+          }
+        }
+      });
+    </script>
+  </div>
+</body>
+</html>

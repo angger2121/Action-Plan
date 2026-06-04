@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MDI TACK – Action Plan Dashboard Suite</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mdi-dark:    #0f172a;
+  --mdi-navy:    #1e293b;
+  --mdi-navy-light: #334155;
+  --mdi-orange:  #f97316;
+  --mdi-orange-hover: #ea580c;
+  --mdi-light:   #f8fafc;
+  --mdi-white:   #ffffff;
+  --mdi-border:  #e2e8f0;
+  --mdi-muted:   #64748b;
+  
+  --done:        #10b981;
+  --none:        #ef4444;
+  
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --shadow-lg:   0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-md:   0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: linear-gradient(135deg, var(--mdi-dark) 0%, #1e1e35 60%, #0f0f22 100%);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #fff;
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+}
+
+.dashboard-container {
+  max-width: 1100px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Header styling */
+.header-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+.header-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px; width: 160px; height: 160px;
+  border-radius: 50%; background: rgba(249, 115, 22, 0.12);
+  filter: blur(40px); pointer-events: none;
+}
+.brand-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.logo {
+  background: var(--mdi-orange);
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  display: inline-block;
+  align-self: flex-start;
+  box-shadow: 0 0 16px rgba(249, 115, 22, 0.4);
+}
+h1 { font-size: 28px; font-weight: 800; line-height: 1.2; }
+h1 em { font-style: normal; color: var(--mdi-orange); }
+p.desc { font-size: 13px; color: rgba(255, 255, 255, 0.65); max-width: 580px; }
+
+/* Table View styling */
+.list-card {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-lg);
+}
+
+.table-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 12px;
+}
+.table-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.table-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mdi-orange); }
+
+/* Table List design matching Google Drive */
+.drive-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.drive-table thead th {
+  padding: 10px 16px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.drive-table tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.2s ease;
+}
+.drive-table tbody tr:hover {
+  background: rgba(255,255,255,0.03);
+}
+.drive-table tbody td {
+  padding: 14px 16px;
+  vertical-align: middle;
+}
+
+.doc-title-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.doc-icon {
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: rgba(249, 115, 22, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(249, 115, 22, 0.2);
+}
+.doc-icon.green-sheet {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+.doc-name {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.95);
+  text-decoration: none;
+}
+.doc-name:hover { color: var(--mdi-orange); }
+.doc-desc {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
+.owner-badge {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255,255,255,0.06);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.date-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+/* Premium iOS Switch Toggle */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.toggle-switch input {
+  opacity: 0; width: 0; height: 0;
+}
+.slider {
+  position: absolute; cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(255,255,255,0.15);
+  transition: .3s;
+  border-radius: 24px;
+}
+.slider:before {
+  position: absolute; content: "";
+  height: 18px; width: 18px;
+  left: 3px; bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+input:checked + .slider {
+  background-color: var(--done);
+}
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.status-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.status-active { color: var(--done); }
+.status-inactive { color: var(--none); }
+
+/* Quick Action Links */
+.actions-wrap {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.action-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+.action-btn:hover {
+  background: #fff !important;
+  color: var(--mdi-dark) !important;
+  border-color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.action-btn.btn-fill:hover { background: var(--mdi-orange) !important; border-color: var(--mdi-orange) !important; color: #fff !important; }
+
+/* Buttons */
+.btn {
+  background: var(--mdi-orange);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn:hover {
+  background: var(--mdi-orange-hover);
+  transform: translateY(-1px);
+}
+
+/* Modals styling */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal-card {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%; max-width: 520px;
+  overflow: hidden;
+  animation: modalUp 0.2s ease-out both;
+}
+@keyframes modalUp {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+.modal-header {
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 18px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-title { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.modal-close {
+  background: none; border: none; color: rgba(255,255,255,0.6);
+  font-size: 22px; cursor: pointer;
+}
+.modal-close:hover { color: #fff; }
+.modal-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+
+.form-group {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.form-group label {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.5px;
+}
+.form-group input, .form-group textarea {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.form-group input:focus, .form-group textarea:focus {
+  border-color: var(--mdi-orange);
+}
+
+.modal-footer {
+  padding: 16px 24px; background: rgba(0,0,0,0.2);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex; justify-content: flex-end; gap: 10px;
+}
+.btn-cancel {
+  background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.15);
+  padding: 8px 16px; border-radius: 6px; font-size: 12.5px; font-weight: 600; cursor: pointer;
+}
+.btn-cancel:hover { background: rgba(255,255,255,0.05); }
+
+
+.draggable-form {
+  background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 14px;
+  border-radius: 10px;
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.05);
+  position: relative;
+  overflow: hidden;
+}
+.draggable-form::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: var(--mdi-orange);
+  border-radius: 4px 0 0 4px;
+  opacity: 0.9;
+}
+.draggable-form:hover {
+  background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+  border-color: rgba(255,255,255,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.draggable-form:active {
+  cursor: grabbing;
+  transform: translateY(0);
+}
+.draggable-form-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.4;
+  padding-left: 8px;
+  padding-right: 28px; /* space for icon */
+}
+.draggable-form-date {
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.5);
+  padding-left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.df-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 4px;
+}
+.df-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.df-btn:hover {
+  background: var(--mdi-orange);
+  border-color: var(--mdi-orange);
+  transform: scale(1.05);
+}
+.client-drop-zone {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  min-height: 120px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.2s;
+}
+.client-drop-zone.drag-over {
+  background: rgba(249, 115, 22, 0.05);
+  border: 1px dashed var(--mdi-orange);
+}
+.client-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.client-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.client-pin {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--done);
+  background: rgba(16, 185, 129, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.client-action-btn { transition: all 0.2s ease; padding: 4px 8px; border-radius: 4px; }
+.client-action-btn:hover { background: rgba(255, 255, 255, 0.15) !important; transform: translateY(-1px); }
+
+.assign-select option { background: #fff; color: var(--mdi-dark); }
+</style>
+</head>
+<body>
+
+<div class="dashboard-container">
+  
+  <!-- HEADER CARD -->
+  <div class="header-card">
+    <div class="brand-info">
+      <div class="logo">MDI TACK</div>
+      <h1>Leadership Essentials <em>Action Plan Suite</em></h1>
+      <p class="desc">Selamat datang di Panel Manajemen Formulir MDI. Buat formulir baru, atur pertanyaan di Form Backend, evaluasi rencana komitmen tindakan peserta, serta aktifkan atau nonaktifkan draf formulir.</p>
+    </div>
+    
+    <button class="btn" onclick="openCreateFormModal()">
+      <span>➕</span> Buat Formulir Baru
+    </button>
+  </div>
+
+  <!-- FILTER DASHBOARD -->
+  <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <label for="filter-owner" style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7);">Filter Training Consultant:</label>
+      <select id="filter-owner" onchange="applyFilters()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none; cursor: pointer; min-width: 200px;">
+        <option value="all" style="background:#1e293b; color:#fff;">Semua Konsultan</option>
+        <option value="Kartika" style="background:#1e293b; color:#fff;">Kartika</option>
+        <option value="Rangga" style="background:#1e293b; color:#fff;">Rangga</option>
+        <option value="Aji" style="background:#1e293b; color:#fff;">Aji</option>
+        <option value="Matius" style="background:#1e293b; color:#fff;">Matius</option>
+      </select>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="color: rgba(255,255,255,0.7);">🔍</span>
+      <input type="text" id="dashboard-search" oninput="applyFilters()" placeholder="Cari klien atau form..." style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 12px; color: #fff; outline: none; width: 250px;">
+    </div>
+  </div>
+
+  <!-- BATCH 1: KOMITMEN AWAL FORMULIR (INITIAL COMMITMENTS) -->
+  <div class="list-card">
+    <div class="table-header-row">
+      <div class="table-title"><span class="table-dot"></span>Tahap 1: Komitmen Rencana Tindakan Kepemimpinan (Initial Commitments)</div>
+    </div>
+    
+    <div style="overflow-x: auto;">
+      <table class="drive-table">
+        <thead>
+          <tr>
+            <th style="min-width: 250px;">Nama Formulir</th>
+            <th style="width: 100px;">Pemilik</th>
+            <th style="width: 140px;">Training Consultant</th>
+            <th style="width: 140px;">Dibuat Pada</th>
+            <th style="width: 180px;">Status Form</th>
+            <th style="width: 320px; text-align: right;">Portal Tautan</th>
+          </tr>
+        </thead>
+        <tbody id="formsListBodyAwal">
+          <!-- Populated dynamically -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PENGATURAN KLIEN & PENUGASAN PROGRAM (CLIENT SETTINGS) -->
+  <div class="list-card" style="margin-top: 12px;">
+    <div class="table-header-row" style="margin-bottom: 16px;">
+      <div class="table-title"><span class="table-dot" style="background:#1a73e8;"></span>🏢 Portal Klien & Penugasan Program (Drag & Drop)</div>
+      <button class="action-btn" onclick="addClientAccount()" style="font-size:11px; background:var(--mdi-orange); border-color:var(--mdi-orange); color:#fff; box-shadow: 0 2px 8px rgba(249,115,22,0.25);">➕ Tambah Klien</button>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px;">
+      <!-- Unassigned Programs -->
+      <div style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md); padding: 16px; display:flex; flex-direction:column;">
+        <h3 style="font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;"><span style="font-size: 16px;">📁</span> Program Belum Ditugaskan</h3>
+        <p style="font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 16px; line-height: 1.4;">Seret program dari daftar ini ke salah satu grup klien di sebelah kanan.</p>
+        <div id="unassigned-zone" ondrop="drop(event, '')" ondragover="allowDrop(event)" style="flex-grow: 1; border: 2px dashed rgba(255,255,255,0.15); border-radius: 8px; padding: 12px; min-height: 200px; max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; transition: background 0.2s;">
+          <!-- Draggable forms -->
+        </div>
+      </div>
+      
+      <!-- Client Zones -->
+      <div style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md); padding: 16px; display:flex; flex-direction:column;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <h3 style="font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 8px;"><span style="font-size: 16px;">🏢</span> Grup Klien (Viewer)</h3>
+          <input type="text" id="client-search" oninput="renderDragAndDropUI()" placeholder="Cari Grup Klien..." style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 6px 10px; color: #fff; outline: none; width: 160px; font-size: 12px;">
+        </div>
+        <p style="font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 16px; line-height: 1.4;">Program yang diletakkan di dalam grup akan muncul di portal klien yang sesuai.</p>
+        <div id="client-zones-container" style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- Client zones -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div> <!-- END OF dashboard-container -->
+
+<!-- CREATE NEW FORM MODAL -->
+<div class="modal-overlay" id="createFormModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title">Buat Formulir Baru</div>
+      <button class="modal-close" onclick="closeCreateFormModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="new-form-title">Judul Formulir (Nama Kegiatan)</label>
+        <input type="text" id="new-form-title" placeholder="e.g. Post Test Leadership Essentials - PT Auri Steel">
+      </div>
+      <div class="form-group">
+        <label for="new-form-group">Kelompok / Tahap Rencana Tindakan</label>
+        <select id="new-form-group" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 14px; border-radius: 6px; font-family: inherit; font-size: 13px; outline: none; width: 100%; cursor: pointer;">
+          <option value="Komitmen Awal" style="background:#1e293b; color:#fff;">Komitmen Awal (Initial Commitments)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="new-form-owner">Pemilik Formulir</label>
+        <input type="text" id="new-form-owner" placeholder="e.g. Budi Santoso" value="saya">
+      </div>
+      <div class="form-group">
+        <label for="new-form-training-consultant">Training Consultant</label>
+        <select id="new-form-training-consultant" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 6px; font-size: 13px; outline: none; cursor: pointer;">
+          <option value="Kartika" style="background:#1e293b; color:#fff;">Kartika</option>
+          <option value="Rangga" style="background:#1e293b; color:#fff;">Rangga</option>
+          <option value="Aji" style="background:#1e293b; color:#fff;">Aji</option>
+          <option value="Matius" style="background:#1e293b; color:#fff;">Matius</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="new-form-training-date">Tanggal Pelatihan</label>
+        <input type="text" id="new-form-training-date" placeholder="e.g. 10 - 12 Agustus 2026">
+      </div>
+      <div class="form-group">
+        <label for="new-form-desc">Deskripsi Singkat</label>
+        <textarea id="new-form-desc" rows="3" placeholder="Silakan isi komitmen rencana tindakan kepemimpinan Anda secara seksama..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeCreateFormModal()">Batal</button>
+      <button class="btn" style="padding: 8px 16px; box-shadow:none;" onclick="saveNewForm()">💾 Buat Formulir</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Form Modal -->
+<div class="modal-overlay" id="edit-form-modal" style="display:none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">Edit Formulir</div>
+      <button class="modal-close" onclick="closeEditFormModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-form-id">
+      <div class="form-group">
+        <label for="edit-form-title">Judul Formulir (Nama Kegiatan)</label>
+        <input type="text" id="edit-form-title" placeholder="e.g. Post Test Leadership Essentials - PT Auri Steel">
+      </div>
+      <div class="form-group">
+        <label for="edit-form-owner">Pemilik Formulir</label>
+        <input type="text" id="edit-form-owner" placeholder="e.g. Budi Santoso" value="saya">
+      </div>
+      <div class="form-group">
+        <label for="edit-form-training-consultant">Training Consultant</label>
+        <select id="edit-form-training-consultant" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 6px; font-size: 13px; outline: none; cursor: pointer;">
+          <option value="Kartika" style="background:#1e293b; color:#fff;">Kartika</option>
+          <option value="Rangga" style="background:#1e293b; color:#fff;">Rangga</option>
+          <option value="Aji" style="background:#1e293b; color:#fff;">Aji</option>
+          <option value="Matius" style="background:#1e293b; color:#fff;">Matius</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="edit-form-training-date">Tanggal Pelatihan</label>
+        <input type="text" id="edit-form-training-date" placeholder="e.g. 10 - 12 Agustus 2026">
+      </div>
+      <div class="form-group">
+        <label for="edit-form-desc">Deskripsi Singkat</label>
+        <textarea id="edit-form-desc" rows="3" placeholder="Silakan isi komitmen rencana tindakan kepemimpinan Anda secara seksama..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeEditFormModal()">Batal</button>
+      <button class="btn" style="padding: 8px 16px; box-shadow:none;" onclick="saveEditForm()">💾 Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DEFAULT MOCK DATABASES ──
+const DEFAULT_FIELDS = [
+  {id: "q_nama", label: "Nama", type: "text", required: true, section: "Bagian 1 – Identitas", options: []},
+  {id: "q_grade", label: "Grade", type: "text", required: true, section: "Bagian 1 – Identitas", options: []},
+  {id: "q_dept", label: "Departemen", type: "text", required: true, section: "Bagian 1 – Identitas", options: []},
+  {id: "q_action1", label: "Commitment Action 1", type: "textarea", required: true, section: "Bagian 2 – Action Plan Commitments", options: []},
+  {id: "q_action2", label: "Commitment Action 2", type: "textarea", required: true, section: "Bagian 2 – Action Plan Commitments", options: []},
+  {id: "q_action3", label: "Commitment Action 3", type: "textarea", required: true, section: "Bagian 2 – Action Plan Commitments", options: []},
+  {id: "q_notes", label: "30-Day Progress Update & Notes", type: "textarea", required: false, section: "Bagian 3 – Progress & Challenges", options: []},
+  {id: "q_challenge", label: "Challenges / Roadblocks Encountered", type: "textarea", required: false, section: "Bagian 3 – Progress & Challenges", options: []}
+];
+
+const PRELOADED_PARTICIPANTS_RAW = [];
+
+const MOCK_PARTICIPANTS_AURI = [];
+
+const PRELOADED_FORMS = [
+  {
+    id: "form_bayan",
+    title: "Action Plan - Bayan Group",
+    desc: "Silakan lengkapi identitas diri dan komitmen rencana tindakan kepemimpinan Anda secara seksama. Draf disimpan otomatis.",
+    status: "active",
+    owner: "saya",
+    createdAt: "22 Mei 2026",
+    group: "Komitmen Awal",
+    fields: DEFAULT_FIELDS
+  },
+  {
+    id: "form_auri_post",
+    title: "Post Test Leadership Essentials - Auri Steel Metalindo",
+    desc: "Formulir pengerjaan post-test kepemimpinan dan komitmen implementasi tindakan kerja nyata bagi staf PT Auri Steel Metalindo.",
+    status: "active",
+    owner: "saya",
+    createdAt: "29 Jan 2026",
+    group: "Komitmen Awal",
+    fields: DEFAULT_FIELDS
+  },
+  {
+    id: "form_auri_pre",
+    title: "Pre Test Leadership Essentials - Auri Steel Metalindo",
+    desc: "Evaluasi awal kesiapan kepemimpinan (Pre-Test) sebelum dimulainya program Bootcamp Leadership Essentials.",
+    status: "active",
+    owner: "--",
+    createdAt: "29 Jan 2026",
+    group: "Komitmen Awal",
+    fields: DEFAULT_FIELDS.slice(0, 3)
+  },
+  {
+    id: "form_prdc_sentiment",
+    title: "Topik Analisis Sentimen - PRDC EXCL",
+    desc: "Kuisioner riset analisis sentimen dan kepuasan publik terhadap kinerja divisi PRDC.",
+    status: "active",
+    owner: "--",
+    createdAt: "31 Jan 2026",
+    group: "Komitmen Awal",
+    fields: DEFAULT_FIELDS
+  },
+  {
+    id: "form_kpi_matrix",
+    title: "KPI & MATRIX",
+    desc: "Formulir penetapan KPI dan matriks koordinasi antar lini manajerial perusahaan.",
+    status: "inactive",
+    owner: "saya",
+    createdAt: "29 Jan 2026",
+    group: "Komitmen Awal",
+    fields: DEFAULT_FIELDS
+  },
+  {
+    id: "form_auri_eval",
+    title: "Evaluasi Leadership Essentials - Auri Steel Metalindo 2026",
+    desc: "Formulir evaluasi akhir program pelatihan komprehensif Leadership Essentials Batch 1 PT Auri Steel Metalindo.",
+    status: "active",
+    owner: "--",
+    createdAt: "26 Jan 2026",
+    group: "Komitmen Awal",
+    fields: DEFAULT_FIELDS
+  },
+  {
+    id: "form_mushola_monitor",
+    title: "MATRIX MONITORING ROBOHNYA MUSHOLA PONPES AL-KHOZINY",
+    desc: "Monitoring tanggapan bencana, kontribusi donasi, serta rencana aksi pembangunan mushola Pondok Pesantren Al-Khoziny.",
+    status: "inactive",
+    owner: "--",
+    createdAt: "6 Nov 2025",
+    group: "Komitmen Awal",
+    fields: DEFAULT_FIELDS
+  }
+];
+
+let FORMS_DATABASE = [];
+
+// ── INIT ──
+function init() {
+  // One-time cleanup to clear existing mock data in user's browser
+  if (!localStorage.getItem("mdi_data_cleared_v3")) {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith("mdi_participants_")) {
+        localStorage.removeItem(key);
+        i--;
+      }
+    }
+    localStorage.setItem("mdi_data_cleared_v3", "true");
+  }
+
+  // Dynamic schema migration: upgrade q_dept field from select to text
+  const cachedForms = localStorage.getItem("mdi_forms");
+  if (cachedForms) {
+    try {
+      const forms = JSON.parse(cachedForms);
+      let updated = false;
+      forms.forEach(form => {
+        if (form.fields) {
+          form.fields.forEach(field => {
+            if (field.id === "q_dept" && field.type === "select") {
+              field.type = "text";
+              field.options = [];
+              updated = true;
+            }
+          });
+        }
+      });
+      if (updated) {
+        localStorage.setItem("mdi_forms", JSON.stringify(forms));
+      }
+    } catch (e) {
+      console.error("Migration error:", e);
+    }
+  }
+
+  const cachedFormsReload = localStorage.getItem("mdi_forms");
+  if (cachedFormsReload) {
+    FORMS_DATABASE = JSON.parse(cachedFormsReload);
+  } else {
+    FORMS_DATABASE = PRELOADED_FORMS;
+    localStorage.setItem("mdi_forms", JSON.stringify(FORMS_DATABASE));
+  }
+
+  // Pre-seed participants for form_bayan if empty
+  if (!localStorage.getItem("mdi_participants_form_bayan")) {
+    localStorage.setItem("mdi_participants_form_bayan", JSON.stringify([]));
+  }
+
+  // Pre-seed participants for other preloaded forms
+  FORMS_DATABASE.forEach(form => {
+    if (!localStorage.getItem(`mdi_participants_${form.id}`)) {
+      localStorage.setItem(`mdi_participants_${form.id}`, JSON.stringify([]));
+    }
+  });
+
+  loadClients();
+  renderClients();
+  renderAssignForms();
+  renderFormsList();
+}
+
+let currentOwnerFilter = 'all';
+let currentSearchQuery = '';
+
+function applyFilters() {
+  const select = document.getElementById("filter-owner");
+  const searchInp = document.getElementById("dashboard-search");
+  if (select) currentOwnerFilter = select.value;
+  if (searchInp) currentSearchQuery = searchInp.value.toLowerCase().trim();
+  
+  renderFormsList();
+  renderDragAndDropUI();
+}
+
+function renderFormsList() {
+  const tbodyAwal = document.getElementById("formsListBodyAwal");
+  
+  tbodyAwal.innerHTML = "";
+
+  let countAwal = 0;
+
+  FORMS_DATABASE.forEach(form => {
+    if (currentOwnerFilter !== 'all' && form.trainingConsultant !== currentOwnerFilter) {
+      return;
+    }
+    if (currentSearchQuery && !form.title.toLowerCase().includes(currentSearchQuery)) {
+      return;
+    }
+    const isChecked = form.status === "active" ? "checked" : "";
+    const statusText = form.status === "active" ? 
+      `<span class="status-label status-active" id="lbl-status-${form.id}">Aktif (Terbuka)</span>` : 
+      `<span class="status-label status-inactive" id="lbl-status-${form.id}">Tutup</span>`;
+
+    const adminBtnHtml = `<a href="MDI_ActionPlan_Admin.html?formId=${form.id}" target="_blank" class="action-btn">Admin</a>`;
+    const viewerBtnHtml = `<a href="MDI_ActionPlan_ClientPortal.html?formId=${form.id}&bypass=true&client=${encodeURIComponent(form.client || '')}" target="_blank" class="action-btn">Portal Klien</a>`;
+
+    const rowHtml = `
+      <tr>
+        <td class="doc-title-cell">
+          <div class="doc-icon ${form.title.includes('Test') || form.title.includes('Plan') ? '' : 'green-sheet'}">
+            ${form.title.includes('Test') || form.title.includes('Plan') ? '📄' : '📊'}
+          </div>
+          <div>
+            <a href="MDI_ActionPlan_Form.html?formId=${form.id}" class="doc-name" target="_blank">${form.title}</a>
+            <div class="doc-desc">${form.desc}</div>
+            ${form.trainingDate ? `<div style="font-size: 10px; color: var(--mdi-orange); margin-top: 4px; font-weight: 600;">📅 ${form.trainingDate}</div>` : ''}
+          </div>
+        </td>
+        <td>
+          <span class="owner-badge">${form.owner}</span>
+        </td>
+        <td>
+          <span class="owner-badge">${form.trainingConsultant || "-"}</span>
+        </td>
+        <td>
+          <span class="date-text">${form.createdAt}</span>
+        </td>
+        <td>
+          <div style="display:flex; align-items:center;">
+            <label class="toggle-switch">
+              <input type="checkbox" ${isChecked} onchange="toggleFormActive('${form.id}', this.checked)">
+              <span class="slider"></span>
+            </label>
+            ${statusText}
+          </div>
+        </td>
+        <td style="text-align: right;">
+          <div class="actions-wrap">
+            ${adminBtnHtml}
+            ${viewerBtnHtml}
+            <button class="action-btn" onclick="openEditFormModal('${form.id}')" style="background:#f59e0b; border-color:#f59e0b; color:#fff;">Edit</button>
+            <button class="action-btn" onclick="deleteForm('${form.id}')" style="background:#b91c1c; border-color:#b91c1c; color:#fff;">Hapus</button>
+          </div>
+        </td>
+      </tr>
+    `;
+
+    tbodyAwal.innerHTML += rowHtml;
+    countAwal++;
+  });
+
+  if (countAwal === 0) {
+    tbodyAwal.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:rgba(255,255,255,0.4);">Tidak ada formulir komitmen awal.</td></tr>`;
+  }
+}
+
+function deleteForm(id) {
+  if (confirm("Apakah Anda yakin ingin menghapus formulir ini beserta seluruh database pesertanya secara permanen? Tindakan ini tidak dapat dibatalkan.")) {
+    FORMS_DATABASE = FORMS_DATABASE.filter(f => f.id !== id);
+    localStorage.setItem("mdi_forms", JSON.stringify(FORMS_DATABASE));
+    localStorage.removeItem(`mdi_participants_${id}`);
+    renderFormsList();
+  }
+}
+
+function toggleFormActive(id, checked) {
+  const form = FORMS_DATABASE.find(f => f.id === id);
+  if (form) {
+    form.status = checked ? "active" : "inactive";
+    localStorage.setItem("mdi_forms", JSON.stringify(FORMS_DATABASE));
+    
+    // Update local label visually immediately
+    const label = document.getElementById(`lbl-status-${id}`);
+    if (label) {
+      if (checked) {
+        label.className = "status-label status-active";
+        label.textContent = "Aktif (Terbuka)";
+      } else {
+        label.className = "status-label status-inactive";
+        label.textContent = "Tutup";
+      }
+    }
+  }
+}
+
+// ── MODALS LOGIC ──
+function openCreateFormModal() {
+  document.getElementById("createFormModal").classList.add("active");
+  document.getElementById("new-form-title").value = "";
+  document.getElementById("new-form-desc").value = "";
+  document.getElementById("new-form-training-date").value = "";
+  document.getElementById("new-form-owner").value = "saya";
+  document.getElementById("new-form-training-consultant").value = "Kartika";
+  document.getElementById("new-form-group").value = "Komitmen Awal";
+}
+
+function closeCreateFormModal() {
+  document.getElementById("createFormModal").classList.remove("active");
+}
+
+function saveNewForm() {
+  const title = document.getElementById("new-form-title").value.trim();
+  const group = document.getElementById("new-form-group").value;
+  const desc = document.getElementById("new-form-desc").value.trim();
+  const owner = document.getElementById("new-form-owner").value.trim() || "saya";
+  const trainingConsultant = document.getElementById("new-form-training-consultant").value;
+  const trainingDate = document.getElementById("new-form-training-date").value.trim();
+
+  if (!title) {
+    alert("Nama formulir tidak boleh kosong!");
+    return;
+  }
+
+  const id = "form_" + Date.now();
+  const dateOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+  const formattedDate = new Date().toLocaleDateString('id-ID', dateOptions);
+
+  FORMS_DATABASE.unshift({
+    id: id,
+    title: title,
+    desc: desc || "Silakan isi komitmen rencana tindakan kepemimpinan Anda secara seksama.",
+    status: "active",
+    owner: owner,
+    trainingConsultant: trainingConsultant,
+    trainingDate: trainingDate,
+    createdAt: formattedDate,
+    group: group,
+    fields: DEFAULT_FIELDS
+  });
+  localStorage.setItem("mdi_forms", JSON.stringify(FORMS_DATABASE));
+
+  // Seed empty participants slate for this new form so it is immediately operational
+  localStorage.setItem(`mdi_participants_${id}`, JSON.stringify([]));
+
+  closeCreateFormModal();
+  renderFormsList();
+  alert(`Formulir "${title}" berhasil dibuat dalam kelompok "${group}"!`);
+}
+
+function openEditFormModal(id) {
+  const form = FORMS_DATABASE.find(f => f.id === id);
+  if(!form) return;
+  document.getElementById("edit-form-id").value = form.id;
+  document.getElementById("edit-form-title").value = form.title;
+  document.getElementById("edit-form-owner").value = form.owner || "saya";
+  document.getElementById("edit-form-training-consultant").value = form.trainingConsultant || "Kartika";
+  document.getElementById("edit-form-training-date").value = form.trainingDate || "";
+  document.getElementById("edit-form-desc").value = form.desc;
+  
+  document.getElementById("edit-form-modal").style.display = "flex";
+  // Small timeout for transition if using active class
+  setTimeout(() => document.getElementById("edit-form-modal").classList.add("active"), 10);
+}
+
+function closeEditFormModal() {
+  document.getElementById("edit-form-modal").classList.remove("active");
+  setTimeout(() => document.getElementById("edit-form-modal").style.display = "none", 300);
+}
+
+function saveEditForm() {
+  const id = document.getElementById("edit-form-id").value;
+  const title = document.getElementById("edit-form-title").value.trim();
+  const owner = document.getElementById("edit-form-owner").value.trim() || "saya";
+  const trainingConsultant = document.getElementById("edit-form-training-consultant").value;
+  const desc = document.getElementById("edit-form-desc").value.trim();
+  const trainingDate = document.getElementById("edit-form-training-date").value.trim();
+
+  if (!title) {
+    alert("Nama formulir tidak boleh kosong!");
+    return;
+  }
+
+  const formIndex = FORMS_DATABASE.findIndex(f => f.id === id);
+  if(formIndex !== -1) {
+    FORMS_DATABASE[formIndex].title = title;
+    FORMS_DATABASE[formIndex].owner = owner;
+    FORMS_DATABASE[formIndex].trainingConsultant = trainingConsultant;
+    FORMS_DATABASE[formIndex].trainingDate = trainingDate;
+    FORMS_DATABASE[formIndex].desc = desc;
+    localStorage.setItem("mdi_forms", JSON.stringify(FORMS_DATABASE));
+    closeEditFormModal();
+    renderFormsList();
+    renderDragAndDropUI();
+    alert("Formulir berhasil diperbarui!");
+  }
+}
+
+window.onload = init;
+
+
+// ── CLIENT PORTAL MANAGEMENT LOGIC ──
+let CLIENTS_DB = [];
+
+function loadClients() {
+  const cached = localStorage.getItem("mdi_clients");
+  CLIENTS_DB = cached ? JSON.parse(cached) : [];
+}
+
+function saveClients() {
+  localStorage.setItem("mdi_clients", JSON.stringify(CLIENTS_DB));
+}
+
+let expandedClientZones = new Set();
+
+function toggleClientZone(clientName) {
+  const zone = document.getElementById(`zone-${clientName}`);
+  const icon = document.getElementById(`icon-${clientName}`);
+  if (zone.style.display === "none") {
+    zone.style.display = "flex";
+    icon.textContent = "▼";
+    expandedClientZones.add(clientName);
+  } else {
+    zone.style.display = "none";
+    icon.textContent = "▶";
+    expandedClientZones.delete(clientName);
+  }
+}
+function renderDragAndDropUI() {
+  const unassignedZone = document.getElementById("unassigned-zone");
+  const clientZonesContainer = document.getElementById("client-zones-container");
+  if(!unassignedZone || !clientZonesContainer) return;
+
+  unassignedZone.innerHTML = "";
+  clientZonesContainer.innerHTML = "";
+
+  const clientSearchQuery = document.getElementById("client-search") ? document.getElementById("client-search").value.toLowerCase().trim() : "";
+
+  // 1. Render Client Zones
+  CLIENTS_DB.forEach((c, idx) => {
+    if (clientSearchQuery && !c.name.toLowerCase().includes(clientSearchQuery)) {
+      return;
+    }
+
+    if (currentSearchQuery && !c.name.toLowerCase().includes(currentSearchQuery)) {
+      // If client name doesn't match, check if any of their forms match
+      const clientForms = FORMS_DATABASE.filter(f => f.client === c.name);
+      const hasMatchingForm = clientForms.some(f => f.title.toLowerCase().includes(currentSearchQuery));
+      if (!hasMatchingForm) return;
+    }
+
+    const clientBox = document.createElement("div");
+    clientBox.className = "client-drop-zone";
+    clientBox.ondrop = (e) => drop(e, c.name);
+    clientBox.ondragover = allowDrop;
+    clientBox.ondragenter = (e) => { e.preventDefault(); clientBox.classList.add("drag-over"); };
+    clientBox.ondragleave = (e) => { e.preventDefault(); clientBox.classList.remove("drag-over"); };
+
+    const isExpanded = expandedClientZones.has(c.name);
+    const displayStyle = isExpanded ? "flex" : "none";
+    const iconStr = isExpanded ? "▼" : "▶";
+
+    clientBox.innerHTML = `
+      <div class="client-box-header" style="cursor: pointer;" onclick="toggleClientZone('${c.name}')">
+        <div>
+          <div class="client-name" style="display: flex; align-items: center; gap: 6px;">
+            <span id="icon-${c.name}">${iconStr}</span> ${idx + 1}. ${c.name}
+          </div>
+          <div style="font-size:9.5px; color:rgba(255,255,255,0.4); margin-top:2px;">PIN: <span class="client-pin">${c.pin}</span></div>
+        </div>
+        <div style="display:flex; gap:8px;" onclick="event.stopPropagation()">
+          <button class="client-action-btn" onclick="editClientAccount(${idx})" style="background:transparent; border:none; color:#f59e0b; font-size:12px; cursor:pointer; font-weight:600;" title="Edit Klien">Edit</button>
+          <button class="client-action-btn" onclick="deleteClientAccount(${idx})" style="background:transparent; border:none; color:#ef4444; font-size:12px; cursor:pointer; font-weight:600;" title="Hapus Klien">Hapus</button>
+        </div>
+      </div>
+      <div id="zone-${c.name}" style="flex-grow:1; display:${displayStyle}; flex-direction:column; gap:8px; padding-top: 8px;"></div>
+    `;
+    clientZonesContainer.appendChild(clientBox);
+  });
+
+  if (CLIENTS_DB.length === 0) {
+    clientZonesContainer.innerHTML = `<div style="color:rgba(255,255,255,0.3); font-size:12px; font-style:italic; padding:12px;">Belum ada grup klien. Klik "Tambah Klien" untuk membuat.</div>`;
+  }
+
+  // 2. Render Forms into Zones
+  FORMS_DATABASE.forEach(form => {
+    if (currentOwnerFilter !== 'all' && form.owner !== currentOwnerFilter) {
+      return;
+    }
+    const formEl = document.createElement("div");
+    formEl.className = "draggable-form";
+    formEl.draggable = true;
+    formEl.ondragstart = (e) => drag(e, form.id);
+    formEl.id = `drag-${form.id}`;
+    
+    const isUnassigned = !form.client || !CLIENTS_DB.some(c => c.name === form.client);
+    
+    let assignHtml = '';
+    if (isUnassigned && CLIENTS_DB.length > 0) {
+      const options = CLIENTS_DB.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+      assignHtml = `
+        <select class="assign-select" onchange="assignFormToClient('${form.id}', this.value)" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 11px; padding: 2px 4px; border-radius: 4px; outline: none; margin-left: 4px;">
+          <option value="">+ Tugaskan...</option>
+          ${options}
+        </select>
+      `;
+    }
+
+    const tDateHtml = form.trainingDate ? `<div style="font-size:10.5px; color:var(--mdi-orange); margin-top:4px; font-weight:600;">📅 ${form.trainingDate}</div>` : '';
+    const descHtml = form.desc ? `<div style="font-size:11px; color:rgba(255,255,255,0.7); margin-top:4px; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${form.desc}</div>` : '';
+
+    formEl.innerHTML = `
+      <div class="draggable-form-title">${form.title}</div>
+      ${descHtml}
+      ${tDateHtml}
+      <div style="margin-top:8px; display:flex; align-items:center; gap:8px;">
+        <button class="df-btn" title="Edit Form" onclick="openEditFormModal('${form.id}')" style="background:rgba(255,255,255,0.1); border:none; color:#fff; cursor:pointer; font-size:12px; padding: 4px 8px; width:auto; font-weight:600;">Edit</button>
+        ${assignHtml}
+      </div>
+    `;
+
+    if (form.client && CLIENTS_DB.some(c => c.name === form.client)) {
+      const zone = document.getElementById(`zone-${form.client}`);
+      if (zone) zone.appendChild(formEl);
+    } else {
+      // Unassigned or assigned to deleted client
+      unassignedZone.appendChild(formEl);
+    }
+  });
+}
+
+function assignFormToClient(formId, clientName) {
+  if (!clientName) return;
+  const formIndex = FORMS_DATABASE.findIndex(f => f.id === formId);
+  if (formIndex !== -1) {
+    FORMS_DATABASE[formIndex].client = clientName;
+    localStorage.setItem("mdi_forms", JSON.stringify(FORMS_DATABASE));
+    renderDragAndDropUI();
+    renderFormsList();
+  }
+}
+
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev, formId) {
+  ev.dataTransfer.setData("formId", formId);
+}
+
+function drop(ev, clientName) {
+  ev.preventDefault();
+  // Remove drag-over class from all zones
+  document.querySelectorAll(".client-drop-zone").forEach(z => z.classList.remove("drag-over"));
+  
+  const formId = ev.dataTransfer.getData("formId");
+  const form = FORMS_DATABASE.find(f => f.id === formId);
+  if (form) {
+    if (clientName === "") {
+      delete form.client;
+    } else {
+      form.client = clientName;
+    }
+    localStorage.setItem("mdi_forms", JSON.stringify(FORMS_DATABASE));
+    renderDragAndDropUI();
+    renderFormsList();
+  }
+}
+
+// Map old functions to new ones
+function renderClients() {
+  renderDragAndDropUI();
+}
+function renderAssignForms() {
+  renderDragAndDropUI();
+}
+
+function addClientAccount() {
+  const name = prompt("Masukkan Nama Perusahaan / Klien (misal: Yusen Logistic):");
+  if(!name || name.trim() === "") return;
+  const pin = prompt(`Masukkan 4-digit PIN akses untuk ${name.trim()}:`);
+  if(!pin || pin.trim() === "") return;
+  
+  if (CLIENTS_DB.find(c => c.name.toLowerCase() === name.trim().toLowerCase())) {
+    alert("Akun klien dengan nama tersebut sudah terdaftar!");
+    return;
+  }
+  
+  CLIENTS_DB.push({ name: name.trim(), pin: pin.trim() });
+  saveClients();
+  renderDragAndDropUI();
+  alert(`Akun klien ${name.trim()} berhasil dibuat!`);
+}
+function editClientAccount(idx) {
+  const currentName = CLIENTS_DB[idx].name;
+  const newName = prompt("Masukkan nama baru untuk grup klien ini:", currentName);
+  
+  if (newName !== null && newName.trim() !== "" && newName.trim() !== currentName) {
+    const trimmedName = newName.trim();
+    if (CLIENTS_DB.some((c, i) => i !== idx && c.name.toLowerCase() === trimmedName.toLowerCase())) {
+      alert("Nama klien tersebut sudah digunakan!");
+      return;
+    }
+    
+    // Update client name
+    CLIENTS_DB[idx].name = trimmedName;
+    saveClients();
+    
+    // Update forms that were assigned to the old client name
+    FORMS_DATABASE.forEach(f => {
+      if (f.client === currentName) {
+        f.client = trimmedName;
+      }
+    });
+    localStorage.setItem("mdi_forms", JSON.stringify(FORMS_DATABASE));
+    
+    renderDragAndDropUI();
+    renderFormsList();
+    alert(`Nama klien berhasil diubah menjadi "${trimmedName}"`);
+  }
+}
+
+function deleteClientAccount(idx) {
+  const cName = CLIENTS_DB[idx].name;
+  if(confirm(`Apakah Anda yakin ingin menghapus grup klien "${cName}"? Program akan kembali ke status belum ditugaskan.`)) {
+    // Unassign forms assigned to this client
+    FORMS_DATABASE.forEach(f => {
+      if (f.client === cName) delete f.client;
+    });
+    localStorage.setItem("mdi_forms", JSON.stringify(FORMS_DATABASE));
+    
+    CLIENTS_DB.splice(idx, 1);
+    saveClients();
+    renderDragAndDropUI();
+    renderFormsList();
+  }
+}
+
+
+// Real-time synchronization
+window.addEventListener('storage', (e) => {
+  if (e.key === 'mdi_forms') {
+    FORMS_DATABASE = JSON.parse(e.newValue);
+    renderFormsList();
+  }
+});
+</script>
+</body>
+</html>
