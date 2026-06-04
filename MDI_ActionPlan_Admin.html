@@ -1269,7 +1269,7 @@ function init() {
       forms = JSON.parse(cachedForms) || [];
     }
   } else {
-    alert("Warning: Forms database not found in local storage. Please open Dashboard Gateway first.");
+    window.location.replace("MDI_ActionPlan_Dashboard.html?auto_seed=true&returnTo=admin");
     return;
   }
 

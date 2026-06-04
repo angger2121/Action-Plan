@@ -734,8 +734,11 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
       function init() {
         const cachedForms = localStorage.getItem("mdi_forms");
         let forms = [];
-        if (cachedForms) {
+        if (cachedForms && cachedForms !== '[]') {
           try { forms = JSON.parse(cachedForms); } catch (e) { forms = JSON.parse(cachedForms) || []; }
+        } else {
+          window.location.replace("MDI_ActionPlan_Dashboard.html?auto_seed=true&returnTo=client");
+          return;
         }
         const urlParams = new URLSearchParams(window.location.search);
         formId = urlParams.get('formId') || 'form_bayan';
