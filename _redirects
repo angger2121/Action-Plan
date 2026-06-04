@@ -1,1 +1,4 @@
-/    /clientportal.html    301
+/clientportal   /clientportal.html   200
+/dashboard      /dashboard.html      200
+/gateway        /gateway.html        200
+/               /clientportal.html   301
