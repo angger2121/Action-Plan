@@ -818,6 +818,18 @@ function init() {
   renderClients();
   renderAssignForms();
   renderFormsList();
+
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("auto_seed") === "true") {
+    if (urlParams.get("returnTo") === "client") {
+      window.location.replace("MDI_ActionPlan_ClientPortal.html");
+    } else if (urlParams.get("returnTo") === "admin") {
+      window.location.replace("dashboard.html");
+    } else if (urlParams.get("returnTo") === "form") {
+      const origFormId = urlParams.get("origFormId") || "";
+      window.location.replace("MDI_ActionPlan_Form.html" + (origFormId ? "?formId=" + origFormId : ""));
+    }
+  }
 }
 
 let currentOwnerFilter = 'all';
@@ -1285,17 +1297,7 @@ window.addEventListener('storage', (e) => {
   }
 });
 
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get("auto_seed") === "true") {
-  if (urlParams.get("returnTo") === "client") {
-    window.location.replace("MDI_ActionPlan_ClientPortal.html");
-  } else if (urlParams.get("returnTo") === "admin") {
-    window.location.replace("dashboard.html");
-  } else if (urlParams.get("returnTo") === "form") {
-    const origFormId = urlParams.get("origFormId") || "";
-    window.location.replace("MDI_ActionPlan_Form.html" + (origFormId ? "?formId=" + origFormId : ""));
-  }
-}
+
 </script>
 </body>
 </html>
