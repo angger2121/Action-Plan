@@ -871,10 +871,10 @@ td { padding: 12px 14px; vertical-align: top; }
         </div>
         
         <div style="margin-left:auto; display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn btn-primary" onclick="openAddPICModal()">➕ Add PIC / Participant</button>
-          <button class="btn btn-danger" id="btn-delete-selected" style="display:none;" onclick="deleteSelectedPIC()">🗑️ Hapus Terpilih</button>
-          <button class="btn" style="background:#107c41; color:#fff; border-color:#107c41; font-weight:600;" onclick="openImportModal()">📗 Import Excel</button>
-          <button class="btn" style="background:#1a73e8; color:#fff; border-color:#1a73e8; font-weight:600;" onclick="document.getElementById('stage2ExcelUpload').click()">📘 Upload Penyelesaian</button>
+          <button class="btn btn-primary" onclick="openAddPICModal()">Add PIC / Participant</button>
+          <button class="btn btn-danger" id="btn-delete-selected" style="display:none;" onclick="deleteSelectedPIC()">Hapus Terpilih</button>
+          <button class="btn" style="background:#107c41; color:#fff; border-color:#107c41; font-weight:600;" onclick="openImportModal()">Import Excel</button>
+          <button class="btn" style="background:#1a73e8; color:#fff; border-color:#1a73e8; font-weight:600;" onclick="document.getElementById('stage2ExcelUpload').click()">Import Penyelesaian</button>
           <input type="file" id="stage2ExcelUpload" accept=".xlsx, .xls, .csv" style="display:none;" onchange="handleStage2ExcelUpload(event)">
         </div>
       </div>
@@ -1132,7 +1132,7 @@ td { padding: 12px 14px; vertical-align: top; }
 <div class="modal-overlay" id="import-modal">
   <div class="modal-card" style="max-width: 520px; border-radius: var(--radius-md);">
     <div class="modal-header" style="background:#107c41; color: #fff;">
-      <div class="modal-title">📥 Import Manual Database (Excel)</div>
+      <div class="modal-title">Import Manual Database (Excel)</div>
       <button class="modal-close" onclick="closeImportModal()">×</button>
     </div>
     <div class="modal-body" style="padding: 24px; display:flex; flex-direction:column; gap:16px;">
