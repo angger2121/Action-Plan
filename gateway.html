@@ -1292,8 +1292,18 @@ function deleteClientAccount(idx) {
 // Real-time synchronization
 window.addEventListener('storage', (e) => {
   if (e.key === 'mdi_forms') {
-    FORMS_DATABASE = JSON.parse(e.newValue);
-    renderFormsList();
+    if (e.newValue) {
+      FORMS_DATABASE = JSON.parse(e.newValue);
+      renderFormsList();
+      renderDragAndDropUI();
+    }
+  }
+  if (e.key === 'mdi_clients') {
+    if (e.newValue) {
+      CLIENTS_DB = JSON.parse(e.newValue);
+      renderClients();
+      renderDragAndDropUI();
+    }
   }
 });
 
