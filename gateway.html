@@ -682,72 +682,50 @@ const MOCK_PARTICIPANTS_AURI = [];
 
 const PRELOADED_FORMS = [
   {
-    id: "form_bayan",
-    title: "Action Plan - Bayan Group",
-    desc: "Silakan lengkapi identitas diri dan komitmen rencana tindakan kepemimpinan Anda secara seksama. Draf disimpan otomatis.",
-    status: "active",
+    id: "form_bayan_batch1",
+    title: "Action Plan - Bayan Group (Strengthening Self-Leadership, Mindset & Agility) Batch 1",
+    desc: "Silakan lengkapi identitas diri dan komitmen rencana tindakan kepemimpinan Anda secara seksama.",
+    status: "inactive",
     owner: "saya",
+    trainingConsultant: "Matius",
+    trainingDate: "3 Februari 2026",
     createdAt: "22 Mei 2026",
     group: "Komitmen Awal",
     fields: DEFAULT_FIELDS
   },
   {
-    id: "form_auri_post",
-    title: "Post Test Leadership Essentials - Auri Steel Metalindo",
-    desc: "Formulir pengerjaan post-test kepemimpinan dan komitmen implementasi tindakan kerja nyata bagi staf PT Auri Steel Metalindo.",
-    status: "active",
-    owner: "saya",
-    createdAt: "29 Jan 2026",
-    group: "Komitmen Awal",
-    fields: DEFAULT_FIELDS
-  },
-  {
-    id: "form_auri_pre",
-    title: "Pre Test Leadership Essentials - Auri Steel Metalindo",
-    desc: "Evaluasi awal kesiapan kepemimpinan (Pre-Test) sebelum dimulainya program Bootcamp Leadership Essentials.",
-    status: "active",
-    owner: "--",
-    createdAt: "29 Jan 2026",
-    group: "Komitmen Awal",
-    fields: DEFAULT_FIELDS.slice(0, 3)
-  },
-  {
-    id: "form_prdc_sentiment",
-    title: "Topik Analisis Sentimen - PRDC EXCL",
-    desc: "Kuisioner riset analisis sentimen dan kepuasan publik terhadap kinerja divisi PRDC.",
-    status: "active",
-    owner: "--",
-    createdAt: "31 Jan 2026",
-    group: "Komitmen Awal",
-    fields: DEFAULT_FIELDS
-  },
-  {
-    id: "form_kpi_matrix",
-    title: "KPI & MATRIX",
-    desc: "Formulir penetapan KPI dan matriks koordinasi antar lini manajerial perusahaan.",
+    id: "form_yusen_driving",
+    title: "Action Plan - Yusen Logistics (Driving Performance, Communication & Adaptability)",
+    desc: "Action Plan - Yusen Logistics (Driving Performance, Communication & Adaptability)",
     status: "inactive",
     owner: "saya",
-    createdAt: "29 Jan 2026",
+    trainingConsultant: "Aji",
+    trainingDate: "22-23 Mei 2026",
+    createdAt: "25 Mei 2026",
     group: "Komitmen Awal",
     fields: DEFAULT_FIELDS
   },
   {
-    id: "form_auri_eval",
-    title: "Evaluasi Leadership Essentials - Auri Steel Metalindo 2026",
-    desc: "Formulir evaluasi akhir program pelatihan komprehensif Leadership Essentials Batch 1 PT Auri Steel Metalindo.",
-    status: "active",
-    owner: "--",
-    createdAt: "26 Jan 2026",
-    group: "Komitmen Awal",
-    fields: DEFAULT_FIELDS
-  },
-  {
-    id: "form_mushola_monitor",
-    title: "MATRIX MONITORING ROBOHNYA MUSHOLA PONPES AL-KHOZINY",
-    desc: "Monitoring tanggapan bencana, kontribusi donasi, serta rencana aksi pembangunan mushola Pondok Pesantren Al-Khoziny.",
+    id: "form_yusen_negotiation",
+    title: "Action Plan - Yusen Logistic (Negotiation Skills)",
+    desc: "Silakan isi komitmen rencana tindakan kepemimpinan Anda secara seksama.",
     status: "inactive",
-    owner: "--",
-    createdAt: "6 Nov 2025",
+    owner: "saya",
+    trainingConsultant: "Aji",
+    trainingDate: "5 - 6 Juni 2026",
+    createdAt: "3 Jun 2026",
+    group: "Komitmen Awal",
+    fields: DEFAULT_FIELDS
+  },
+  {
+    id: "form_bayan_batch2",
+    title: "Action Plan - Bayan Group (Strengthening Self-Leadership, Mindset & Agility) Batch 2",
+    desc: "Silakan isi komitmen rencana tindakan kepemimpinan Anda secara seksama.",
+    status: "inactive",
+    owner: "saya",
+    trainingConsultant: "Matius",
+    trainingDate: "11 Juni 2026",
+    createdAt: "3 Jun 2026",
     group: "Komitmen Awal",
     fields: DEFAULT_FIELDS
   }
@@ -758,15 +736,15 @@ let FORMS_DATABASE = [];
 // ── INIT ──
 function init() {
   // One-time cleanup to clear existing mock data in user's browser
-  if (!localStorage.getItem("mdi_data_cleared_v3")) {
+  if (!localStorage.getItem("mdi_data_cleared_v4")) {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key.startsWith("mdi_participants_")) {
+      if (key && (key.startsWith("mdi_participants_") || key === "mdi_forms")) {
         localStorage.removeItem(key);
         i--;
       }
     }
-    localStorage.setItem("mdi_data_cleared_v3", "true");
+    localStorage.setItem("mdi_data_cleared_v4", "true");
   }
 
   // Dynamic schema migration: upgrade q_dept field from select to text
