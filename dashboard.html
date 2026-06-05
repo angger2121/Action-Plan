@@ -2743,30 +2743,51 @@ function handleExcelUpload(event) {
       return;
     }
 
-    const headers = rows[0].map(h => (h || "").toString().toLowerCase().trim());
+    const headers = rows[0].map(h => (h || "").toString().trim());
+    const lowerHeaders = headers.map(h => h.toLowerCase());
     
-    let nameIdx = headers.findIndex(h => h === "nama" || h === "name" || h === "nama lengkap");
-    if (nameIdx === -1) nameIdx = headers.findIndex(h => h.includes("nama") || h.includes("name"));
+    let nameIdx = lowerHeaders.findIndex(h => h === "nama" || h === "name" || h === "nama lengkap");
+    if (nameIdx === -1) nameIdx = lowerHeaders.findIndex(h => h.includes("nama") || h.includes("name"));
     
-    let deptIdx = headers.findIndex(h => h === "departemen" || h === "dept" || h === "department");
-    if (deptIdx === -1) deptIdx = headers.findIndex(h => h.includes("dept") || h.includes("departemen"));
+    let deptIdx = lowerHeaders.findIndex(h => h === "departemen" || h === "dept" || h === "department");
+    if (deptIdx === -1) deptIdx = lowerHeaders.findIndex(h => h.includes("dept") || h.includes("departemen"));
     
-    let gradeIdx = headers.findIndex(h => h.includes("grade") || h.includes("jabatan"));
-    let dateIdx = headers.findIndex(h => h.includes("timestamp") || h.includes("waktu"));
+    let gradeIdx = lowerHeaders.findIndex(h => h.includes("grade") || h.includes("jabatan"));
+    let dateIdx = lowerHeaders.findIndex(h => h.includes("timestamp") || h.includes("waktu"));
 
-    const fieldMapping = {};
-    (FORM_CONFIG.fields || []).forEach(f => {
-      if (f.id === 'q_nama' || f.id === 'q_dept' || f.id === 'q_grade') return;
+    // DYNAMICALLY REBUILD FORM_CONFIG.fields based on Excel headers
+    let newFields = [
+      {id: "q_nama", label: "Nama Lengkap", type: "text", required: true, section: "Bagian 1 – Identitas", options: []},
+      {id: "q_dept", label: "Departemen", type: "text", required: true, section: "Bagian 1 – Identitas", options: []},
+      {id: "q_grade", label: "Grade", type: "text", required: true, section: "Bagian 1 – Identitas", options: []}
+    ];
+
+    const fieldMapping = {}; // mapping from column index to field ID
+    headers.forEach((h, idx) => {
+      if (!h) return;
+      if (idx === nameIdx || idx === deptIdx || idx === gradeIdx || idx === dateIdx) return;
       
-      const matchIdx = headers.findIndex(h => h.includes(f.label.toLowerCase().trim()));
-      if (matchIdx !== -1) {
-        fieldMapping[f.id] = matchIdx;
-      } else if (f.id.startsWith("q_action")) {
-        const num = f.id.replace("q_action", "");
-        const fallbackIdx = headers.findIndex(h => h.includes("action " + num) || h.includes("tindakan " + num));
-        if (fallbackIdx !== -1) fieldMapping[f.id] = fallbackIdx;
-      }
+      const safeId = "q_custom_" + idx;
+      newFields.push({
+        id: safeId,
+        label: h,
+        type: "textarea",
+        required: false,
+        section: "Data Tambahan",
+        options: []
+      });
+      fieldMapping[idx] = safeId;
     });
+
+    FORM_CONFIG.fields = newFields;
+
+    // Save updated FORM_CONFIG to localStorage
+    const cachedForms = JSON.parse(localStorage.getItem("mdi_forms") || "[]");
+    const formIdx = cachedForms.findIndex(f => f.id === formId);
+    if (formIdx !== -1) {
+      cachedForms[formIdx] = FORM_CONFIG;
+      localStorage.setItem("mdi_forms", JSON.stringify(cachedForms));
+    }
 
     let importedCount = 0;
     
@@ -2775,7 +2796,7 @@ function handleExcelUpload(event) {
       if (!row || row.length === 0) continue;
       
       const name = nameIdx !== -1 ? (row[nameIdx] || "").toString().trim() : "";
-      if (!name) continue;
+      if (!name) continue; // Wajib ada nama
       
       const dept = deptIdx !== -1 ? (row[deptIdx] || "").toString().trim() : "-";
       const grade = gradeIdx !== -1 ? (row[gradeIdx] || "").toString().trim() : "-";
@@ -2783,15 +2804,14 @@ function handleExcelUpload(event) {
       let submitDate = new Date().toISOString().split('T')[0];
       if (dateIdx !== -1 && row[dateIdx]) {
         try {
-          // Attempt to parse Excel date
           let parsedDate = new Date(row[dateIdx]);
           if (!isNaN(parsedDate.getTime())) submitDate = parsedDate.toISOString().split('T')[0];
-        } catch (e) {}
+        } catch (err) {}
       }
       
       const answers = {};
-      Object.keys(fieldMapping).forEach(fieldId => {
-        const colIdx = fieldMapping[fieldId];
+      Object.keys(fieldMapping).forEach(colIdx => {
+        const fieldId = fieldMapping[colIdx];
         answers[fieldId] = (row[colIdx] || "").toString().trim();
       });
 
@@ -2817,7 +2837,7 @@ function handleExcelUpload(event) {
     }
 
     localStorage.setItem(`mdi_participants_${formId}`, JSON.stringify(PARTICIPANTS_STAGE1));
-    alert(`Berhasil mengimpor ${importedCount} data Action Plan!`);
+    alert(`Berhasil mengimpor ${importedCount} data dan menyesuaikan kolom secara otomatis berdasarkan Excel!`);
     loadAndMergeParticipants();
     renderAll();
     event.target.value = '';
