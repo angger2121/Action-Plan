@@ -2726,6 +2726,178 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.onload = init;
+
+function handleExcelUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, {type: 'array'});
+    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+
+    if (rows.length < 2) {
+      alert("File kosong atau tidak memiliki data.");
+      return;
+    }
+
+    const headers = rows[0].map(h => (h || "").toString().toLowerCase().trim());
+    
+    let nameIdx = headers.findIndex(h => h === "nama" || h === "name" || h === "nama lengkap");
+    if (nameIdx === -1) nameIdx = headers.findIndex(h => h.includes("nama") || h.includes("name"));
+    
+    let deptIdx = headers.findIndex(h => h === "departemen" || h === "dept" || h === "department");
+    if (deptIdx === -1) deptIdx = headers.findIndex(h => h.includes("dept") || h.includes("departemen"));
+    
+    let gradeIdx = headers.findIndex(h => h.includes("grade") || h.includes("jabatan"));
+    let dateIdx = headers.findIndex(h => h.includes("timestamp") || h.includes("waktu"));
+
+    const fieldMapping = {};
+    (FORM_CONFIG.fields || []).forEach(f => {
+      if (f.id === 'q_nama' || f.id === 'q_dept' || f.id === 'q_grade') return;
+      
+      const matchIdx = headers.findIndex(h => h.includes(f.label.toLowerCase().trim()));
+      if (matchIdx !== -1) {
+        fieldMapping[f.id] = matchIdx;
+      } else if (f.id.startsWith("q_action")) {
+        const num = f.id.replace("q_action", "");
+        const fallbackIdx = headers.findIndex(h => h.includes("action " + num) || h.includes("tindakan " + num));
+        if (fallbackIdx !== -1) fieldMapping[f.id] = fallbackIdx;
+      }
+    });
+
+    let importedCount = 0;
+    
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      if (!row || row.length === 0) continue;
+      
+      const name = nameIdx !== -1 ? (row[nameIdx] || "").toString().trim() : "";
+      if (!name) continue;
+      
+      const dept = deptIdx !== -1 ? (row[deptIdx] || "").toString().trim() : "-";
+      const grade = gradeIdx !== -1 ? (row[gradeIdx] || "").toString().trim() : "-";
+      
+      let submitDate = new Date().toISOString().split('T')[0];
+      if (dateIdx !== -1 && row[dateIdx]) {
+        try {
+          // Attempt to parse Excel date
+          let parsedDate = new Date(row[dateIdx]);
+          if (!isNaN(parsedDate.getTime())) submitDate = parsedDate.toISOString().split('T')[0];
+        } catch (e) {}
+      }
+      
+      const answers = {};
+      Object.keys(fieldMapping).forEach(fieldId => {
+        const colIdx = fieldMapping[fieldId];
+        answers[fieldId] = (row[colIdx] || "").toString().trim();
+      });
+
+      const existingIdx = PARTICIPANTS_STAGE1.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
+      
+      const newParticipant = {
+        no: Date.now() + i,
+        name: name,
+        dept: dept,
+        grade: grade,
+        status: "none",
+        submittedAt: submitDate,
+        answers: answers
+      };
+
+      if (existingIdx !== -1) {
+        const p = PARTICIPANTS_STAGE1[existingIdx];
+        PARTICIPANTS_STAGE1[existingIdx] = {...p, ...newParticipant, no: p.no, status: p.status, answers: {...p.answers, ...newParticipant.answers}};
+      } else {
+        PARTICIPANTS_STAGE1.push(newParticipant);
+      }
+      importedCount++;
+    }
+
+    localStorage.setItem(`mdi_participants_${formId}`, JSON.stringify(PARTICIPANTS_STAGE1));
+    alert(`Berhasil mengimpor ${importedCount} data Action Plan!`);
+    loadAndMergeParticipants();
+    renderAll();
+    event.target.value = '';
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function handleStage2ExcelUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, {type: 'array'});
+    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+
+    if (rows.length < 2) {
+      alert("File kosong atau tidak memiliki data.");
+      return;
+    }
+
+    const headers = rows[0].map(h => (h || "").toString().toLowerCase().trim());
+    let nameIdx = headers.findIndex(h => h === "nama" || h === "name" || h === "nama lengkap");
+    if (nameIdx === -1) nameIdx = headers.findIndex(h => h.includes("nama") || h.includes("name"));
+    
+    if (nameIdx === -1) {
+      alert("Tidak dapat menemukan kolom Nama di file Excel.");
+      return;
+    }
+
+    const fieldMapping = {};
+    (FORM_CONFIG.fields || []).forEach(f => {
+      if (f.id === 'q_nama' || f.id === 'q_dept' || f.id === 'q_grade') return;
+      if (!f.id.startsWith("q_notes") && !f.id.startsWith("q_challenge")) return; // Only map stage 2 fields
+      
+      const matchIdx = headers.findIndex(h => h.includes(f.label.toLowerCase().trim()));
+      if (matchIdx !== -1) fieldMapping[f.id] = matchIdx;
+    });
+
+    let statusIdx = headers.findIndex(h => h.includes("status") || h.includes("penyelesaian"));
+
+    let importedCount = 0;
+    
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      if (!row || row.length === 0) continue;
+      
+      const name = (row[nameIdx] || "").toString().trim();
+      if (!name) continue;
+      
+      const existingIdx = PARTICIPANTS_STAGE1.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
+      if (existingIdx !== -1) {
+        const p = PARTICIPANTS_STAGE1[existingIdx];
+        
+        Object.keys(fieldMapping).forEach(fieldId => {
+          const colIdx = fieldMapping[fieldId];
+          p.answers[fieldId] = (row[colIdx] || "").toString().trim();
+        });
+
+        if (statusIdx !== -1) {
+          const sVal = (row[statusIdx] || "").toString().toLowerCase();
+          if (sVal.includes("complete") || sVal.includes("selesai")) p.status = "completed";
+          else if (sVal.includes("progress")) p.status = "in_progress";
+        } else {
+          p.status = "completed"; 
+        }
+        importedCount++;
+      }
+    }
+
+    localStorage.setItem(`mdi_participants_${formId}`, JSON.stringify(PARTICIPANTS_STAGE1));
+    alert(`Berhasil memperbarui ${importedCount} data Penyelesaian!`);
+    loadAndMergeParticipants();
+    renderAll();
+    event.target.value = '';
+  };
+  reader.readAsArrayBuffer(file);
+}
 </script>
 </body>
 </html>
