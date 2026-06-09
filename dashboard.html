@@ -2779,6 +2779,10 @@ function handleExcelUpload(event) {
       fieldMapping[idx] = safeId;
     });
 
+    // Ensure Stage 2 fields are always preserved so Client Portal doesn't break
+    newFields.push({id: "q_notes", label: "30-Day Progress Update & Notes", type: "textarea", required: false, section: "Bagian 3 – Progress & Challenges", options: []});
+    newFields.push({id: "q_challenge", label: "Challenges / Roadblocks Encountered", type: "textarea", required: false, section: "Bagian 3 – Progress & Challenges", options: []});
+
     FORM_CONFIG.fields = newFields;
 
     // Save updated FORM_CONFIG to localStorage
