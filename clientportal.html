@@ -581,6 +581,9 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
             if (f.id.startsWith("q_custom_")) {
               const lbl = f.label.toLowerCase();
               if (lbl.includes("rencana tindakan") || lbl.includes("action plan") || lbl.includes("commitment action") || lbl.includes("komitmen") || lbl.includes("tindakan")) {
+                if (lbl.includes("kapan") || lbl.includes("waktu") || lbl.includes("tanggal") || lbl.includes("date") || lbl.includes("when") || lbl.includes("status") || lbl.includes("penyelesaian") || lbl.includes("progress")) {
+                  return; // skip this column
+                }
                 const ans = p.answers[f.id];
                 if (ans && String(ans).trim() !== "" && ans !== "-") {
                   let splitted = String(ans).split(/\n/).map(s => s.trim().replace(/^(\d+[\.\)]|[\-\•\*])\s*/, '')).filter(s => s.length > 2 && s.toLowerCase() !== "null");

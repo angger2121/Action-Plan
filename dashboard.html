@@ -1225,6 +1225,11 @@ function getActionPlans(p) {
         const lbl = f.label.toLowerCase();
         // Check for common column headers that represent action plans
         if (lbl.includes("rencana tindakan") || lbl.includes("action plan") || lbl.includes("commitment action") || lbl.includes("komitmen") || lbl.includes("tindakan")) {
+          // EXCLUDE date, time, and status columns that happen to contain the keyword
+          if (lbl.includes("kapan") || lbl.includes("waktu") || lbl.includes("tanggal") || lbl.includes("date") || lbl.includes("when") || lbl.includes("status") || lbl.includes("penyelesaian") || lbl.includes("progress")) {
+            return; // skip this column
+          }
+          
           const ans = p.answers[f.id];
           if (ans && String(ans).trim() !== "" && ans !== "-") {
             // Only split by newline. Remove bullet points like '1.', '2)', '-'
