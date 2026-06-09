@@ -1223,10 +1223,12 @@ function getActionPlans(p) {
     FORM_CONFIG.fields.forEach(f => {
       if (f.id.startsWith("q_custom_")) {
         const lbl = f.label.toLowerCase();
-        if (lbl.includes("rencana tindakan") || lbl.includes("action plan") || lbl.includes("commitment action") || lbl.includes("komitmen")) {
+        // Check for common column headers that represent action plans
+        if (lbl.includes("rencana tindakan") || lbl.includes("action plan") || lbl.includes("commitment action") || lbl.includes("komitmen") || lbl.includes("tindakan")) {
           const ans = p.answers[f.id];
           if (ans && String(ans).trim() !== "" && ans !== "-") {
-            let splitted = String(ans).split(/\n|;|,|\.|\-\s+|\d+\)/).map(s => s.trim().replace(/^[\-\)]\s*/, '')).filter(s => s.length > 2 && !/^\d+$/.test(s) && s.toLowerCase() !== "null");
+            // Only split by newline. Remove bullet points like '1.', '2)', '-'
+            let splitted = String(ans).split(/\n/).map(s => s.trim().replace(/^(\d+[\.\)]|[\-\•\*])\s*/, '')).filter(s => s.length > 2 && s.toLowerCase() !== "null");
             if (splitted.length > 0) plans.push(...splitted);
             else plans.push(ans);
           }
@@ -1234,7 +1236,7 @@ function getActionPlans(p) {
       } else if (f.id.startsWith("q_action")) {
         const ans = p.answers[f.id];
         if (ans && String(ans).trim() !== "" && ans !== "-") {
-          let splitted = String(ans).split(/\n|;|,|\.|\-\s+|\d+\)/).map(s => s.trim().replace(/^[\-\)]\s*/, '')).filter(s => s.length > 2 && !/^\d+$/.test(s) && s.toLowerCase() !== "null");
+          let splitted = String(ans).split(/\n/).map(s => s.trim().replace(/^(\d+[\.\)]|[\-\•\*])\s*/, '')).filter(s => s.length > 2 && s.toLowerCase() !== "null");
           if (splitted.length > 0) plans.push(...splitted);
           else plans.push(ans);
         }
