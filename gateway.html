@@ -482,6 +482,9 @@ input:checked + .slider:before {
 
 .assign-select option { background: #fff; color: var(--mdi-dark); }
 </style>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
 </head>
 <body>
 
@@ -1028,7 +1031,7 @@ function saveEditForm() {
   }
 }
 
-window.onload = init;
+window.onload = async function() { await FirebaseSync.init(); init(); };
 
 
 // ── CLIENT PORTAL MANAGEMENT LOGIC ──

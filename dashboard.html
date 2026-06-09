@@ -777,6 +777,9 @@ td { padding: 12px 14px; vertical-align: top; }
 .unassigned-area { background: #fff8f3; border: 2px dashed var(--mdi-orange); padding: 10px; border-radius: 6px; min-height: 300px; display:flex; flex-direction:column; gap:8px;}
 
 </style>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
 </head>
 <body>
 <!-- SIDEBAR -->
@@ -2736,7 +2739,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-window.onload = init;
+window.onload = async function() { await FirebaseSync.init(); init(); };
 
 function handleExcelUpload(event) {
   const file = event.target.files[0];
