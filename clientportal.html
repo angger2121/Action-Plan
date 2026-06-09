@@ -586,7 +586,7 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
                 }
                 const ans = p.answers[f.id];
                 if (ans && String(ans).trim() !== "" && ans !== "-") {
-                  let splitted = String(ans).split(/\n/).map(s => s.trim().replace(/^(\d+[\.\)]|[\-\•\*])\s*/, '')).filter(s => s.length > 2 && s.toLowerCase() !== "null");
+                  let splitted = String(ans).split(/\n|;|,|\d+[\.\)]\s*|\.|\-\s+/).map(s => s ? s.trim().replace(/^[\-\•\*]\s*/, '') : '').filter(s => s.length > 2 && s.toLowerCase() !== "null");
                   if (splitted.length > 0) plans.push(...splitted);
                   else plans.push(ans);
                 }
@@ -594,7 +594,7 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
             } else if (f.id.startsWith("q_action")) {
               const ans = p.answers[f.id];
               if (ans && String(ans).trim() !== "" && ans !== "-") {
-                let splitted = String(ans).split(/\n/).map(s => s.trim().replace(/^(\d+[\.\)]|[\-\•\*])\s*/, '')).filter(s => s.length > 2 && s.toLowerCase() !== "null");
+                let splitted = String(ans).split(/\n|;|,|\d+[\.\)]\s*|\.|\-\s+/).map(s => s ? s.trim().replace(/^[\-\•\*]\s*/, '') : '').filter(s => s.length > 2 && s.toLowerCase() !== "null");
                 if (splitted.length > 0) plans.push(...splitted);
                 else plans.push(ans);
               }
