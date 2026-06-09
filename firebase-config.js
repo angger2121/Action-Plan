@@ -30,9 +30,19 @@ window.FirebaseSync = {
       const originalRemoveItem = localStorage.removeItem;
 
       if (!snapshot.empty) {
+        // Cloud has data, overwrite local
         snapshot.forEach(doc => {
           originalSetItem.call(localStorage, doc.id, doc.data().value);
         });
+      } else {
+        // Cloud is empty. If we have existing local data, upload it to the cloud!
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('mdi_')) {
+            const val = localStorage.getItem(key);
+            db.collection('actionplan_db').doc(key).set({ value: val }).catch(e => console.error(e));
+          }
+        }
       }
       
       // Override localStorage methods to sync with Firebase
