@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MDI TACK - Client Viewer Portal</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -322,6 +323,56 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
 
 .back-btn { transition: all 0.2s ease !important; }
 .back-btn:hover { background: #f8fafc !important; color: var(--mdi-orange) !important; border-color: var(--mdi-orange) !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+  /* LOGIN VIEW */
+  .login-card { padding: 24px; border-radius: 12px; }
+  .login-header h2 { font-size: 24px; }
+  .login-header p { font-size: 14px; }
+  
+  /* PROFILE VIEW */
+  .pv-header { padding: 16px 20px; flex-direction: column; gap: 16px; align-items: flex-start; }
+  .pv-container { margin: 24px auto; padding: 0 16px; }
+  .pc-body { padding: 0 24px 32px 24px; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
+  .profile-avatar { margin-top: -50px; width: 100px; height: 100px; font-size: 48px; border-width: 3px; }
+  .profile-info { margin-top: 0; }
+  .profile-info h1 { font-size: 24px; }
+  .ap-item { flex-direction: column; padding: 16px; align-items: flex-start; gap: 12px; }
+  .ap-item-arrow { align-self: flex-end; }
+  
+  /* TOPBAR */
+  .topbar { padding: 12px 16px; flex-direction: column; gap: 12px; align-items: flex-start; }
+  .topbar-right { width: 100%; flex-direction: column; align-items: stretch; }
+  #batch-selector-container { flex-direction: column; align-items: stretch; width: 100%; }
+  #batch-select { width: 100%; }
+  
+  /* PAGE HEADER */
+  .page-header { padding: 24px 16px; }
+  .header-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
+  .header-meta { width: 100%; justify-content: space-between; gap: 12px; }
+  .hm { text-align: center; }
+  .hm-val { font-size: 20px; }
+  .hm-lbl { font-size: 10px; }
+  
+  /* BODY WRAP */
+  .body-wrap { padding: 0 16px; margin: 24px auto; }
+  
+  /* KPI ROW */
+  .kpi-row { grid-template-columns: 1fr 1fr; gap: 12px; }
+  
+  /* PROGRESS SUMMARY */
+  .progress-summary { padding: 16px; }
+  .ps-legend { flex-direction: column; gap: 8px; }
+  
+  /* FILTER BAR */
+  .viewer-filterbar { flex-direction: column; align-items: stretch; padding: 16px; gap: 12px; }
+  .search-wrap { width: 100% !important; }
+  
+  /* TABLE SCROLLING */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { min-width: 800px; }
+}
 </style>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
