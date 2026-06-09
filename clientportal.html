@@ -578,13 +578,23 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         const plans = [];
         if (typeof FORM_CONFIG !== 'undefined' && FORM_CONFIG && FORM_CONFIG.fields) {
           FORM_CONFIG.fields.forEach(f => {
-            if (['q_nama', 'q_dept', 'q_grade', 'q_notes', 'q_challenge'].includes(f.id)) return;
-            
-            const ans = p.answers[f.id];
-            if (ans && String(ans).trim() !== "" && ans !== "-") {
-              let splitted = String(ans).split(/\n|;|,|\.|\-\s+|\d+\)/).map(s => s.trim().replace(/^[\-\)]\s*/, '')).filter(s => s.length > 2 && !/^\d+$/.test(s) && s.toLowerCase() !== "null");
-              if (splitted.length > 0) plans.push(...splitted);
-              else plans.push(ans);
+            if (f.id.startsWith("q_custom_")) {
+              const lbl = f.label.toLowerCase();
+              if (lbl.includes("rencana tindakan") || lbl.includes("action plan") || lbl.includes("commitment action") || lbl.includes("komitmen")) {
+                const ans = p.answers[f.id];
+                if (ans && String(ans).trim() !== "" && ans !== "-") {
+                  let splitted = String(ans).split(/\n|;|,|\.|\-\s+|\d+\)/).map(s => s.trim().replace(/^[\-\)]\s*/, '')).filter(s => s.length > 2 && !/^\d+$/.test(s) && s.toLowerCase() !== "null");
+                  if (splitted.length > 0) plans.push(...splitted);
+                  else plans.push(ans);
+                }
+              }
+            } else if (f.id.startsWith("q_action")) {
+              const ans = p.answers[f.id];
+              if (ans && String(ans).trim() !== "" && ans !== "-") {
+                let splitted = String(ans).split(/\n|;|,|\.|\-\s+|\d+\)/).map(s => s.trim().replace(/^[\-\)]\s*/, '')).filter(s => s.length > 2 && !/^\d+$/.test(s) && s.toLowerCase() !== "null");
+                if (splitted.length > 0) plans.push(...splitted);
+                else plans.push(ans);
+              }
             }
           });
         }

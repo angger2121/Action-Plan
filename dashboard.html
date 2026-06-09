@@ -1215,10 +1215,6 @@ function getActualStatus(p) {
   if (p.status === "done" || (p.s2Status && p.s2Status.toLowerCase().includes("selesai")) || (p.s2Status && p.s2Status.toLowerCase().includes("completed"))) return "done";
   return "prog";
 }
-function getActualStatus(p) {
-  if (p.status === "done" || (p.s2Status && p.s2Status.toLowerCase().includes("selesai")) || (p.s2Status && p.s2Status.toLowerCase().includes("completed"))) return "done";
-  return "prog";
-}
 
 function getActionPlans(p) {
   if (!p.answers) return [];
@@ -1227,12 +1223,20 @@ function getActionPlans(p) {
     FORM_CONFIG.fields.forEach(f => {
       if (f.id.startsWith("q_custom_")) {
         const lbl = f.label.toLowerCase();
-        if (lbl.includes("rencana tindakan") || lbl.includes("action plan") || lbl.includes("commitment action")) {
+        if (lbl.includes("rencana tindakan") || lbl.includes("action plan") || lbl.includes("commitment action") || lbl.includes("komitmen")) {
           const ans = p.answers[f.id];
-          if (ans && String(ans).trim() !== "" && ans !== "—") {
+          if (ans && String(ans).trim() !== "" && ans !== "-") {
             let splitted = String(ans).split(/\n|;|,|\.|\-\s+|\d+\)/).map(s => s.trim().replace(/^[\-\)]\s*/, '')).filter(s => s.length > 2 && !/^\d+$/.test(s) && s.toLowerCase() !== "null");
-            plans.push(...splitted);
+            if (splitted.length > 0) plans.push(...splitted);
+            else plans.push(ans);
           }
+        }
+      } else if (f.id.startsWith("q_action")) {
+        const ans = p.answers[f.id];
+        if (ans && String(ans).trim() !== "" && ans !== "-") {
+          let splitted = String(ans).split(/\n|;|,|\.|\-\s+|\d+\)/).map(s => s.trim().replace(/^[\-\)]\s*/, '')).filter(s => s.length > 2 && !/^\d+$/.test(s) && s.toLowerCase() !== "null");
+          if (splitted.length > 0) plans.push(...splitted);
+          else plans.push(ans);
         }
       }
     });
