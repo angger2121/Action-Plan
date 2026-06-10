@@ -257,68 +257,35 @@ body {
 
   /* LOGIN */
   #login-view {
-    display: flex; flex-direction: column; justify-content: center; align-items: center; 
-    min-height: 100vh; background: #0f172a; font-family: 'Plus Jakarta Sans', sans-serif;
-    position: relative; overflow: hidden; padding: 20px;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; background-color: #0f172a; font-family: 'Inter', sans-serif;
   }
-  /* Decorative background glows */
-  #login-view::before {
-    content: ''; position: absolute; top: -10%; left: -10%; width: 50vw; height: 50vw;
-    background: radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 60%);
-    border-radius: 50%; pointer-events: none;
-  }
-  #login-view::after {
-    content: ''; position: absolute; bottom: -20%; right: -10%; width: 60vw; height: 60vw;
-    background: radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 60%);
-    border-radius: 50%; pointer-events: none;
-  }
-  
-  .login-container {
-    position: relative;
-    z-index: 10;
-    width: 100%;
-    max-width: 440px;
-  }
-  
   .login-header { text-align: center; margin-bottom: 32px; }
   .login-logo-box {
-    display: inline-flex; align-items: center; justify-content: center; margin-bottom: 24px; 
-    height: 60px;
+    display: inline-flex; align-items: center; justify-content: center; margin-bottom: 24px; height: 72px;
   }
   .login-logo-box img { max-height: 100%; object-fit: contain; }
-  .login-header-sub { 
-    display: inline-block; background: rgba(249,115,22,0.1); color: var(--mdi-orange); 
-    padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; 
-    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px;
-    border: 1px solid rgba(249,115,22,0.3);
-  }
-  .login-header h2 { color: #f8fafc; font-size: 32px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; }
-  .login-header p { color: rgba(255,255,255,0.6); font-size: 15px; margin: 0; line-height: 1.5; }
+  .login-header-sub { color: #d4af37; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .login-header h2 { color: #f8fafc; font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+  .login-header p { color: #94a3b8; font-size: 15px; margin: 0; }
   
   .login-card {
-    background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08); padding: 40px;
-    border-radius: 24px; width: 100%; text-align: left;
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    background: #1e293b; border: 1px solid #334155; padding: 40px;
+    border-radius: 16px; width: 100%; max-width: 420px; text-align: left;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2), 0 10px 10px -5px rgba(0,0,0,0.1);
   }
-  .login-label { display: block; color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 700; 
-letter-spacing: 0.5px; margin-bottom: 10px; }
+  .login-label { display: block; color: #94a3b8; font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px; }
   .login-input {
-    width: 100%; padding: 14px 16px; margin-bottom: 24px; border-radius: 12px;
-    background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);
-    color: #fff; font-size: 15px; font-family: inherit; transition: all 0.2s;
+    width: 100%; padding: 14px; margin-bottom: 24px; border-radius: 8px;
+    background: #273549; border: 1px solid #334155;
+    color: #f8fafc; font-family: inherit; font-size: 15px; outline: none; transition: border-color 0.2s; box-sizing: border-box;
   }
-  .login-input:focus { outline: none; border-color: var(--mdi-orange); background: rgba(0,0,0,0.3); box-shadow: 0 0 0 3px rgba(249,115,22,0.15); }
-  .login-input::placeholder { color: rgba(255,255,255,0.3); }
-  
+  .login-input:focus { border-color: #d4af37; }
+  .login-input::placeholder { color: #64748b; }
   .login-btn {
-    width: 100%; padding: 16px; border: none; border-radius: 12px;
-    background: linear-gradient(135deg, var(--mdi-orange) 0%, #ea580c 100%);
-    color: #fff; font-size: 15px; font-weight: 700; cursor: pointer;
-    box-shadow: 0 4px 15px rgba(249,115,22,0.3); transition: all 0.2s; font-family: inherit;
+    width: 100%; padding: 14px; background: linear-gradient(135deg, #eab308 0%, #d4af37 100%); color: #0f172a;
+    border: none; border-radius: 8px; font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.2s;
   }
-  .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(249,115,22,0.4); }
-  .login-btn:active { transform: translateY(0); }
+  .login-btn:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2); }
 
 /* TOPBAR */
 .topbar {
@@ -474,17 +441,15 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
 </head>
 <body>
 
-  <!-- LOGIN VIEW -->
   <div id="login-view">
-    <div class="login-container">
-      <div class="login-header">
-        <div class="login-logo-box">
-          <img src="Asset%207-0.png" alt="MDI Logo">
-        </div>
-        <div class="login-header-sub">Portal Klien Terpadu</div>
-        <h2>Pemantauan Program</h2>
-        <p>Akses dasbor ini untuk memantau langsung perkembangan rencana tindakan peserta dari perusahaan Anda.</p>
+    <div class="login-header">
+      <div class="login-logo-box">
+        <img src="Asset%208-8.png" alt="MDI Logo">
       </div>
+      <div class="login-header-sub">Client Portal</div>
+      <h2>Action Plan</h2>
+      <p>Masuk dengan akun perusahaan Anda</p>
+    </div>
     <div class="login-card">
       <label class="login-label">NAMA PERUSAHAAN</label>
       <input type="text" id="login-username" class="login-input" placeholder="Nama Perusahaan">
@@ -492,8 +457,8 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
       <label class="login-label">PIN AKSES</label>
       <input type="password" id="login-pin" class="login-input" placeholder="••••" maxlength="10" onkeypress="if(event.key === 'Enter') attemptLogin()">
       
-      <button class="login-btn" onclick="attemptLogin()">Akses Portal Klien</button>
-      <div id="login-error" style="color:#ef4444; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); padding: 12px; border-radius: 8px; font-size:13px; margin-top:20px; text-align:center; display:none; font-weight: 600;">PIN salah atau perusahaan tidak ditemukan.</div>
+      <button class="login-btn" onclick="attemptLogin()">Masuk ke Portal</button>
+      <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; text-align:center; display:none;">PIN salah atau perusahaan tidak dipilih.</div>
     </div>
   </div>
 
