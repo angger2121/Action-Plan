@@ -740,24 +740,32 @@ input:checked + .slider:before {
           </div>
         </div>
       </div>
-    </div> <!-- END TAB 2 -->
-    
-    <!-- TAB 3: LAPORAN TRAINING -->
+        <!-- TAB 3: LAPORAN TRAINING -->
     <div class="dashboard-container" id="tab-laporan" style="display: none;">
       <div class="list-card">
         <div class="table-header-row" style="margin-bottom: 16px;">
-          <div class="table-title"><span class="table-dot" style="background:#10b981;"></span>📊 Laporan Training & Report</div>
+          <div class="table-title"><span class="table-dot" style="background:#10b981;"></span>📊 Laporan Training & Report (PDF)</div>
         </div>
         
-        <div style="background: rgba(0,0,0,0.15); border: 1px dashed rgba(255,255,255,0.2); border-radius: var(--radius-md); padding: 40px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; min-height: 300px;">
+        <div style="background: rgba(0,0,0,0.15); border: 1px dashed rgba(255,255,255,0.2); border-radius: var(--radius-md); padding: 40px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
           <span style="font-size: 40px; margin-bottom: 16px; opacity: 0.8;">📄</span>
-          <h3 style="font-size: 16px; font-weight: 700; color: rgba(255,255,255,0.9); margin-bottom: 8px;">Upload Laporan Training</h3>
-          <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 24px; max-width: 400px; line-height: 1.5;">Pilih file Excel yang berisi rekapan data laporan training. Modul ini saat ini dikhususkan untuk upload data saja.</p>
+          <h3 style="font-size: 16px; font-weight: 700; color: rgba(255,255,255,0.9); margin-bottom: 8px;">Upload Laporan Training (PDF)</h3>
+          <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 24px; max-width: 400px; line-height: 1.5;">Pilih Klien dan unggah file PDF laporan training. Laporan ini akan otomatis muncul di Client Portal Klien tersebut.</p>
           
-          <button class="btn" style="background:#10b981; color:#fff; border-color:#10b981;" onclick="document.getElementById('reportExcelUpload').click()">📥 Import File Excel</button>
-          <input type="file" id="reportExcelUpload" accept=".xlsx, .xls, .csv" style="display:none;" onchange="alert('Fitur import laporan Excel akan diproses di sini nantinya!')">
+          <div style="display: flex; gap: 12px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; justify-content: center;">
+            <select id="report-client-select" class="form-input" style="width: 250px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 6px; padding: 10px;"></select>
+            <button class="btn" style="background:#10b981; color:#fff; border-color:#10b981;" onclick="document.getElementById('reportPdfUpload').click()">📤 Pilih & Upload PDF</button>
+            <input type="file" id="reportPdfUpload" accept="application/pdf" style="display:none;" onchange="handlePdfUpload(event)">
+          </div>
+        </div>
+
+        <!-- LIST OF UPLOADED REPORTS -->
+        <div style="margin-top: 32px;">
+          <h3 style="font-size: 14px; margin-bottom: 16px; color: #fff; font-weight: 700;">Daftar Laporan Terunggah</h3>
+          <div id="reports-list-container" style="display: flex; flex-direction: column; gap: 12px;"></div>
         </div>
       </div>
+    </div> <!-- END TAB 3 -->     </div>
     </div> <!-- END TAB 3 -->
     
   </main>
@@ -999,6 +1007,7 @@ function init() {
   loadClients();
   renderClients();
   renderAssignForms();
+  renderReportsTab();
   renderFormsList();
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -1276,7 +1285,7 @@ function renderDragAndDropUI() {
       return;
     }
 
-    if (currentSearchQuery && !c.name.toLowerCase().includes(currentSearchQuery)) {
+    if (currentSearchQuery && !c.name.toLowerCase().includes(clientSearchQuery)) {
       // If client name doesn't match, check if any of their forms match
       const clientForms = FORMS_DATABASE.filter(f => f.client === c.name);
       const hasMatchingForm = clientForms.some(f => f.title.toLowerCase().includes(currentSearchQuery));
@@ -1409,6 +1418,102 @@ function renderAssignForms() {
   renderDragAndDropUI();
 }
 
+// ==========================================
+// REPORTS DB LOGIC
+// ==========================================
+let REPORTS_DB = [];
+const savedReports = localStorage.getItem('mdi_training_reports');
+if (savedReports) {
+  try { REPORTS_DB = JSON.parse(savedReports); } catch(e) { REPORTS_DB = []; }
+}
+function saveReports() {
+  localStorage.setItem('mdi_training_reports', JSON.stringify(REPORTS_DB));
+}
+
+function renderReportsTab() {
+  // Populate client select
+  const select = document.getElementById('report-client-select');
+  if(!select) return;
+  select.innerHTML = '<option value="">-- Pilih Klien Tujuan --</option>';
+  CLIENTS_DB.forEach(c => {
+    select.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+  });
+  
+  // Render list
+  const container = document.getElementById('reports-list-container');
+  if(!container) return;
+  container.innerHTML = '';
+  if (REPORTS_DB.length === 0) {
+    container.innerHTML = '<div style="color: rgba(255,255,255,0.4); font-size: 13px; text-align: center; padding: 24px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 8px;">Belum ada laporan PDF yang diunggah.</div>';
+    return;
+  }
+  
+  REPORTS_DB.forEach((report, index) => {
+    container.innerHTML += `
+      <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-weight: 700; color: #fff; margin-bottom: 6px; font-size: 14px;">📄 ${report.filename}</div>
+          <div style="font-size: 12px; color: rgba(255,255,255,0.5);">Klien: <span style="color: var(--mdi-orange); font-weight: 700;">${report.clientName}</span> &nbsp;|&nbsp; Diunggah: ${report.date}</div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button onclick="viewReportPdf(${index})" style="background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600;">Review PDF</button>
+          <button onclick="deleteReport(${index})" style="background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600;">Hapus</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function handlePdfUpload(event) {
+  const select = document.getElementById('report-client-select');
+  const clientName = select.value;
+  if (!clientName) {
+    alert("Penting: Silakan pilih Klien Tujuan terlebih dahulu dari menu dropdown sebelum mengunggah file!");
+    event.target.value = "";
+    return;
+  }
+  
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  if (file.size > 3 * 1024 * 1024) {
+    alert("Peringatan: Ukuran file lebih dari 3MB. Disarankan mengunggah file yang ukurannya sekecil mungkin agar tidak memberatkan LocalStorage browser.");
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64Data = e.target.result;
+    
+    REPORTS_DB.push({
+      id: 'report_' + Date.now(),
+      clientName: clientName,
+      filename: file.name,
+      date: new Date().toLocaleDateString('id-ID'),
+      pdfData: base64Data
+    });
+    
+    saveReports();
+    renderReportsTab();
+    alert(`Sukses! Laporan "${file.name}" berhasil diunggah dan ditugaskan untuk klien ${clientName}.`);
+  };
+  reader.readAsDataURL(file);
+  event.target.value = "";
+}
+
+function deleteReport(index) {
+  if (confirm(`Apakah Anda yakin ingin menghapus laporan "${REPORTS_DB[index].filename}"?`)) {
+    REPORTS_DB.splice(index, 1);
+    saveReports();
+    renderReportsTab();
+  }
+}
+
+function viewReportPdf(index) {
+  const report = REPORTS_DB[index];
+  const win = window.open();
+  win.document.write(`<iframe src="${report.pdfData}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%; position:absolute;" allowfullscreen></iframe>`);
+}
+
 function addClientAccount() {
   const name = prompt("Masukkan Nama Perusahaan / Klien (misal: Yusen Logistic):");
   if(!name || name.trim() === "") return;
@@ -1454,7 +1559,7 @@ function editClientAccount(idx) {
         formsUpdated = true;
       }
     });
-    if (formsUpdated) saveFormsDatabase();
+    if (formsUpdated) localStorage.setItem("mdi_forms", JSON.stringify(FORMS_DATABASE));
   }
   
   if (newLogo !== null) {
@@ -1472,7 +1577,6 @@ function editClientAccount(idx) {
     renderDragAndDropUI();
     renderFormsList();
     alert(`Nama klien berhasil diubah menjadi "${trimmedName}"`);
-  }
 }
 
 function deleteClientAccount(idx) {

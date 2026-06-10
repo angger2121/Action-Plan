@@ -507,8 +507,8 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         <div class="menu-wrapper">
           <button class="menu-btn" onclick="toggleMenu()"><span>≡</span> Menu</button>
           <div class="dropdown-menu" id="profile-menu">
-            <a class="dd-item" href="#" onclick="toggleMenu(); return false;">📄 Action Plan</a>
-            <a class="dd-item" href="#" onclick="alert('Fitur Evaluasi & Training Report akan segera hadir!'); toggleMenu(); return false;">📊 Evaluasi & Training Report</a>
+            <a class="dd-item" href="#" onclick="showProfileView(); toggleMenu(); return false;">📄 Action Plan</a>
+            <a class="dd-item" href="#" onclick="showReportView(); toggleMenu(); return false;">📊 Evaluasi & Training Report</a>
           </div>
         </div>
         <img src="Asset%207-0.png" alt="MDI Logo" style="height: 32px; object-fit: contain;">
@@ -551,6 +551,58 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
       </div>
     </div>
   </div>
+
+  <!-- REPORT VIEW -->
+  <div id="report-view" style="display:none;">
+    <div class="pv-header">
+      <div class="pv-brand">
+        <div class="menu-wrapper">
+          <button class="menu-btn" onclick="toggleMenu()"><span>≡</span> Menu</button>
+          <div class="dropdown-menu" id="report-menu">
+            <a class="dd-item" href="#" onclick="showProfileView(); toggleMenu(); return false;">📄 Action Plan</a>
+            <a class="dd-item" href="#" onclick="showReportView(); toggleMenu(); return false;">📊 Evaluasi & Training Report</a>
+          </div>
+        </div>
+        <img src="Asset%207-0.png" alt="MDI Logo" style="height: 32px; object-fit: contain;">
+        <span id="rv-header-brand-name"></span>
+      </div>
+      <div class="pv-actions">
+        <button class="logout-btn" onclick="location.reload()" style="background:transparent; border:none; color:var(--mdi-muted); font-weight:600; cursor:pointer;">Logout</button>
+      </div>
+    </div>
+    
+    <!-- FULL WIDTH HERO BANNER -->
+    <div class="dark-banner">
+      <div class="db-inner">
+        <div class="db-logo-box" id="rv-client-logo-box">
+          🏢
+        </div>
+        <div class="db-content">
+          <div class="db-header">
+            <div class="db-badge">Client Portal</div>
+            <div class="db-date" id="rv-date-display"></div>
+          </div>
+          <div class="db-title"><span id="rv-greeting" style="color: #fff;">Selamat Siang,</span><br><span id="rv-client-name">(Nama Client)</span></div>
+          <p class="db-desc">Selamat datang di modul Laporan Pelatihan. Di sini Anda dapat meninjau seluruh laporan hasil evaluasi dan program training Anda.</p>
+          <div class="db-stats">
+            <div class="db-stat-inline">
+              📊 Total Training Report: <span id="rv-total-reports-badge">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="pv-container">
+      <div class="ap-list-header">
+        <span>Daftar Laporan Pelatihan</span>
+      </div>
+      <div class="ap-list" id="rv-reports-list">
+        <!-- Reports rendered here -->
+      </div>
+    </div>
+  </div>
+
 <div id="dashboard-view" style="display:none;">
 
     <!-- TOPBAR -->
@@ -702,13 +754,43 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
 
     <script>
       // ── STATE VARIABLES ──
-      let formId = "";
+      let formId = null;
+      let loggedInClient = null;
+      let REPORTS_DB = [];
       let searchTerm = "";
       let activeStatus = "ALL";
       let activeDept = "ALL";
       let PARTICIPANTS = [];
       let FORM_CONFIG = {};
       let PARTICIPANTS_STAGE1 = [];
+
+      function toggleMenu() {
+        const dd = document.getElementById("profile-menu");
+        const dd2 = document.getElementById("report-menu");
+        if(dd) dd.classList.toggle('show');
+        if(dd2) dd2.classList.toggle('show');
+      }
+
+      window.onclick = function(event) {
+        if (!event.target.closest('.menu-wrapper')) {
+          const dropdowns = document.getElementsByClassName("dropdown-menu");
+          for (let i = 0; i < dropdowns.length; i++) {
+            if (dropdowns[i].classList.contains('show')) {
+              dropdowns[i].classList.remove('show');
+            }
+          }
+        }
+      }
+
+      function showProfileView() {
+        document.getElementById("report-view").style.display = "none";
+        document.getElementById("profile-view").style.display = "block";
+      }
+      function showReportView() {
+        document.getElementById("profile-view").style.display = "none";
+        document.getElementById("report-view").style.display = "block";
+        renderReportView();
+      }
 
       function loadAndMergeParticipants() {
         const cachedS1 = localStorage.getItem(`mdi_participants_${formId}`);
@@ -792,7 +874,6 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
       }
 
       // ── INIT ──
-      let loggedInClient = null;
       let CLIENTS = [];
 
       function populateBatchSelector() {
@@ -860,32 +941,27 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         CLIENTS = c ? JSON.parse(c) : [];
       }
 
-      
-      function toggleMenu() {
-        document.getElementById("profile-menu").classList.toggle("show");
-      }
-      
-      window.onclick = function(event) {
-        if (!event.target.closest('.menu-wrapper')) {
-          const dropdowns = document.getElementsByClassName("dropdown-menu");
-          for (let i = 0; i < dropdowns.length; i++) {
-            if (dropdowns[i].classList.contains('show')) {
-              dropdowns[i].classList.remove('show');
-            }
-          }
-        }
-      }
-
       function renderProfile() {
         document.getElementById("pv-client-name").textContent = loggedInClient.name;
+        document.getElementById("rv-client-name").textContent = loggedInClient.name;
         document.getElementById("pv-header-brand-name").innerHTML = `<span style="font-weight:700; margin-left: 8px;">| ${loggedInClient.name}</span>`;
+        document.getElementById("rv-header-brand-name").innerHTML = `<span style="font-weight:700; margin-left: 8px;">| ${loggedInClient.name}</span>`;
+        
+        // Load reports DB
+        const savedReports = localStorage.getItem("mdi_training_reports");
+        if (savedReports) {
+          try { REPORTS_DB = JSON.parse(savedReports); } catch(e) { REPORTS_DB = []; }
+        }
         
         // Render logo
         const logoBox = document.getElementById("pv-client-logo-box");
+        const rvLogoBox = document.getElementById("rv-client-logo-box");
         if (loggedInClient.logo && loggedInClient.logo.trim() !== '') {
           logoBox.innerHTML = `<img src="${loggedInClient.logo}" alt="Logo ${loggedInClient.name}">`;
+          if(rvLogoBox) rvLogoBox.innerHTML = `<img src="${loggedInClient.logo}" alt="Logo ${loggedInClient.name}">`;
         } else {
           logoBox.innerHTML = `🏢`;
+          if(rvLogoBox) rvLogoBox.innerHTML = `🏢`;
         }
         
         const cachedForms = localStorage.getItem("mdi_forms");
@@ -903,6 +979,7 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         const now = new Date();
         const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById("db-date-display").textContent = now.toLocaleDateString('id-ID', dateOptions);
+        document.getElementById("rv-date-display").textContent = now.toLocaleDateString('id-ID', dateOptions);
         
         const hour = now.getHours();
         let greetingText = "Selamat Pagi,";
@@ -911,6 +988,7 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         else if (hour > 18) greetingText = "Selamat Malam,";
         
         document.getElementById("pv-greeting").textContent = greetingText;
+        document.getElementById("rv-greeting").textContent = greetingText;
         
         if (clientForms.length === 0) {
           listContainer.innerHTML = '<div style="padding:32px; text-align:center; background:#fff; border-radius:12px; border:1px solid var(--mdi-border); color:var(--mdi-muted);">Belum ada Action Plan yang ditugaskan untuk perusahaan Anda.</div>';
@@ -933,7 +1011,7 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         document.getElementById("profile-view").style.display = "none";
         document.getElementById("dashboard-view").style.display = "block";
         document.getElementById("back-btn").style.display = "flex";
-        document.getElementById("batch-selector-container").style.display = "none"; // Use profile instead
+        document.getElementById("batch-selector-container").style.display = "none";
         
         changeBatch(targetFormId);
       }
@@ -964,6 +1042,42 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
           err.textContent = "Username tidak ditemukan atau PIN salah. Silakan coba lagi.";
           err.style.display = "block";
         }
+      }
+
+      function renderReportView() {
+        if (!loggedInClient) return;
+        
+        const clientReports = REPORTS_DB.filter(r => r && r.clientName && r.clientName.toLowerCase() === loggedInClient.name.toLowerCase());
+        
+        document.getElementById("rv-total-reports-badge").textContent = clientReports.length;
+        
+        const listContainer = document.getElementById("rv-reports-list");
+        listContainer.innerHTML = "";
+        
+        if (clientReports.length === 0) {
+          listContainer.innerHTML = '<div style="padding:32px; text-align:center; background:#fff; border-radius:12px; border:1px solid var(--mdi-border); color:var(--mdi-muted);">Belum ada Evaluasi & Training Report untuk perusahaan Anda.</div>';
+          return;
+        }
+        
+        clientReports.forEach(report => {
+          const card = document.createElement("div");
+          card.className = "ap-item";
+          card.innerHTML = `
+            <div>
+              <div class="ap-item-title">📊 ${report.filename}</div>
+              <div class="ap-item-meta" style="margin-top: 4px;">${report.date}</div>
+            </div>
+            <button class="ap-item-arrow" style="border:none; background:var(--mdi-orange); color:#fff; padding:6px 12px; border-radius:4px; font-weight:600; cursor:pointer;" onclick="reviewReportPdf('${report.id}')">View</button>
+          `;
+          listContainer.appendChild(card);
+        });
+      }
+      
+      function reviewReportPdf(reportId) {
+        const report = REPORTS_DB.find(r => r.id === reportId);
+        if(!report) return;
+        const win = window.open();
+        win.document.write(`<iframe src="${report.pdfData}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%; position:absolute;" allowfullscreen></iframe>`);
       }
 
       function init() {
