@@ -174,26 +174,21 @@ body {
   width: 100%;
   position: relative;
   z-index: 2;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 40px;
 }
-@media (max-width: 768px) {
-  .db-inner { flex-direction: column; align-items: flex-start; }
-}
-.db-left { flex: 1; }
-.db-right { flex-shrink: 0; }
 .dark-banner::after {
   content: ''; position: absolute; top: -50%; right: -10%; width: 400px; height: 400px;
   background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, transparent 70%);
   border-radius: 50%; pointer-events: none;
 }
-.db-header { display: flex; align-items: center; margin-bottom: 24px; }
+.db-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.db-badge { 
+  border: 1px solid rgba(249,115,22,0.5); color: var(--mdi-orange); padding: 4px 12px; 
+  border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(249,115,22,0.1);
+}
 .db-date { font-size: 13px; color: rgba(255,255,255,0.4); font-weight: 500; }
 .db-title { font-size: 36px; font-weight: 800; line-height: 1.2; margin-bottom: 16px; letter-spacing: -0.5px; }
 .db-title span { color: var(--mdi-orange); display: block; }
-.db-desc { font-size: 14px; color: rgba(255,255,255,0.6); max-width: 500px; line-height: 1.5; margin-bottom: 0; }
+.db-desc { font-size: 14px; color: rgba(255,255,255,0.6); max-width: 500px; line-height: 1.5; margin-bottom: 32px; }
 
 .db-stats { display: flex; gap: 16px; }
 .db-stat-box { 
@@ -493,23 +488,20 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
     <!-- FULL WIDTH HERO BANNER -->
     <div class="dark-banner">
       <div class="db-inner">
-        <div class="db-left">
-          <div class="db-header">
-            <div class="db-date" id="db-date-display"></div>
-          </div>
-          <div class="db-title"><span id="pv-client-name">(Nama Client)</span></div>
-          <p class="db-desc">Selamat datang di portal pemantauan program leadership. Berikut ringkasan progress seluruh program Anda.</p>
+        <div class="db-header">
+          <div class="db-badge">Client Portal</div>
+          <div class="db-date" id="db-date-display"></div>
         </div>
-        <div class="db-right">
-          <div class="db-stats">
-            <div class="db-stat-box">
-              <div class="db-stat-top">
-                <span class="db-stat-icon">📅</span>
-                <span class="db-stat-val" id="pv-total-ap-badge">0</span>
-              </div>
-              <div class="db-stat-label">Total Program</div>
-              <div class="db-stat-sub">program pelatihan</div>
+        <div class="db-title"><span id="pv-greeting" style="color: #fff;">Selamat Siang</span>,<br><span id="pv-client-name">(Nama Client)</span></div>
+        <p class="db-desc">Selamat datang di portal pemantauan program leadership. Berikut ringkasan progress seluruh program Anda.</p>
+        <div class="db-stats">
+          <div class="db-stat-box">
+            <div class="db-stat-top">
+              <span class="db-stat-icon">📅</span>
+              <span class="db-stat-val" id="pv-total-ap-badge">0</span>
             </div>
+            <div class="db-stat-label">Total Program</div>
+            <div class="db-stat-sub">program pelatihan</div>
           </div>
         </div>
       </div>
@@ -865,9 +857,18 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         
         document.getElementById("pv-total-ap-badge").textContent = clientForms.length;
         
-        // Update date display
+        // Update date display and greeting
+        const now = new Date();
         const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById("db-date-display").textContent = new Date().toLocaleDateString('id-ID', dateOptions);
+        document.getElementById("db-date-display").textContent = now.toLocaleDateString('id-ID', dateOptions);
+        
+        const hour = now.getHours();
+        let greetingText = "Selamat Pagi";
+        if (hour >= 11 && hour <= 14) greetingText = "Selamat Siang";
+        else if (hour > 14 && hour <= 18) greetingText = "Selamat Sore";
+        else if (hour > 18) greetingText = "Selamat Malam";
+        
+        document.getElementById("pv-greeting").textContent = greetingText;
         
         if (clientForms.length === 0) {
           listContainer.innerHTML = '<div style="padding:32px; text-align:center; background:#fff; border-radius:12px; border:1px solid var(--mdi-border); color:var(--mdi-muted);">Belum ada Action Plan yang ditugaskan untuk perusahaan Anda.</div>';
