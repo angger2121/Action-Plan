@@ -161,24 +161,26 @@ body {
 /* DARK BANNER */
 .dark-banner {
   background: #1e293b;
-  border-radius: 16px;
-  padding: 40px;
+  padding: 40px 32px;
   color: #fff;
   position: relative;
   overflow: hidden;
-  margin-bottom: 32px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: center;
+}
+.db-inner {
+  max-width: 900px;
+  width: 100%;
+  position: relative;
+  z-index: 2;
 }
 .dark-banner::after {
   content: ''; position: absolute; top: -50%; right: -10%; width: 400px; height: 400px;
   background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, transparent 70%);
   border-radius: 50%; pointer-events: none;
 }
-.db-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
-.db-badge { 
-  border: 1px solid rgba(249,115,22,0.5); color: var(--mdi-orange); padding: 4px 12px; 
-  border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(249,115,22,0.1);
-}
+.db-header { display: flex; align-items: center; margin-bottom: 24px; }
 .db-date { font-size: 13px; color: rgba(255,255,255,0.4); font-weight: 500; }
 .db-title { font-size: 36px; font-weight: 800; line-height: 1.2; margin-bottom: 16px; letter-spacing: -0.5px; }
 .db-title span { color: var(--mdi-orange); display: block; }
@@ -479,13 +481,13 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
       </div>
     </div>
     
-    <div class="pv-container">
-      <div class="dark-banner">
+    <!-- FULL WIDTH HERO BANNER -->
+    <div class="dark-banner">
+      <div class="db-inner">
         <div class="db-header">
-          <div class="db-badge">MDI TACK Portal</div>
           <div class="db-date" id="db-date-display"></div>
         </div>
-        <div class="db-title">Selamat Siang,<br><span id="pv-client-name">(Nama Client)</span></div>
+        <div class="db-title"><span id="pv-client-name">(Nama Client)</span></div>
         <p class="db-desc">Selamat datang di portal pemantauan program leadership. Berikut ringkasan progress seluruh program Anda.</p>
         <div class="db-stats">
           <div class="db-stat-box">
@@ -498,6 +500,9 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
           </div>
         </div>
       </div>
+    </div>
+    
+    <div class="pv-container">
       
       <div class="ap-list-header">
         <span>Action Plan Terdaftar</span>
