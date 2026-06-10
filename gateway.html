@@ -752,19 +752,34 @@ input:checked + .slider:before {
         <div style="background: rgba(0,0,0,0.15); border: 1px dashed rgba(255,255,255,0.2); border-radius: var(--radius-md); padding: 40px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
           <span style="font-size: 40px; margin-bottom: 16px; opacity: 0.8;">📄</span>
           <h3 style="font-size: 16px; font-weight: 700; color: rgba(255,255,255,0.9); margin-bottom: 8px;">Upload Laporan Training (PDF)</h3>
-          <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 24px; max-width: 400px; line-height: 1.5;">Pilih Klien dan unggah file PDF laporan training. Laporan ini akan otomatis muncul di Client Portal Klien tersebut.</p>
+          <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 24px; max-width: 400px; line-height: 1.5;">Unggah file PDF laporan training. Setelah diunggah, seret laporan ke Klien yang dituju pada panel di bawah.</p>
           
-          <div style="display: flex; gap: 12px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; justify-content: center;">
-            <select id="report-client-select" class="form-input" style="width: 250px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 6px; padding: 10px;"></select>
+          <div style="display: flex; gap: 12px; margin-bottom: 8px; align-items: center; justify-content: center;">
             <button class="btn" style="background:#10b981; color:#fff; border-color:#10b981;" onclick="document.getElementById('reportPdfUpload').click()">📤 Pilih & Upload PDF</button>
             <input type="file" id="reportPdfUpload" accept="application/pdf" style="display:none;" onchange="handlePdfUpload(event)">
           </div>
         </div>
 
-        <!-- LIST OF UPLOADED REPORTS -->
-        <div style="margin-top: 32px;">
-          <h3 style="font-size: 14px; margin-bottom: 16px; color: #fff; font-weight: 700;">Daftar Laporan Terunggah</h3>
-          <div id="reports-list-container" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        <div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px; margin-top: 32px;">
+          <!-- Unassigned Reports -->
+          <div style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md); padding: 16px; display:flex; flex-direction:column;">
+            <h3 style="font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;"><span style="font-size: 16px;">📄</span> Laporan Belum Ditugaskan</h3>
+            <p style="font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 16px; line-height: 1.4;">Seret laporan dari daftar ini ke salah satu grup klien di sebelah kanan.</p>
+            <div id="unassigned-reports-zone" ondrop="dropReport(event, '')" ondragover="allowDropReport(event)" style="flex-grow: 1; border: 2px dashed rgba(255,255,255,0.15); border-radius: 8px; padding: 12px; min-height: 200px; max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; transition: background 0.2s;">
+              <!-- Draggable reports -->
+            </div>
+          </div>
+          
+          <!-- Client Zones -->
+          <div style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md); padding: 16px; display:flex; flex-direction:column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <h3 style="font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 8px;"><span style="font-size: 16px;">🏢</span> Grup Klien (Viewer)</h3>
+            </div>
+            <p style="font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 16px; line-height: 1.4;">Laporan yang diletakkan di dalam grup akan muncul di portal klien yang sesuai.</p>
+            <div id="report-client-zones-container" style="display: flex; flex-direction: column; gap: 16px;">
+              <!-- Client zones -->
+            </div>
+          </div>
         </div>
       </div>
     </div> <!-- END TAB 3 -->
@@ -1427,57 +1442,165 @@ if (savedReports) {
   try { REPORTS_DB = JSON.parse(savedReports); } catch(e) { REPORTS_DB = []; }
 }
 function saveReports() {
-  localStorage.setItem('mdi_training_reports', JSON.stringify(REPORTS_DB));
+  try {
+    localStorage.setItem('mdi_training_reports', JSON.stringify(REPORTS_DB));
+  } catch (e) {
+    if (e.name === 'QuotaExceededError' || e.message.includes('quota')) {
+      alert("Peringatan Sistem: Gagal menyimpan! Kapasitas penyimpanan memori browser Anda (LocalStorage) telah penuh. Mohon hapus beberapa laporan lama atau unggah PDF dengan ukuran yang lebih kecil (di bawah 1MB).");
+      REPORTS_DB.pop(); // Revert the last addition to prevent corrupted state
+    } else {
+      console.error(e);
+      alert("Terjadi kesalahan saat menyimpan laporan.");
+    }
+  }
 }
 
 function renderReportsTab() {
-  // Populate client select
-  const select = document.getElementById('report-client-select');
-  if(!select) return;
-  select.innerHTML = '<option value="">-- Pilih Klien Tujuan --</option>';
-  CLIENTS_DB.forEach(c => {
-    select.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+  const unassignedZone = document.getElementById("unassigned-reports-zone");
+  const clientZonesContainer = document.getElementById("report-client-zones-container");
+  if(!unassignedZone || !clientZonesContainer) return;
+  
+  unassignedZone.innerHTML = "";
+  clientZonesContainer.innerHTML = "";
+  
+  // 1. Render Client Zones for Reports
+  CLIENTS_DB.forEach((c, idx) => {
+    const clientBox = document.createElement("div");
+    clientBox.className = "client-drop-zone";
+    clientBox.ondrop = (e) => dropReport(e, c.name);
+    clientBox.ondragover = allowDropReport;
+    clientBox.ondragenter = (e) => { e.preventDefault(); clientBox.classList.add("drag-over"); };
+    clientBox.ondragleave = (e) => { e.preventDefault(); clientBox.classList.remove("drag-over"); };
+
+    const key = c.name + '_report';
+    const isExpanded = expandedClientZones.has(key);
+    const displayStyle = isExpanded ? "flex" : "none";
+    const iconStr = isExpanded ? "▼" : "▶";
+
+    clientBox.innerHTML = `
+      <div class="client-box-header" style="cursor: pointer;" onclick="toggleReportClientZone('${c.name}')">
+        <div>
+          <div class="client-name" style="display: flex; align-items: center; gap: 6px;">
+            <span id="icon-rep-${c.name}">${iconStr}</span> ${idx + 1}. ${c.name}
+          </div>
+        </div>
+      </div>
+      <div id="zone-rep-${c.name}" style="flex-grow:1; display:${displayStyle}; flex-direction:column; gap:8px; padding-top: 8px;"></div>
+    `;
+    clientZonesContainer.appendChild(clientBox);
   });
   
-  // Render list
-  const container = document.getElementById('reports-list-container');
-  if(!container) return;
-  container.innerHTML = '';
-  if (REPORTS_DB.length === 0) {
-    container.innerHTML = '<div style="color: rgba(255,255,255,0.4); font-size: 13px; text-align: center; padding: 24px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 8px;">Belum ada laporan PDF yang diunggah.</div>';
-    return;
+  if (CLIENTS_DB.length === 0) {
+    clientZonesContainer.innerHTML = `<div style="color:rgba(255,255,255,0.3); font-size:12px; font-style:italic; padding:12px;">Belum ada grup klien. Klik tab "Portal Klien" untuk membuat.</div>`;
   }
   
+  // 2. Render Reports into Zones
   REPORTS_DB.forEach((report, index) => {
-    container.innerHTML += `
-      <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+    const reportEl = document.createElement("div");
+    reportEl.className = "draggable-form";
+    reportEl.draggable = true;
+    reportEl.ondragstart = (e) => dragReport(e, index);
+    reportEl.id = `drag-rep-${index}`;
+    
+    const isUnassigned = !report.clientName || !CLIENTS_DB.some(c => c.name === report.clientName);
+    
+    let assignHtml = '';
+    if (isUnassigned && CLIENTS_DB.length > 0) {
+      const options = CLIENTS_DB.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+      assignHtml = `
+        <select class="assign-select" onchange="assignReportToClient(${index}, this.value)" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 11px; padding: 2px 4px; border-radius: 4px; outline: none; margin-left: 4px;">
+          <option value="">Pilih Grup Klien ▼</option>
+          ${options}
+        </select>
+      `;
+    } else if (!isUnassigned) {
+      assignHtml = `<button onclick="assignReportToClient(${index}, '')" style="background:transparent; border:none; color:var(--mdi-orange); font-size:10px; cursor:pointer; text-decoration:underline;">Batalkan Tugas</button>`;
+    }
+    
+    reportEl.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
         <div>
-          <div style="font-weight: 700; color: #fff; margin-bottom: 6px; font-size: 14px;">📄 ${report.filename}</div>
-          <div style="font-size: 12px; color: rgba(255,255,255,0.5);">Klien: <span style="color: var(--mdi-orange); font-weight: 700;">${report.clientName}</span> &nbsp;|&nbsp; Diunggah: ${report.date}</div>
+          <div style="font-weight: 700; font-size: 13px; color: #fff; margin-bottom: 4px;">📄 ${report.filename}</div>
+          <div style="font-size: 11px; color: rgba(255,255,255,0.5);">Diunggah: ${report.date}</div>
+          ${isUnassigned ? `<div style="margin-top:8px;">${assignHtml}</div>` : `<div style="margin-top:6px;">${assignHtml}</div>`}
         </div>
-        <div style="display: flex; gap: 8px;">
-          <button onclick="viewReportPdf(${index})" style="background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600;">Review PDF</button>
-          <button onclick="deleteReport(${index})" style="background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600;">Hapus</button>
+        <div style="display: flex; flex-direction:column; gap: 4px; align-items:flex-end;">
+          <button onclick="viewReportPdf(${index})" style="background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight: 600;">Review</button>
+          <button onclick="deleteReport(${index})" style="background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight: 600;">Hapus</button>
         </div>
       </div>
     `;
+    
+    if (isUnassigned) {
+      unassignedZone.appendChild(reportEl);
+    } else {
+      const zone = document.getElementById(`zone-rep-${report.clientName}`);
+      if (zone) zone.appendChild(reportEl);
+      else unassignedZone.appendChild(reportEl); // Fallback
+    }
   });
+  
+  if (unassignedZone.children.length === 0) {
+    unassignedZone.innerHTML = `<div style="color:rgba(255,255,255,0.3); font-size:12px; font-style:italic; text-align:center; padding:32px 12px;">Tidak ada laporan. Unggah PDF untuk menambahkan.</div>`;
+  }
+}
+
+function toggleReportClientZone(clientName) {
+  const zone = document.getElementById(`zone-rep-${clientName}`);
+  const icon = document.getElementById(`icon-rep-${clientName}`);
+  const key = clientName + '_report';
+  if (zone.style.display === "none") {
+    zone.style.display = "flex";
+    icon.textContent = "▼";
+    expandedClientZones.add(key);
+  } else {
+    zone.style.display = "none";
+    icon.textContent = "▶";
+    expandedClientZones.delete(key);
+  }
+}
+
+function allowDropReport(ev) {
+  ev.preventDefault();
+}
+
+function dragReport(ev, index) {
+  ev.dataTransfer.setData("reportIndex", index);
+}
+
+function dropReport(ev, targetClientName) {
+  ev.preventDefault();
+  
+  // Remove drag-over highlights
+  document.querySelectorAll('.client-drop-zone').forEach(el => el.classList.remove('drag-over'));
+  
+  const indexStr = ev.dataTransfer.getData("reportIndex");
+  if (!indexStr) return;
+  const index = parseInt(indexStr);
+  
+  if (!targetClientName) {
+    // Drop back to unassigned
+    REPORTS_DB[index].clientName = "";
+  } else {
+    REPORTS_DB[index].clientName = targetClientName;
+  }
+  
+  saveReports();
+  renderReportsTab();
+}
+
+function assignReportToClient(index, targetClientName) {
+  REPORTS_DB[index].clientName = targetClientName;
+  saveReports();
+  renderReportsTab();
 }
 
 function handlePdfUpload(event) {
-  const select = document.getElementById('report-client-select');
-  const clientName = select.value;
-  if (!clientName) {
-    alert("Penting: Silakan pilih Klien Tujuan terlebih dahulu dari menu dropdown sebelum mengunggah file!");
-    event.target.value = "";
-    return;
-  }
-  
   const file = event.target.files[0];
   if (!file) return;
   
-  if (file.size > 3 * 1024 * 1024) {
-    alert("Peringatan: Ukuran file lebih dari 3MB. Disarankan mengunggah file yang ukurannya sekecil mungkin agar tidak memberatkan LocalStorage browser.");
+  if (file.size > 10 * 1024 * 1024) {
+    alert("Peringatan: Ukuran file lebih dari 10MB! File yang terlalu besar dapat menyebabkan LocalStorage penuh dan browser crash. Mohon kompres file Anda.");
   }
   
   const reader = new FileReader();
@@ -1486,7 +1609,7 @@ function handlePdfUpload(event) {
     
     REPORTS_DB.push({
       id: 'report_' + Date.now(),
-      clientName: clientName,
+      clientName: "",
       filename: file.name,
       date: new Date().toLocaleDateString('id-ID'),
       pdfData: base64Data
@@ -1494,7 +1617,7 @@ function handlePdfUpload(event) {
     
     saveReports();
     renderReportsTab();
-    alert(`Sukses! Laporan "${file.name}" berhasil diunggah dan ditugaskan untuk klien ${clientName}.`);
+    alert(`Sukses! Laporan "${file.name}" berhasil diunggah. Silakan seret laporan tersebut ke grup klien yang dituju.`);
   };
   reader.readAsDataURL(file);
   event.target.value = "";
