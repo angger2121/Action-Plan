@@ -1519,21 +1519,20 @@ function addClientAccount() {
   if(!name || name.trim() === "") return;
   const pin = prompt(`Masukkan 4-digit PIN akses untuk ${name.trim()}:`);
   if(!pin || pin.trim() === "") return;
-  const logo = prompt(`(Opsional) Masukkan URL gambar logo untuk ${name.trim()}:\nKosongkan jika tidak ada.`);
   
   if (CLIENTS_DB.find(c => c.name.toLowerCase() === name.trim().toLowerCase())) {
     alert("Akun klien dengan nama tersebut sudah terdaftar!");
     return;
   }
   
-  CLIENTS_DB.push({ name: name.trim(), pin: pin.trim(), logo: logo ? logo.trim() : "" });
+  CLIENTS_DB.push({ name: name.trim(), pin: pin.trim(), logo: "" });
   saveClients();
   renderDragAndDropUI();
+  renderReportsTab();
   alert(`Akun klien ${name.trim()} berhasil dibuat!`);
 }
 function editClientAccount(idx) {
   const currentName = CLIENTS_DB[idx].name;
-  const currentLogo = CLIENTS_DB[idx].logo || "";
   
   const newName = prompt("Masukkan nama baru untuk grup klien ini:", currentName);
   if (newName === null) return;
@@ -1546,11 +1545,10 @@ function editClientAccount(idx) {
     return;
   }
   
-  const newLogo = prompt(`(Opsional) Masukkan URL gambar logo untuk ${trimmedName}:`, currentLogo);
-  
   // Update client data
   if (trimmedName !== currentName) {
     CLIENTS_DB[idx].name = trimmedName;
+    
     // Update forms that were assigned to the old client name
     let formsUpdated = false;
     FORMS_DATABASE.forEach(form => {
@@ -1559,24 +1557,15 @@ function editClientAccount(idx) {
         formsUpdated = true;
       }
     });
+    
     if (formsUpdated) localStorage.setItem("mdi_forms", JSON.stringify(FORMS_DATABASE));
   }
   
-  if (newLogo !== null) {
-    CLIENTS_DB[idx].logo = newLogo.trim();
-  }
-  
   saveClients();
-    FORMS_DATABASE.forEach(f => {
-      if (f.client === currentName) {
-        f.client = trimmedName;
-      }
-    });
-    localStorage.setItem("mdi_forms", JSON.stringify(FORMS_DATABASE));
-    
-    renderDragAndDropUI();
-    renderFormsList();
-    alert(`Nama klien berhasil diubah menjadi "${trimmedName}"`);
+  renderDragAndDropUI();
+  renderFormsList();
+  renderReportsTab();
+  alert(`Nama klien berhasil diubah menjadi "${trimmedName}"`);
 }
 
 function deleteClientAccount(idx) {
