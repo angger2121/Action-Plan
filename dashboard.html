@@ -1522,7 +1522,7 @@ function renderTrackerTable() {
         <td style="text-align:center;" onclick="event.stopPropagation();"><input type="checkbox" class="row-cb" value="${p.no}" onclick="checkSelected()"></td>
         <td class="td-num">${p.no}</td>
         <td><div class="td-name">${p.name}</div></td>
-        <td><span class="dept-tag">${p.dept}</span></td>
+        <td>${p.dept && p.dept.trim() !== '-' && p.dept.trim() !== '' ? `<span class="dept-tag">${p.dept}</span>` : '<span style="color:var(--mdi-muted);">-</span>'}</td>
         <td>
           <div style="font-size:13px; color:var(--mdi-ink); line-height:1.4;">${firstPlan}</div>
           ${moreText}
