@@ -1587,7 +1587,8 @@ function deleteSelectedPIC() {
   if (checked.length === 0) return;
   if (confirm(`Apakah Anda yakin ingin menghapus ${checked.length} data terpilih secara permanen?`)) {
     const idsToDelete = Array.from(checked).map(cb => parseInt(cb.value));
-    PARTICIPANTS_STAGE1 = PARTICIPANTS_STAGE1.filter(p => !idsToDelete.includes(p.no));
+    const actualIdsToDelete = PARTICIPANTS.filter(p => idsToDelete.includes(p.no)).map(p => p.picNoStage1);
+    PARTICIPANTS_STAGE1 = PARTICIPANTS_STAGE1.filter(p => !actualIdsToDelete.includes(p.no));
     saveState();
     loadAndMergeParticipants();
     renderAll();
@@ -1636,10 +1637,9 @@ function updateParticipantStatus(no, newStatus) {
 function deletePIC(no) {
   const p = PARTICIPANTS.find(item => item.no === no);
   if (p && confirm(`Apakah Anda yakin ingin menghapus peserta "${p.name}" secara permanen?`)) {
-    PARTICIPANTS_STAGE1 = PARTICIPANTS_STAGE1.filter(item => item.name.trim().toLowerCase() !== p.name.trim().toLowerCase());
-    PARTICIPANTS_STAGE1.forEach((x, idx) => x.no = idx + 1);
-    localStorage.setItem(`mdi_participants_${formId}`, JSON.stringify(PARTICIPANTS_STAGE1));
-
+    PARTICIPANTS_STAGE1 = PARTICIPANTS_STAGE1.filter(item => item.no !== p.picNoStage1);
+    saveState();
+    
     loadAndMergeParticipants();
     rebuildDeptFilters();
     renderAll();
