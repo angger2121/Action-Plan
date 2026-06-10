@@ -100,44 +100,101 @@ body {
   border: 4px solid #ffffff;
   border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  flex-shrink: 0;
-  margin-top: -60px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   font-size: 64px;
+  margin-top: -70px;
 }
 .profile-info {
-  margin-top: 20px;
+  margin-top: 16px;
   flex: 1;
 }
 .profile-info h1 {
-  font-size: 32px;
-  color: var(--mdi-ink);
-  margin-bottom: 8px;
+  font-size: 28px;
   font-weight: 800;
-}
-.pv-stats {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #f1f5f9;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--mdi-muted);
-  margin-bottom: 16px;
-}
-.pv-stats strong {
-  color: var(--mdi-orange);
-  font-size: 14px;
+  color: var(--mdi-navy);
+  margin-bottom: 8px;
 }
 .profile-info p {
   color: var(--mdi-muted);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.6;
+  max-width: 600px;
 }
+.pv-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.pv-stats span {
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--mdi-orange);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* DROPDOWN MENU */
+.menu-wrapper { position: relative; display: inline-block; margin-right: 16px; }
+.menu-btn { 
+  background: #f1f5f9; border: 1px solid var(--mdi-border); color: var(--mdi-navy); 
+  padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; 
+  cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s;
+  font-family: inherit;
+}
+.menu-btn:hover { background: #e2e8f0; }
+.dropdown-menu {
+  position: absolute; top: 110%; left: 0; background: #fff; border: 1px solid var(--mdi-border);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 12px; width: 240px;
+  display: none; flex-direction: column; padding: 8px; z-index: 200;
+}
+.dropdown-menu.show { display: flex; }
+.dd-item {
+  padding: 12px 14px; border-radius: 8px; color: var(--mdi-navy); text-decoration: none;
+  font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px; cursor: pointer;
+  transition: 0.2s;
+}
+.dd-item:hover { background: #f8fafc; color: var(--mdi-orange); }
+
+/* DARK BANNER */
+.dark-banner {
+  background: #1e293b;
+  border-radius: 16px;
+  padding: 40px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 32px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+.dark-banner::after {
+  content: ''; position: absolute; top: -50%; right: -10%; width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.db-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.db-badge { 
+  border: 1px solid rgba(249,115,22,0.5); color: var(--mdi-orange); padding: 4px 12px; 
+  border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(249,115,22,0.1);
+}
+.db-date { font-size: 13px; color: rgba(255,255,255,0.4); font-weight: 500; }
+.db-title { font-size: 36px; font-weight: 800; line-height: 1.2; margin-bottom: 16px; letter-spacing: -0.5px; }
+.db-title span { color: var(--mdi-orange); display: block; }
+.db-desc { font-size: 14px; color: rgba(255,255,255,0.6); max-width: 500px; line-height: 1.5; margin-bottom: 32px; }
+
+.db-stats { display: flex; gap: 16px; }
+.db-stat-box { 
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); 
+  border-radius: 12px; padding: 20px; min-width: 220px; display: flex; flex-direction: column;
+}
+.db-stat-top { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.db-stat-icon { color: rgba(255,255,255,0.4); font-size: 18px; }
+.db-stat-val { font-size: 28px; font-weight: 800; color: #fff; }
+.db-stat-label { font-size: 13px; font-weight: 700; color: #fff; }
+.db-stat-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+
 .ap-list-header {
   font-size: 18px;
   font-weight: 800;
@@ -407,6 +464,13 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
   <div id="profile-view" style="display:none;">
     <div class="pv-header">
       <div class="pv-brand">
+        <div class="menu-wrapper">
+          <button class="menu-btn" onclick="toggleMenu()"><span>≡</span> Menu</button>
+          <div class="dropdown-menu" id="profile-menu">
+            <a class="dd-item" href="#" onclick="toggleMenu(); return false;">📄 Action Plan</a>
+            <a class="dd-item" href="#" onclick="alert('Fitur Evaluasi & Training Report akan segera hadir!'); toggleMenu(); return false;">📊 Evaluasi & Training Report</a>
+          </div>
+        </div>
         <img src="Asset%207-0.png" alt="MDI Logo" style="height: 32px; object-fit: contain;">
         <div class="pv-brand-text" id="pv-header-brand-name"><span>| Client Portal</span></div>
       </div>
@@ -416,16 +480,21 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
     </div>
     
     <div class="pv-container">
-      <div class="profile-card">
-        <div class="pc-banner"></div>
-        <div class="pc-body">
-          <div class="profile-avatar">🏢</div>
-          <div class="profile-info">
-            <h1 id="pv-client-name">(Nama Client)</h1>
-            <div class="pv-stats">
-              <span id="pv-total-ap-badge">Total Action Plan: <strong>0</strong></span>
+      <div class="dark-banner">
+        <div class="db-header">
+          <div class="db-badge">MDI TACK Portal</div>
+          <div class="db-date" id="db-date-display"></div>
+        </div>
+        <div class="db-title">Selamat Siang,<br><span id="pv-client-name">(Nama Client)</span></div>
+        <p class="db-desc">Selamat datang di portal pemantauan program leadership. Berikut ringkasan progress seluruh program Anda.</p>
+        <div class="db-stats">
+          <div class="db-stat-box">
+            <div class="db-stat-top">
+              <span class="db-stat-icon">📅</span>
+              <span class="db-stat-val" id="pv-total-ap-badge">0</span>
             </div>
-            <p>Memantau perkembangan action plan kepemimpinan dari peserta perusahaan Anda yang mengikuti program ini. Seluruh rencana tindakan di bawah ini adalah komitmen resmi yang telah disepakati.</p>
+            <div class="db-stat-label">Total Program</div>
+            <div class="db-stat-sub">program pelatihan</div>
           </div>
         </div>
       </div>
@@ -748,6 +817,21 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
       }
 
       
+      function toggleMenu() {
+        document.getElementById("profile-menu").classList.toggle("show");
+      }
+      
+      window.onclick = function(event) {
+        if (!event.target.closest('.menu-wrapper')) {
+          const dropdowns = document.getElementsByClassName("dropdown-menu");
+          for (let i = 0; i < dropdowns.length; i++) {
+            if (dropdowns[i].classList.contains('show')) {
+              dropdowns[i].classList.remove('show');
+            }
+          }
+        }
+      }
+
       function renderProfile() {
         document.getElementById("pv-client-name").textContent = loggedInClient.name;
         document.getElementById("pv-header-brand-name").innerHTML = `<span style="font-weight:700; margin-left: 8px;">| ${loggedInClient.name}</span>`;
@@ -761,7 +845,11 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         const clientForms = formsList.filter(f => f && f.client && f.client.toLowerCase() === loggedInClient.name.toLowerCase());
         const listContainer = document.getElementById("pv-ap-list");
         
-        document.getElementById("pv-total-ap-badge").innerHTML = `Total Program: <strong>${clientForms.length}</strong>`;
+        document.getElementById("pv-total-ap-badge").textContent = clientForms.length;
+        
+        // Update date display
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById("db-date-display").textContent = new Date().toLocaleDateString('id-ID', dateOptions);
         
         if (clientForms.length === 0) {
           listContainer.innerHTML = '<div style="padding:32px; text-align:center; background:#fff; border-radius:12px; border:1px solid var(--mdi-border); color:var(--mdi-muted);">Belum ada Action Plan yang ditugaskan untuk perusahaan Anda.</div>';
