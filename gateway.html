@@ -635,6 +635,15 @@ input:checked + .slider:before {
       </div>
       <span class="nav-arrow">›</span>
     </button>
+    
+    <button class="nav-item" id="nav-laporan" onclick="switchTab('laporan')">
+      <span class="nav-icon">📊</span>
+      <div class="nav-text">
+        <span class="nav-title">Laporan Training</span>
+        <span class="nav-desc">Import data report</span>
+      </div>
+      <span class="nav-arrow">›</span>
+    </button>
   </aside>
 
   <!-- MAIN CONTENT -->
@@ -732,6 +741,24 @@ input:checked + .slider:before {
         </div>
       </div>
     </div> <!-- END TAB 2 -->
+    
+    <!-- TAB 3: LAPORAN TRAINING -->
+    <div class="dashboard-container" id="tab-laporan" style="display: none;">
+      <div class="list-card">
+        <div class="table-header-row" style="margin-bottom: 16px;">
+          <div class="table-title"><span class="table-dot" style="background:#10b981;"></span>📊 Laporan Training & Report</div>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.15); border: 1px dashed rgba(255,255,255,0.2); border-radius: var(--radius-md); padding: 40px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; min-height: 300px;">
+          <span style="font-size: 40px; margin-bottom: 16px; opacity: 0.8;">📄</span>
+          <h3 style="font-size: 16px; font-weight: 700; color: rgba(255,255,255,0.9); margin-bottom: 8px;">Upload Laporan Training</h3>
+          <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 24px; max-width: 400px; line-height: 1.5;">Pilih file Excel yang berisi rekapan data laporan training. Modul ini saat ini dikhususkan untuk upload data saja.</p>
+          
+          <button class="btn" style="background:#10b981; color:#fff; border-color:#10b981;" onclick="document.getElementById('reportExcelUpload').click()">📥 Import File Excel</button>
+          <input type="file" id="reportExcelUpload" accept=".xlsx, .xls, .csv" style="display:none;" onchange="alert('Fitur import laporan Excel akan diproses di sini nantinya!')">
+        </div>
+      </div>
+    </div> <!-- END TAB 3 -->
     
   </main>
 </div> <!-- END APP LAYOUT -->
@@ -900,11 +927,13 @@ function switchTab(tabId) {
   // Update active states on buttons
   document.getElementById('nav-action-plan').classList.remove('active');
   document.getElementById('nav-client-portal').classList.remove('active');
+  document.getElementById('nav-laporan').classList.remove('active');
   document.getElementById('nav-' + tabId).classList.add('active');
 
   // Show/Hide content
   document.getElementById('tab-action-plan').style.display = 'none';
   document.getElementById('tab-client-portal').style.display = 'none';
+  document.getElementById('tab-laporan').style.display = 'none';
   document.getElementById('tab-' + tabId).style.display = 'flex';
 }
 
