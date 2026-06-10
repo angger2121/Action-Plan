@@ -28,20 +28,136 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  background: linear-gradient(135deg, var(--mdi-dark) 0%, #1e1e35 60%, #0f0f22 100%);
+  background: #0f172a;
   font-family: 'Plus Jakarta Sans', sans-serif;
   color: #fff;
   min-height: 100vh;
-  padding: 40px 20px;
+  margin: 0; padding: 0;
   display: flex;
+}
+
+.app-layout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* SIDEBAR STYLING */
+.sidebar {
+  width: 280px;
+  background: #111827; /* Darker than body */
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px;
+  flex-shrink: 0;
+}
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 40px;
+}
+.sidebar-logo {
+  background: var(--mdi-orange);
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
+}
+.sidebar-brand h3 {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.sidebar-brand p {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  margin-top: 2px;
+}
+.sidebar-menu-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  padding-left: 12px;
+}
+
+/* NAV ITEMS */
+.nav-item {
+  background: transparent;
+  border: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: left;
+}
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+.nav-item.active {
+  background: var(--mdi-orange);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+.nav-icon {
+  font-size: 20px;
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav-text {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+.nav-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+.nav-desc {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+.nav-arrow {
+  font-size: 18px;
+  opacity: 0;
+  transition: 0.2s;
+  transform: translateX(-4px);
+}
+.nav-item.active .nav-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* MAIN CONTENT */
+.main-content {
+  flex-grow: 1;
+  padding: 40px;
   overflow-y: auto;
+  max-height: 100vh;
 }
 
 .dashboard-container {
   max-width: 1100px;
   width: 100%;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -488,96 +604,137 @@ input:checked + .slider:before {
 </head>
 <body>
 
-<div class="dashboard-container">
-  
-  <!-- HEADER CARD -->
-  <div class="header-card">
-    <div class="brand-info">
-      <div class="logo">MDI TACK</div>
-      <h1>Leadership Essentials <em>Action Plan Suite</em></h1>
-      <p class="desc">Selamat datang di Panel Manajemen Formulir MDI. Buat formulir baru, atur pertanyaan di Form Backend, evaluasi rencana komitmen tindakan peserta, serta aktifkan atau nonaktifkan draf formulir.</p>
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+       <div class="sidebar-logo">MDI</div>
+       <div class="sidebar-brand">
+         <h3>MDI TACK</h3>
+         <p>Admin Panel</p>
+       </div>
     </div>
     
-    <button class="btn" onclick="openCreateFormModal()">
-      <span>➕</span> Buat Formulir Baru
+    <div class="sidebar-menu-label">MENU</div>
+    
+    <button class="nav-item active" id="nav-action-plan" onclick="switchTab('action-plan')">
+      <span class="nav-icon">📄</span>
+      <div class="nav-text">
+        <span class="nav-title">Action Plan</span>
+        <span class="nav-desc">Kelola & buat formulir</span>
+      </div>
+      <span class="nav-arrow">›</span>
     </button>
-  </div>
-
-  <!-- FILTER DASHBOARD -->
-  <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <label for="filter-owner" style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7);">Filter Training Consultant:</label>
-      <select id="filter-owner" onchange="applyFilters()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none; cursor: pointer; min-width: 200px;">
-        <option value="all" style="background:#1e293b; color:#fff;">Semua Konsultan</option>
-        <option value="Kartika" style="background:#1e293b; color:#fff;">Kartika</option>
-        <option value="Rangga" style="background:#1e293b; color:#fff;">Rangga</option>
-        <option value="Aji" style="background:#1e293b; color:#fff;">Aji</option>
-        <option value="Matius" style="background:#1e293b; color:#fff;">Matius</option>
-      </select>
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="color: rgba(255,255,255,0.7);">🔍</span>
-      <input type="text" id="dashboard-search" oninput="applyFilters()" placeholder="Cari klien atau form..." style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 12px; color: #fff; outline: none; width: 250px;">
-    </div>
-  </div>
-
-  <!-- BATCH 1: KOMITMEN AWAL FORMULIR (INITIAL COMMITMENTS) -->
-  <div class="list-card">
-    <div class="table-header-row">
-      <div class="table-title"><span class="table-dot"></span>Tahap 1: Komitmen Rencana Tindakan Kepemimpinan (Initial Commitments)</div>
-    </div>
     
-    <div style="overflow-x: auto;">
-      <table class="drive-table">
-        <thead>
-          <tr>
-            <th style="min-width: 250px;">Nama Formulir</th>
-            <th style="width: 100px;">Pemilik</th>
-            <th style="width: 140px;">Training Consultant</th>
-            <th style="width: 140px;">Dibuat Pada</th>
-            <th style="width: 180px;">Status Form</th>
-            <th style="width: 320px; text-align: right;">Portal Tautan</th>
-          </tr>
-        </thead>
-        <tbody id="formsListBodyAwal">
-          <!-- Populated dynamically -->
-        </tbody>
-      </table>
-    </div>
-  </div>
+    <button class="nav-item" id="nav-client-portal" onclick="switchTab('client-portal')">
+      <span class="nav-icon">👥</span>
+      <div class="nav-text">
+        <span class="nav-title">Portal Klien</span>
+        <span class="nav-desc">Penugasan program</span>
+      </div>
+      <span class="nav-arrow">›</span>
+    </button>
+  </aside>
 
-  <!-- PENGATURAN KLIEN & PENUGASAN PROGRAM (CLIENT SETTINGS) -->
-  <div class="list-card" style="margin-top: 12px;">
-    <div class="table-header-row" style="margin-bottom: 16px;">
-      <div class="table-title"><span class="table-dot" style="background:#1a73e8;"></span>🏢 Portal Klien & Penugasan Program (Drag & Drop)</div>
-      <button class="action-btn" onclick="addClientAccount()" style="font-size:11px; background:var(--mdi-orange); border-color:var(--mdi-orange); color:#fff; box-shadow: 0 2px 8px rgba(249,115,22,0.25);">➕ Tambah Klien</button>
-    </div>
-    
-    <div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px;">
-      <!-- Unassigned Programs -->
-      <div style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md); padding: 16px; display:flex; flex-direction:column;">
-        <h3 style="font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;"><span style="font-size: 16px;">📁</span> Program Belum Ditugaskan</h3>
-        <p style="font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 16px; line-height: 1.4;">Seret program dari daftar ini ke salah satu grup klien di sebelah kanan.</p>
-        <div id="unassigned-zone" ondrop="drop(event, '')" ondragover="allowDrop(event)" style="flex-grow: 1; border: 2px dashed rgba(255,255,255,0.15); border-radius: 8px; padding: 12px; min-height: 200px; max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; transition: background 0.2s;">
-          <!-- Draggable forms -->
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- TAB 1: ACTION PLAN -->
+    <div class="dashboard-container" id="tab-action-plan">
+      <!-- HEADER CARD -->
+      <div class="header-card">
+        <div class="brand-info">
+          <div class="logo">MDI TACK</div>
+          <h1>Leadership Essentials <em>Action Plan Suite</em></h1>
+          <p class="desc">Selamat datang di Panel Manajemen Formulir MDI. Buat formulir baru, atur pertanyaan di Form Backend, evaluasi rencana komitmen tindakan peserta, serta aktifkan atau nonaktifkan draf formulir.</p>
+        </div>
+        
+        <button class="btn" onclick="openCreateFormModal()">
+          <span>➕</span> Buat Formulir Baru
+        </button>
+      </div>
+
+      <!-- FILTER DASHBOARD -->
+      <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <label for="filter-owner" style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7);">Filter Training Consultant:</label>
+          <select id="filter-owner" onchange="applyFilters()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none; cursor: pointer; min-width: 200px;">
+            <option value="all" style="background:#1e293b; color:#fff;">Semua Konsultan</option>
+            <option value="Kartika" style="background:#1e293b; color:#fff;">Kartika</option>
+            <option value="Rangga" style="background:#1e293b; color:#fff;">Rangga</option>
+            <option value="Aji" style="background:#1e293b; color:#fff;">Aji</option>
+            <option value="Matius" style="background:#1e293b; color:#fff;">Matius</option>
+          </select>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: rgba(255,255,255,0.7);">🔍</span>
+          <input type="text" id="dashboard-search" oninput="applyFilters()" placeholder="Cari klien atau form..." style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 12px; color: #fff; outline: none; width: 250px;">
         </div>
       </div>
-      
-      <!-- Client Zones -->
-      <div style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md); padding: 16px; display:flex; flex-direction:column;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <h3 style="font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 8px;"><span style="font-size: 16px;">🏢</span> Grup Klien (Viewer)</h3>
-          <input type="text" id="client-search" oninput="renderDragAndDropUI()" placeholder="Cari Grup Klien..." style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 6px 10px; color: #fff; outline: none; width: 160px; font-size: 12px;">
+
+      <!-- BATCH 1: KOMITMEN AWAL FORMULIR (INITIAL COMMITMENTS) -->
+      <div class="list-card">
+        <div class="table-header-row">
+          <div class="table-title"><span class="table-dot"></span>Tahap 1: Komitmen Rencana Tindakan Kepemimpinan (Initial Commitments)</div>
         </div>
-        <p style="font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 16px; line-height: 1.4;">Program yang diletakkan di dalam grup akan muncul di portal klien yang sesuai.</p>
-        <div id="client-zones-container" style="display: flex; flex-direction: column; gap: 16px;">
-          <!-- Client zones -->
+        
+        <div style="overflow-x: auto;">
+          <table class="drive-table">
+            <thead>
+              <tr>
+                <th style="min-width: 250px;">Nama Formulir</th>
+                <th style="width: 100px;">Pemilik</th>
+                <th style="width: 140px;">Training Consultant</th>
+                <th style="width: 140px;">Dibuat Pada</th>
+                <th style="width: 180px;">Status Form</th>
+                <th style="width: 320px; text-align: right;">Portal Tautan</th>
+              </tr>
+            </thead>
+            <tbody id="formsListBodyAwal">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
-  </div>
+    </div> <!-- END TAB 1 -->
 
-</div> <!-- END OF dashboard-container -->
+    <!-- TAB 2: PORTAL KLIEN -->
+    <div class="dashboard-container" id="tab-client-portal" style="display: none;">
+      <!-- PENGATURAN KLIEN & PENUGASAN PROGRAM (CLIENT SETTINGS) -->
+      <div class="list-card">
+        <div class="table-header-row" style="margin-bottom: 16px;">
+          <div class="table-title"><span class="table-dot" style="background:#1a73e8;"></span>🏢 Portal Klien & Penugasan Program (Drag & Drop)</div>
+          <button class="action-btn" onclick="addClientAccount()" style="font-size:11px; background:var(--mdi-orange); border-color:var(--mdi-orange); color:#fff; box-shadow: 0 2px 8px rgba(249,115,22,0.25);">➕ Tambah Klien</button>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px;">
+          <!-- Unassigned Programs -->
+          <div style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md); padding: 16px; display:flex; flex-direction:column;">
+            <h3 style="font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;"><span style="font-size: 16px;">📁</span> Program Belum Ditugaskan</h3>
+            <p style="font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 16px; line-height: 1.4;">Seret program dari daftar ini ke salah satu grup klien di sebelah kanan.</p>
+            <div id="unassigned-zone" ondrop="drop(event, '')" ondragover="allowDrop(event)" style="flex-grow: 1; border: 2px dashed rgba(255,255,255,0.15); border-radius: 8px; padding: 12px; min-height: 200px; max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; transition: background 0.2s;">
+              <!-- Draggable forms -->
+            </div>
+          </div>
+          
+          <!-- Client Zones -->
+          <div style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-md); padding: 16px; display:flex; flex-direction:column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <h3 style="font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 8px;"><span style="font-size: 16px;">🏢</span> Grup Klien (Viewer)</h3>
+              <input type="text" id="client-search" oninput="renderDragAndDropUI()" placeholder="Cari Grup Klien..." style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 6px 10px; color: #fff; outline: none; width: 160px; font-size: 12px;">
+            </div>
+            <p style="font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 16px; line-height: 1.4;">Program yang diletakkan di dalam grup akan muncul di portal klien yang sesuai.</p>
+            <div id="client-zones-container" style="display: flex; flex-direction: column; gap: 16px;">
+              <!-- Client zones -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- END TAB 2 -->
+    
+  </main>
+</div> <!-- END APP LAYOUT -->
 
 <!-- CREATE NEW FORM MODAL -->
 <div class="modal-overlay" id="createFormModal">
@@ -737,6 +894,19 @@ const PRELOADED_FORMS = [
 ];
 
 let FORMS_DATABASE = [];
+
+// ── TAB LOGIC ──
+function switchTab(tabId) {
+  // Update active states on buttons
+  document.getElementById('nav-action-plan').classList.remove('active');
+  document.getElementById('nav-client-portal').classList.remove('active');
+  document.getElementById('nav-' + tabId).classList.add('active');
+
+  // Show/Hide content
+  document.getElementById('tab-action-plan').style.display = 'none';
+  document.getElementById('tab-client-portal').style.display = 'none';
+  document.getElementById('tab-' + tabId).style.display = 'flex';
+}
 
 // ── INIT ──
 function init() {
