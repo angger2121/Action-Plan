@@ -1414,33 +1414,54 @@ function addClientAccount() {
   if(!name || name.trim() === "") return;
   const pin = prompt(`Masukkan 4-digit PIN akses untuk ${name.trim()}:`);
   if(!pin || pin.trim() === "") return;
+  const logo = prompt(`(Opsional) Masukkan URL gambar logo untuk ${name.trim()}:\nKosongkan jika tidak ada.`);
   
   if (CLIENTS_DB.find(c => c.name.toLowerCase() === name.trim().toLowerCase())) {
     alert("Akun klien dengan nama tersebut sudah terdaftar!");
     return;
   }
   
-  CLIENTS_DB.push({ name: name.trim(), pin: pin.trim() });
+  CLIENTS_DB.push({ name: name.trim(), pin: pin.trim(), logo: logo ? logo.trim() : "" });
   saveClients();
   renderDragAndDropUI();
   alert(`Akun klien ${name.trim()} berhasil dibuat!`);
 }
 function editClientAccount(idx) {
   const currentName = CLIENTS_DB[idx].name;
-  const newName = prompt("Masukkan nama baru untuk grup klien ini:", currentName);
+  const currentLogo = CLIENTS_DB[idx].logo || "";
   
-  if (newName !== null && newName.trim() !== "" && newName.trim() !== currentName) {
-    const trimmedName = newName.trim();
-    if (CLIENTS_DB.some((c, i) => i !== idx && c.name.toLowerCase() === trimmedName.toLowerCase())) {
-      alert("Nama klien tersebut sudah digunakan!");
-      return;
-    }
-    
-    // Update client name
+  const newName = prompt("Masukkan nama baru untuk grup klien ini:", currentName);
+  if (newName === null) return;
+  
+  const trimmedName = newName.trim();
+  if (trimmedName === "") return;
+  
+  if (trimmedName !== currentName && CLIENTS_DB.some((c, i) => i !== idx && c.name.toLowerCase() === trimmedName.toLowerCase())) {
+    alert("Nama klien tersebut sudah digunakan!");
+    return;
+  }
+  
+  const newLogo = prompt(`(Opsional) Masukkan URL gambar logo untuk ${trimmedName}:`, currentLogo);
+  
+  // Update client data
+  if (trimmedName !== currentName) {
     CLIENTS_DB[idx].name = trimmedName;
-    saveClients();
-    
     // Update forms that were assigned to the old client name
+    let formsUpdated = false;
+    FORMS_DATABASE.forEach(form => {
+      if (form.client === currentName) {
+        form.client = trimmedName;
+        formsUpdated = true;
+      }
+    });
+    if (formsUpdated) saveFormsDatabase();
+  }
+  
+  if (newLogo !== null) {
+    CLIENTS_DB[idx].logo = newLogo.trim();
+  }
+  
+  saveClients();
     FORMS_DATABASE.forEach(f => {
       if (f.client === currentName) {
         f.client = trimmedName;
