@@ -1897,7 +1897,17 @@ function deleteQuestion(idx) {
   const config = FORM_CONFIG;
   syncDOMToState();
   config.fields.splice(idx, 1);
+  
+  // Auto-save to prevent user confusion
+  const cachedForms = JSON.parse(localStorage.getItem("mdi_forms") || "[]");
+  const fIdx = cachedForms.findIndex(f => f.id === formId);
+  if (fIdx !== -1) {
+    cachedForms[fIdx] = config;
+    localStorage.setItem("mdi_forms", JSON.stringify(cachedForms));
+  }
+  
   renderConfiguratorUI();
+  showToast("Kolom berhasil dihapus!");
 }
 
 function moveQuestion(idx, direction) {
@@ -2763,8 +2773,8 @@ function handleExcelUpload(event) {
     let nameIdx = lowerHeaders.findIndex(h => h === "nama" || h === "name" || h === "nama lengkap");
     if (nameIdx === -1) nameIdx = lowerHeaders.findIndex(h => h.includes("nama") || h.includes("name"));
     
-    let deptIdx = lowerHeaders.findIndex(h => h === "departemen" || h === "dept" || h === "department");
-    if (deptIdx === -1) deptIdx = lowerHeaders.findIndex(h => h.includes("dept") || h.includes("departemen"));
+    let deptIdx = lowerHeaders.findIndex(h => h === "departemen" || h === "dept" || h === "department" || h === "divisi" || h === "division" || h === "unit kerja");
+    if (deptIdx === -1) deptIdx = lowerHeaders.findIndex(h => h.startsWith("dept") || h.startsWith("departemen") || h === "nama departemen");
     
     let gradeIdx = lowerHeaders.findIndex(h => h.includes("grade") || h.includes("jabatan"));
     let dateIdx = lowerHeaders.findIndex(h => h.includes("timestamp") || h.includes("waktu"));
