@@ -1325,6 +1325,10 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
 
       window.addEventListener('firebaseDataChanged', () => {
         init();
+        if (typeof loggedInClient !== 'undefined' && loggedInClient) {
+          renderProfile();
+          renderAll();
+        }
       });
 
       window.addEventListener('storage', (e) => {
