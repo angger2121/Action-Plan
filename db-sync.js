@@ -69,6 +69,13 @@ window.FirebaseSync = {
             }
           })
           .subscribe();
+          
+        // Cross-tab synchronization bridge
+        window.addEventListener('storage', (e) => {
+          if (e.key && e.key.startsWith('mdi_')) {
+            window.dispatchEvent(new Event('firebaseDataChanged'));
+          }
+        });
 
         isFirstLoad = false;
         document.body.removeChild(overlay);
@@ -88,7 +95,14 @@ window.FirebaseSync = {
         originalSetItem.apply(this, arguments);
         if (key.startsWith('mdi_')) {
           supabaseClient.from('actionplan_db').upsert({ id: key, value: value })
-            .then(({error}) => { if(error) console.error("Supabase save error:", error); });
+            .then(({error}) => { 
+              if(error) {
+                console.error("Supabase save error:", error);
+                if (error.code === '42501' || error.message.includes('security policy')) {
+                  alert("PERINGATAN: Supabase memblokir penyimpanan data karena aturan RLS (Row Level Security) masih aktif di tabel 'actionplan_db'. Mohon matikan RLS di Dashboard Supabase Anda.");
+                }
+              }
+            });
         }
       };
 
