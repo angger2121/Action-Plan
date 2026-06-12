@@ -601,7 +601,8 @@ input:checked + .slider:before {
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-  <script src="firebase-config.js"></script>
+  <script src="db-config.js"></script>
+  <script src="db-sync.js"></script>
 </head>
 <body>
 
@@ -1255,7 +1256,21 @@ function saveEditForm() {
   }
 }
 
-window.onload = async function() { await FirebaseSync.init(); init(); };
+window.onload = async function() { 
+  await FirebaseSync.init(); 
+  init(); 
+};
+
+window.addEventListener('firebaseDataChanged', () => {
+  init();
+  if (currentTab === 'dashboard') {
+    renderFormsList();
+  } else if (currentTab === 'actionplan') {
+    renderDragAndDropUI();
+  } else if (currentTab === 'laporan') {
+    renderReportsTab();
+  }
+});
 
 
 // ── CLIENT PORTAL MANAGEMENT LOGIC ──

@@ -779,7 +779,8 @@ td { padding: 12px 14px; vertical-align: top; }
 </style>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="firebase-config.js"></script>
+  <script src="db-config.js"></script>
+  <script src="db-sync.js"></script>
 </head>
 <body>
 <!-- SIDEBAR -->
@@ -2749,7 +2750,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-window.onload = async function() { await FirebaseSync.init(); init(); };
+window.onload = async function() { 
+  await FirebaseSync.init(); 
+  init(); 
+};
+
+window.addEventListener('firebaseDataChanged', () => {
+  init();
+});
 
 function handleExcelUpload(event) {
   const file = event.target.files[0];

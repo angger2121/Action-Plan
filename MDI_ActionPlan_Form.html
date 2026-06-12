@@ -337,7 +337,8 @@ body {
 </style>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="firebase-config.js"></script>
+  <script src="db-config.js"></script>
+  <script src="db-sync.js"></script>
 </head>
 <body>
 
@@ -1056,7 +1057,16 @@ function reloadFormForEditing() {
   document.querySelectorAll('textarea.gf-input-textarea').forEach(el => autoGrow(el));
 }
 
-window.onload = async function() { await FirebaseSync.init(); init(); };
+window.onload = async function() { 
+  await FirebaseSync.init(); 
+  init(); 
+};
+
+window.addEventListener('firebaseDataChanged', () => {
+  if (document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
+    init();
+  }
+});
 
 // Cross-tab live synchronization
 window.addEventListener('storage', (e) => {

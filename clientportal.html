@@ -481,7 +481,8 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
 </style>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="firebase-config.js"></script>
+  <script src="db-config.js"></script>
+  <script src="db-sync.js"></script>
 </head>
 <body>
 
@@ -1318,7 +1319,14 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         return `<span class="status-pill s-prog">● In Progress</span>`;
       }
 
-      window.onload = async function() { await FirebaseSync.init(); init(); };
+      window.onload = async function() { 
+        await FirebaseSync.init(); 
+        init(); 
+      };
+
+      window.addEventListener('firebaseDataChanged', () => {
+        init();
+      });
 
       window.addEventListener('storage', (e) => {
         const s1Key = `mdi_participants_${formId}`;
