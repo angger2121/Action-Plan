@@ -598,9 +598,7 @@ input:checked + .slider:before {
 
 .assign-select option { background: #fff; color: var(--mdi-dark); }
 </style>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="db-config.js"></script>
   <script src="db-sync.js"></script>
 </head>
@@ -1627,10 +1625,13 @@ async function handlePdfUpload(event) {
   btn.disabled = true;
   
   try {
-    const storageRef = firebase.storage().ref();
-    const fileRef = storageRef.child(`training_reports/${Date.now()}_${file.name}`);
-    await fileRef.put(file);
-    const downloadURL = await fileRef.getDownloadURL();
+    const fileName = `training_reports/${Date.now()}_${file.name}`;
+    const { data, error } = await supabase.storage.from('training_reports').upload(fileName, file);
+    
+    if (error) throw error;
+    
+    const { data: publicUrlData } = supabase.storage.from('training_reports').getPublicUrl(fileName);
+    const downloadURL = publicUrlData.publicUrl;
     
     REPORTS_DB.push({
       id: 'report_' + Date.now(),
@@ -1642,10 +1643,10 @@ async function handlePdfUpload(event) {
     
     saveReports();
     renderReportsTab();
-    alert(`Sukses! Laporan "${file.name}" berhasil diunggah ke Firebase Cloud Storage. Silakan seret laporan tersebut ke grup klien yang dituju.`);
+    alert(`Sukses! Laporan "${file.name}" berhasil diunggah ke Supabase Cloud Storage. Silakan seret laporan tersebut ke grup klien yang dituju.`);
   } catch (error) {
     console.error("Upload error:", error);
-    alert("Gagal mengunggah file ke Firebase Storage. Pastikan Anda sudah mengaktifkan Firebase Storage dan mengizinkan Rules (allow read, write: if true;).");
+    alert("Gagal mengunggah file ke Supabase Storage. Pastikan Anda telah membuat bucket 'training_reports' dan mematikan RLS atau mengatur policy Public.");
   } finally {
     btn.innerHTML = originalText;
     btn.disabled = false;
