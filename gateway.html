@@ -1626,11 +1626,11 @@ async function handlePdfUpload(event) {
   
   try {
     const fileName = `training_reports/${Date.now()}_${file.name}`;
-    const { data, error } = await supabase.storage.from('training_reports').upload(fileName, file);
+    const { data, error } = await supabaseClient.storage.from('training_reports').upload(fileName, file);
     
     if (error) throw error;
     
-    const { data: publicUrlData } = supabase.storage.from('training_reports').getPublicUrl(fileName);
+    const { data: publicUrlData } = supabaseClient.storage.from('training_reports').getPublicUrl(fileName);
     const downloadURL = publicUrlData.publicUrl;
     
     REPORTS_DB.push({

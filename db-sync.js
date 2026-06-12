@@ -1,10 +1,10 @@
 // Database Real-time Sync Engine (SUPABASE ADAPTER)
-// File ini bertugas menjembatani logika database Anda menggunakan Adapter Pattern untuk Supabase.
+// File ini bertugas menjembatani logika database Anda menggunakan Adapter Pattern untuk supabaseClient.
 
 window.FirebaseSync = {
   init: function() {
     return new Promise(async (resolve) => {
-      if (!supabase) {
+      if (!supabaseClient) {
         console.error("Supabase SDK belum dimuat.");
         resolve();
         return;
@@ -13,7 +13,7 @@ window.FirebaseSync = {
       const overlay = document.createElement('div');
       overlay.id = "firebase-loading";
       overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#10b981; font-family:sans-serif;";
-      overlay.innerHTML = `<div style="font-size:24px; font-weight:bold; margin-bottom:16px;">Action Plan Suite</div><div>Menyinkronkan data Supabase...</div>`;
+      overlay.innerHTML = `<div style="font-size:24px; font-weight:bold; margin-bottom:16px;">Action Plan Suite</div><div>Menyinkronkan data supabaseClient...</div>`;
       document.body.appendChild(overlay);
 
       const originalSetItem = localStorage.setItem;
@@ -23,7 +23,7 @@ window.FirebaseSync = {
 
       try {
         // Fetch existing data initially
-        const { data: snapshot, error } = await supabase.from('actionplan_db').select('*');
+        const { data: snapshot, error } = await supabaseClient.from('actionplan_db').select('*');
         
         if (error) throw error;
 
@@ -39,13 +39,13 @@ window.FirebaseSync = {
             const key = localStorage.key(i);
             if (key && key.startsWith('mdi_')) {
               const val = localStorage.getItem(key);
-              supabase.from('actionplan_db').upsert({ id: key, value: val }).then();
+              supabaseClient.from('actionplan_db').upsert({ id: key, value: val }).then();
             }
           }
         }
 
         // Setup Real-time listener using Supabase Channels
-        supabase.channel('public:actionplan_db')
+        supabaseClient.channel('public:actionplan_db')
           .on('postgres_changes', { event: '*', schema: 'public', table: 'actionplan_db' }, payload => {
             let changed = false;
             
@@ -87,7 +87,7 @@ window.FirebaseSync = {
       localStorage.setItem = function(key, value) {
         originalSetItem.apply(this, arguments);
         if (key.startsWith('mdi_')) {
-          supabase.from('actionplan_db').upsert({ id: key, value: value })
+          supabaseClient.from('actionplan_db').upsert({ id: key, value: value })
             .then(({error}) => { if(error) console.error("Supabase save error:", error); });
         }
       };
@@ -95,7 +95,7 @@ window.FirebaseSync = {
       localStorage.removeItem = function(key) {
         originalRemoveItem.apply(this, arguments);
         if (key.startsWith('mdi_')) {
-          supabase.from('actionplan_db').delete().eq('id', key)
+          supabaseClient.from('actionplan_db').delete().eq('id', key)
             .then(({error}) => { if(error) console.error("Supabase remove error:", error); });
         }
       };
