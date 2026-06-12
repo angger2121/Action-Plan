@@ -1073,7 +1073,10 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
               <div class="ap-item-title">📊 ${report.filename}</div>
               <div class="ap-item-meta" style="margin-top: 4px;">${report.date}</div>
             </div>
-            <button class="ap-item-arrow" style="border:none; background:var(--mdi-orange); color:#fff; padding:6px 12px; border-radius:4px; font-weight:600; cursor:pointer;" onclick="reviewReportPdf('${report.id}')">View</button>
+            <div style="display: flex; gap: 8px;">
+              <button class="ap-item-arrow" style="border:1px solid var(--mdi-orange); background:transparent; color:var(--mdi-orange); padding:6px 12px; border-radius:4px; font-weight:600; cursor:pointer;" onclick="reviewReportPdf('${report.id}')">Preview</button>
+              <a href="${report.pdfUrl || report.pdfData}" target="_blank" download="${report.filename}" style="border:none; background:var(--mdi-orange); color:#fff; padding:6px 12px; border-radius:4px; font-weight:600; cursor:pointer; text-decoration:none; font-size:13px; display:inline-flex; align-items:center;">Download</a>
+            </div>
           `;
           listContainer.appendChild(card);
         });
