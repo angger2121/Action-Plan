@@ -1646,7 +1646,7 @@ async function handlePdfUpload(event) {
     alert(`Sukses! Laporan "${file.name}" berhasil diunggah ke Supabase Cloud Storage. Silakan seret laporan tersebut ke grup klien yang dituju.`);
   } catch (error) {
     console.error("Upload error:", error);
-    alert("Gagal mengunggah file ke Supabase Storage. Pastikan Anda telah membuat bucket 'training_reports' dan mematikan RLS atau mengatur policy Public.");
+    alert(`Gagal mengunggah file ke Supabase Storage. \n\nDetail Error: ${error.message}\n\nPastikan bucket 'training_reports' (huruf kecil) ada dan Policy-nya benar.`);
   } finally {
     btn.innerHTML = originalText;
     btn.disabled = false;
