@@ -1075,11 +1075,32 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
             </div>
             <div style="display: flex; gap: 8px;">
               <button style="border:1px solid var(--mdi-orange); background:transparent; color:var(--mdi-orange); padding:6px 12px; border-radius:4px; font-weight:600; cursor:pointer; font-size:13px; display:inline-flex; align-items:center;" onclick="reviewReportPdf('${report.id}')">Preview</button>
-              <a href="${report.pdfUrl || report.pdfData}" target="_blank" download="${report.filename}" style="border:none; background:var(--mdi-orange); color:#fff; padding:6px 12px; border-radius:4px; font-weight:600; cursor:pointer; text-decoration:none; font-size:13px; display:inline-flex; align-items:center;">Download</a>
+              <button style="border:none; background:var(--mdi-orange); color:#fff; padding:6px 12px; border-radius:4px; font-weight:600; cursor:pointer; font-size:13px; display:inline-flex; align-items:center;" onclick="downloadReportPdf('${report.id}')">Download</button>
             </div>
           `;
           listContainer.appendChild(card);
         });
+      }
+      
+      function downloadReportPdf(reportId) {
+        const report = REPORTS_DB.find(r => r.id === reportId);
+        if(!report) return;
+        
+        let url = report.pdfUrl || report.pdfData;
+        if (!url) return;
+        
+        // Force download behavior using Supabase's built-in download parameter if it's a URL
+        if (url.startsWith('http')) {
+          const sep = url.includes('?') ? '&' : '?';
+          url = url + sep + 'download=';
+        }
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = report.filename || 'Laporan_Training.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       }
       
       function reviewReportPdf(reportId) {
