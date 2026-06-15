@@ -528,8 +528,8 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
   .profile-avatar { margin-top: -40px; width: 80px; height: 80px; font-size: 36px; border-width: 3px; }
   .profile-info { margin-top: 0; }
   .profile-info h1 { font-size: 20px; }
-  .ap-item { flex-direction: column; padding: 16px; align-items: flex-start; gap: 12px; }
-  .ap-item-arrow { align-self: flex-end; }
+  .ap-list { grid-template-columns: 1fr; }
+  .ap-item { padding: 16px; }
   
   /* TOPBAR (Dashboard) */
   .topbar { padding: 12px 16px; flex-direction: row; justify-content: space-between; align-items: center; }
@@ -1325,12 +1325,29 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         document.getElementById("batch-selector-container").style.display = "none";
         
         changeBatch(targetFormId);
+        
+        history.pushState({ view: 'dashboard' }, "", "#dashboard");
       }
 
       function goBackToProfile() {
+        if (history.state && history.state.view === 'dashboard') {
+          history.back();
+        } else {
+          showProfileView();
+        }
+      }
+      
+      function showProfileView() {
         document.getElementById("dashboard-view").style.display = "none";
+        document.getElementById("report-view").style.display = "none";
         document.getElementById("profile-view").style.display = "block";
       }
+      
+      window.addEventListener("popstate", (event) => {
+        if (loggedInClient) {
+          showProfileView();
+        }
+      });
 
       function attemptLogin() {
         const clientName = document.getElementById("login-username").value.trim();
