@@ -6,6 +6,11 @@ test.describe('Client Portal Authentication & Navigation', () => {
     // Inject DUMMY DATA into localStorage before the page even loads.
     // This isolates our testing from production data ("pake data dummy aja").
     await page.addInitScript(() => {
+      // Disable Supabase in tests to avoid mutating production DB
+      window.supabase = {
+        createClient: () => null
+      };
+      
       localStorage.setItem('mdi_clients', JSON.stringify([
         { name: 'Dummy Company', pin: '000000' }
       ]));

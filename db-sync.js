@@ -28,11 +28,25 @@ window.FirebaseSync = {
         if (error) throw error;
 
         if (snapshot && snapshot.length > 0) {
+          // Sync Cloud to Local
           snapshot.forEach(doc => {
             if (localStorage.getItem(doc.id) !== doc.value) {
               originalSetItem.call(localStorage, doc.id, doc.value);
             }
           });
+          
+          // Sync Local to Cloud for missing keys
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('mdi_')) {
+              const localVal = localStorage.getItem(key);
+              const cloudDoc = snapshot.find(d => d.id === key);
+              if (!cloudDoc && localVal) {
+                // Cloud is missing this key, push it up
+                supabaseClient.from('actionplan_db').upsert({ id: key, value: localVal }).then();
+              }
+            }
+          }
         } else {
           // If Cloud was completely empty initially, migrate existing local data up to cloud.
           for (let i = 0; i < localStorage.length; i++) {
