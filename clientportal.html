@@ -596,6 +596,41 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
       z-index: 1;
       animation: floatSlow 8s ease-in-out infinite;
     }
+    
+    /* Mobile Responsiveness for Login */
+    @media(max-width: 899px) {
+      #login-view {
+        overflow-y: auto;
+        display: block;
+      }
+      .login-split-left {
+        min-height: 100vh;
+        padding: 40px 20px;
+        padding-top: 15vh;
+        justify-content: flex-start;
+      }
+      .login-split-left::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -10%;
+        width: 120%;
+        height: 35vh;
+        background: linear-gradient(135deg, var(--mdi-navy) 0%, var(--mdi-orange) 100%);
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        z-index: 0;
+      }
+      .login-form-box {
+        padding: 32px 24px;
+        border-radius: 16px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        margin: 0 auto;
+      }
+      .login-abstract-circle {
+        display: none;
+      }
+    }
   </style>
 
   <div id="login-view">
