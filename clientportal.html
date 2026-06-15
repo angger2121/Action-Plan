@@ -429,8 +429,13 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
   .login-header p { font-size: 14px; }
   
   /* PROFILE VIEW */
-  .pv-header { padding: 16px; flex-direction: row; justify-content: space-between; align-items: center; }
+  .pv-header { padding: 16px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+  .pv-brand { display: contents; }
+  .pv-brand .menu-wrapper { justify-self: start; }
+  .pv-brand img { justify-self: center; }
+  .pv-header > div:last-child { justify-self: end; }
   .pv-brand-text { display: none; } /* Hide extra text to save space */
+  
   .pv-container { margin: 16px auto; padding: 0 16px; }
   .pc-body { padding: 0 24px 32px 24px; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
   .profile-avatar { margin-top: -40px; width: 80px; height: 80px; font-size: 36px; border-width: 3px; }
@@ -484,8 +489,10 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
   /* DARK BANNER */
   .dark-banner { padding: 32px 16px; }
   .db-inner { flex-direction: column; align-items: center; text-align: center; gap: 16px; }
+  .db-header { justify-content: center; margin-bottom: 16px; }
   .db-logo-box { width: 80px; height: 80px; font-size: 32px; border-radius: 16px; }
-  .db-title { font-size: 22px; }
+  .db-title { font-size: 24px; margin-bottom: 12px; }
+  .db-desc { font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.6; margin-bottom: 24px; padding: 0 8px; }
 }
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
