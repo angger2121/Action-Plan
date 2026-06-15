@@ -1,0 +1,23 @@
+{
+  "name": "action-plan",
+  "version": "1.0.0",
+  "main": "db-config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angger2121/Action-Plan.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/angger2121/Action-Plan/issues"
+  },
+  "homepage": "https://github.com/angger2121/Action-Plan#readme",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0"
+  }
+}
