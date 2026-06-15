@@ -219,6 +219,11 @@ body {
   font-size: 56px;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: appFloatIcon 3s ease-in-out infinite;
+}
+@keyframes appFloatIcon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 .db-logo-box img {
   width: 100%;
@@ -240,8 +245,13 @@ body {
   border: 1px solid rgba(251, 191, 36, 0.5); color: #fbbf24; padding: 4px 12px; 
   border-radius: 20px; font-size: 11px; font-weight: 800; background: rgba(251, 191, 36, 0.15);
   box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+  backdrop-filter: blur(5px);
 }
-.db-date { font-size: 13px; color: rgba(255,255,255,0.7); font-weight: 500; }
+.db-date { 
+  font-size: 12px; color: rgba(255,255,255,0.9); font-weight: 600; 
+  background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 4px 12px; border-radius: 20px; backdrop-filter: blur(5px);
+}
 .db-title { font-size: 36px; font-weight: 800; line-height: 1; margin-bottom: 16px; letter-spacing: -0.5px; }
 .db-title span { color: #fbbf24; display: block; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
 .db-desc { font-size: 14px; color: rgba(255,255,255,0.85); max-width: 500px; line-height: 1.6; margin-bottom: 32px; }
@@ -276,48 +286,97 @@ body {
   flex-direction: column;
   gap: 16px;
 }
+.ap-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 20px;
+}
 .ap-item {
-  background: #ffffff;
-  border: 1px solid var(--mdi-border);
-  border-radius: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 32px;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
   cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  position: relative;
+  overflow: hidden;
+}
+.ap-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--mdi-navy) 0%, var(--mdi-orange) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 .ap-item:hover {
-  border-color: var(--mdi-orange);
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1);
-  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+  border-color: #e8e8e8;
+}
+.ap-item:hover::before {
+  opacity: 1;
+}
+.ap-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 16px;
 }
 .ap-item-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--mdi-ink);
-  margin-bottom: 4px;
-}
-.ap-item-meta {
-  font-size: 13px;
-  color: var(--mdi-muted);
+  flex: 1;
+  margin-right: 16px;
+  line-height: 1.4;
 }
 .ap-item-arrow {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #f1f5f9;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  color: var(--mdi-orange);
   font-size: 20px;
-  color: var(--mdi-muted);
-  transition: 0.2s;
+  opacity: 0;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 .ap-item:hover .ap-item-arrow {
-  background: var(--mdi-orange);
-  color: #fff;
+  opacity: 1;
+  transform: translateX(4px);
+}
+.ap-item-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.ap-item-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--mdi-muted);
+  background: #f8fafc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.ap-item-date-icon {
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(135deg, var(--mdi-orange) 0%, #ea580c 100%);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: white;
+}
+.ap-item-desc {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.5;
 }
 
   /* LOGIN */
@@ -1232,12 +1291,18 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         
         listContainer.innerHTML = clientForms.map(form => `
           <div class="ap-item" onclick="openDashboard('${form.id}')">
-            <div>
+            <div class="ap-item-header">
               <div class="ap-item-title">${form.title}</div>
-              ${form.trainingDate ? `<div style="font-size: 13px; color: var(--mdi-navy); margin-top: 4px; font-weight: 600;">📅 ${form.trainingDate}</div>` : ''}
-              <div class="ap-item-meta" style="margin-top: 4px;">Klik untuk melihat detail & metrik progress</div>
+              <div class="ap-item-arrow">→</div>
             </div>
-            <div class="ap-item-arrow">&rarr;</div>
+            <div class="ap-item-meta">
+              ${form.trainingDate ? `
+              <div class="ap-item-date">
+                <div class="ap-item-date-icon">📅</div>
+                ${form.trainingDate}
+              </div>` : ''}
+            </div>
+            <div class="ap-item-desc">Klik untuk melihat detail & metrik progress</div>
           </div>
         `).join("");
       }
@@ -1298,13 +1363,18 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
           const card = document.createElement("div");
           card.className = "ap-item";
           card.innerHTML = `
-            <div>
-              <div class="ap-item-title">📊 ${report.filename}</div>
-              <div class="ap-item-meta" style="margin-top: 4px;">${report.date}</div>
+            <div class="ap-item-header">
+              <div class="ap-item-title">📄 ${report.filename}</div>
             </div>
-            <div style="display: flex; gap: 8px;">
-              <button style="border:1px solid var(--mdi-orange); background:transparent; color:var(--mdi-orange); padding:6px 12px; border-radius:4px; font-weight:600; cursor:pointer; font-size:13px; display:inline-flex; align-items:center;" onclick="reviewReportPdf('${report.id}')">Preview</button>
-              <button style="border:none; background:var(--mdi-orange); color:#fff; padding:6px 12px; border-radius:4px; font-weight:600; cursor:pointer; font-size:13px; display:inline-flex; align-items:center;" onclick="downloadReportPdf('${report.id}')">Download</button>
+            <div class="ap-item-meta">
+              <div class="ap-item-date">
+                <div class="ap-item-date-icon">📅</div>
+                ${report.date}
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+              <button style="border:1px solid var(--mdi-orange); background:transparent; color:var(--mdi-orange); padding:6px 16px; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px; transition: 0.2s;" onclick="reviewReportPdf('${report.id}')" onmouseover="this.style.background='rgba(249,115,22,0.1)'" onmouseout="this.style.background='transparent'">Preview</button>
+              <button style="border:none; background:var(--mdi-orange); color:#fff; padding:6px 16px; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px; transition: 0.2s;" onclick="downloadReportPdf('${report.id}')" onmouseover="this.style.background='var(--mdi-orange-hover)'" onmouseout="this.style.background='var(--mdi-orange)'">Download</button>
             </div>
           `;
           listContainer.appendChild(card);
