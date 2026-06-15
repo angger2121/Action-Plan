@@ -501,8 +501,9 @@ tr:hover td { background: #f8fafc; }
 footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 12px; margin-top: 32px; border-top: 1px solid var(--mdi-border); }
 
 /* Interactive Hover Effects */
-.logout-btn { transition: color 0.2s, transform 0.2s; }
-.logout-btn:hover { color: var(--mdi-orange) !important; transform: translateY(-1px); }
+/* Interactive Hover Effects */
+.logout-btn { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 16px; color: var(--mdi-muted); font-weight: 600; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.2s ease; }
+.logout-btn:hover { border-color: var(--mdi-orange); color: var(--mdi-orange); transform: translateY(-1px); box-shadow: 0 4px 10px rgba(249,115,22,0.1); }
 
 .back-btn { transition: all 0.2s ease !important; }
 .back-btn:hover { background: #f8fafc !important; color: var(--mdi-orange) !important; border-color: var(--mdi-orange) !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
@@ -760,7 +761,15 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
           <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 8px;">PIN Akses:</label>
           <div style="position: relative;">
             <input type="password" id="login-pin" class="login-form-input" placeholder="••••••" maxlength="10" style="padding-right: 40px;" oninput="document.getElementById('login-error').style.display='none'" onkeypress="if(event.key === 'Enter') attemptLogin()">
-            <button type="button" onclick="togglePin()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 16px; padding: 4px;">👁️</button>
+            <button type="button" onclick="togglePin()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #94a3b8; padding: 4px; display: flex; align-items: center; justify-content: center;">
+              <svg id="eye-icon-show" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 20px; height: 20px;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              </svg>
+              <svg id="eye-icon-hide" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 20px; height: 20px; display: none;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+              </svg>
+            </button>
           </div>
         </div>
         
@@ -811,7 +820,7 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         <div class="pv-brand-text" id="pv-header-brand-name"><span>| Client Portal</span></div>
       </div>
       <div>
-        <button class="logout-btn" onclick="handleLogout()" style="background:transparent; border:none; color:var(--mdi-muted); font-weight:600; cursor:pointer;">Logout</button>
+        <button class="logout-btn" onclick="handleLogout()">Logout</button>
       </div>
     </div>
     
@@ -863,7 +872,7 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         <span id="rv-header-brand-name"></span>
       </div>
       <div class="pv-actions">
-        <button class="logout-btn" onclick="handleLogout()" style="background:transparent; border:none; color:var(--mdi-muted); font-weight:600; cursor:pointer;">Logout</button>
+        <button class="logout-btn" onclick="handleLogout()">Logout</button>
       </div>
     </div>
     
@@ -1355,15 +1364,21 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
 
       function togglePin() {
         const pinInput = document.getElementById("login-pin");
+        const iconShow = document.getElementById("eye-icon-show");
+        const iconHide = document.getElementById("eye-icon-hide");
         if (pinInput.type === "password") {
           pinInput.type = "text";
+          iconShow.style.display = "none";
+          iconHide.style.display = "block";
         } else {
           pinInput.type = "password";
+          iconShow.style.display = "block";
+          iconHide.style.display = "none";
         }
       }
 
       function handleLogout() {
-        localStorage.removeItem("mdi_client_saved");
+        // Do not clear localStorage so "Remember Me" works standardly
         location.reload();
       }
 
@@ -1696,7 +1711,7 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         }
       });
       
-      // Auto-login if Remember Me was checked previously
+      // Pre-fill form if Remember Me was checked previously
       document.addEventListener("DOMContentLoaded", () => {
         const savedStr = localStorage.getItem("mdi_client_saved");
         if (savedStr) {
@@ -1705,7 +1720,7 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
             document.getElementById("login-username").value = saved.name;
             document.getElementById("login-pin").value = saved.pin;
             document.getElementById("login-remember").checked = true;
-            attemptLogin(); // Automatically log in!
+            // Removed automatic attemptLogin() so standard "Remember me" just pre-fills the form
           } catch(err) {
             console.error("Failed to parse saved login", err);
           }
