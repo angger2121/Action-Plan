@@ -12,7 +12,7 @@ test.describe('Client Portal Authentication & Navigation', () => {
 
   test('should display error message on invalid login', async ({ page }) => {
     await page.fill('#login-username', 'WrongCompany');
-    await page.fill('#login-pin', '123456');
+    await page.fill('#login-pin', '0101');
     await page.click('button:has-text("Log in")');
 
     const errorMsg = page.locator('#login-error');
@@ -21,9 +21,9 @@ test.describe('Client Portal Authentication & Navigation', () => {
   });
 
   test('should login successfully with correct credentials', async ({ page }) => {
-    // Using one of the mock credentials: Yusen Logistic / 123456
+    // Using one of the mock credentials: Yusen Logistic / 0101
     await page.fill('#login-username', 'Yusen Logistic');
-    await page.fill('#login-pin', '123456');
+    await page.fill('#login-pin', '0101');
     await page.click('button:has-text("Log in")');
 
     // Verify transition to profile view
@@ -38,7 +38,7 @@ test.describe('Client Portal Authentication & Navigation', () => {
   test('Remember Me functionality should save and pre-fill credentials', async ({ page, context }) => {
     // 1. Login with Remember Me checked
     await page.fill('#login-username', 'Yusen Logistic');
-    await page.fill('#login-pin', '123456');
+    await page.fill('#login-pin', '0101');
     await page.check('#login-remember');
     await page.click('button:has-text("Log in")');
 
@@ -51,14 +51,14 @@ test.describe('Client Portal Authentication & Navigation', () => {
 
     // 3. Verify inputs are pre-filled after page reloads
     await expect(page.locator('#login-username')).toHaveValue('Yusen Logistic');
-    await expect(page.locator('#login-pin')).toHaveValue('123456');
+    await expect(page.locator('#login-pin')).toHaveValue('0101');
     await expect(page.locator('#login-remember')).toBeChecked();
   });
 
   test('should navigate to dashboard and back using SPA routing', async ({ page }) => {
     // Login
     await page.fill('#login-username', 'Yusen Logistic');
-    await page.fill('#login-pin', '123456');
+    await page.fill('#login-pin', '0101');
     await page.click('button:has-text("Log in")');
     await expect(page.locator('#profile-view')).toBeVisible();
 
