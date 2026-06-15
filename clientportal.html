@@ -485,27 +485,148 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
 </head>
 <body>
 
-  <div id="login-view">
-    <div class="login-header">
-      <div class="login-logo-box">
-        <img src="Asset%208-8.png" alt="MDI Logo">
-      </div>
-      <div class="login-header-sub">Client Portal</div>
-      <h2>Action Plan</h2>
-      <p>Masuk dengan akun perusahaan Anda</p>
-    </div>
-    <div class="login-card">
-      <label class="login-label">NAMA PERUSAHAAN</label>
-      <input type="text" id="login-username" class="login-input" placeholder="Nama Perusahaan">
-      
-      <label class="login-label">PIN AKSES</label>
-      <input type="password" id="login-pin" class="login-input" placeholder="••••" maxlength="10" onkeypress="if(event.key === 'Enter') attemptLogin()">
-      
-      <button class="login-btn" onclick="attemptLogin()">Masuk ke Portal</button>
-      <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; text-align:center; display:none;">PIN salah atau perusahaan tidak dipilih.</div>
-    </div>
-  </div>
+  <style>
+    #login-view {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #fafcff;
+      display: flex;
+      z-index: 9999;
+      overflow: hidden;
+    }
+    
+    .login-split-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 10;
+      padding: 40px;
+      background: #fff;
+    }
+    
+    .login-split-right {
+      flex: 1;
+      position: relative;
+      display: none;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 8vw;
+    }
+    
+    @media(min-width: 900px) {
+      .login-split-right {
+        display: flex;
+      }
+    }
+    
+    .login-form-box {
+      width: 100%;
+      max-width: 360px;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .login-form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      outline: none;
+      font-size: 14px;
+      background: white;
+      color: var(--mdi-navy);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      box-sizing: border-box;
+      transition: border 0.2s;
+    }
+    
+    .login-form-input:focus {
+      border-color: var(--mdi-orange);
+    }
+    
+    .login-form-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 30px;
+      background: linear-gradient(90deg, var(--mdi-navy) 0%, var(--mdi-orange) 100%);
+      color: white;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(249, 115, 22, 0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .login-form-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(249, 115, 22, 0.3);
+    }
+  </style>
 
+  <div id="login-view">
+    
+    <!-- LEFT SIDE -->
+    <div class="login-split-left">
+      <!-- Abstract subtle circles -->
+      <div style="position: absolute; width: 400px; height: 400px; border: 2px solid #f1f5f9; border-radius: 50%; top: -150px; left: -150px; z-index: 1;"></div>
+      <div style="position: absolute; width: 150px; height: 150px; border: 4px solid #f1f5f9; border-radius: 50%; bottom: 10%; right: 10%; z-index: 1;"></div>
+      <div style="position: absolute; width: 60px; height: 60px; border: 10px solid #f8fafc; border-radius: 50%; top: 20%; right: 20%; z-index: 1;"></div>
+      
+      <div class="login-form-box">
+        <div style="text-align: center; margin-bottom: 40px;">
+          <img src="Asset 7-0.png" alt="MDI Logo" style="height: 60px; margin-bottom: 16px;">
+          <h2 style="color: var(--mdi-navy); font-size: 20px; font-weight: 600; margin: 0; letter-spacing: -0.5px;">Log in On Action Plan</h2>
+        </div>
+        
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 8px;">Nama Perusahaan:</label>
+          <input type="text" id="login-username" class="login-form-input" placeholder="contoh: MDI Tack">
+        </div>
+        
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 8px;">PIN Akses:</label>
+          <input type="password" id="login-pin" class="login-form-input" placeholder="••••••" maxlength="10" onkeypress="if(event.key === 'Enter') attemptLogin()">
+        </div>
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; font-size: 13px; color: #64748b;">
+          <label style="display: flex; align-items: center; cursor: pointer;">
+            <input type="checkbox" style="margin-right: 8px; cursor: pointer; accent-color: var(--mdi-orange);"> Remember me
+          </label>
+        </div>
+        
+        <button onclick="attemptLogin()" class="login-form-btn">Log in</button>
+        
+        <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; text-align:center; display:none;">PIN salah atau perusahaan tidak ditemukan.</div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="login-split-right">
+      <!-- The Giant Circle Background -->
+      <!-- We make it huge and shift it left so the curve cuts into the left pane -->
+      <div style="position: absolute; top: -30vh; left: -15vw; width: 120vw; height: 160vh; background: linear-gradient(135deg, var(--mdi-navy) 0%, var(--mdi-orange) 100%); border-radius: 50%; z-index: 1; box-shadow: -20px 0 60px rgba(0,0,0,0.15);"></div>
+      
+      <!-- Abstract overlay inside circle -->
+      <div style="position: absolute; top: 10%; right: 10%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%); border-radius: 50%; z-index: 2;"></div>
+      <div style="position: absolute; bottom: 20%; right: 30%; width: 30vw; height: 30vw; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%); border-radius: 50%; z-index: 2;"></div>
+      
+      <!-- Content on right side -->
+      <div style="position: relative; z-index: 10; color: white; max-width: 480px;">
+        <h1 style="font-size: 64px; font-weight: 800; margin-bottom: 24px; letter-spacing: -1px; text-shadow: 0 4px 12px rgba(0,0,0,0.1);">Action Plan</h1>
+        <p style="font-size: 16px; line-height: 1.7; opacity: 0.95; margin-bottom: 40px; font-weight: 300;">
+          Selamat datang di Portal Klien MDI Tack. Modul Action Plan ini dirancang khusus untuk membantu Anda memantau seluruh metrik pelatihan, laporan evaluasi, serta efektivitas implementasi program secara real-time dan terintegrasi.
+        </p>
+      </div>
+    </div>
+
+  </div>
   
   <div id="profile-view" style="display:none;">
     <div class="pv-header">
