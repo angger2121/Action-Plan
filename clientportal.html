@@ -429,52 +429,63 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
   .login-header p { font-size: 14px; }
   
   /* PROFILE VIEW */
-  .pv-header { padding: 16px 20px; flex-direction: column; gap: 16px; align-items: flex-start; }
-  .pv-container { margin: 24px auto; padding: 0 16px; }
+  .pv-header { padding: 16px; flex-direction: row; justify-content: space-between; align-items: center; }
+  .pv-brand-text { display: none; } /* Hide extra text to save space */
+  .pv-container { margin: 16px auto; padding: 0 16px; }
   .pc-body { padding: 0 24px 32px 24px; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
-  .profile-avatar { margin-top: -50px; width: 100px; height: 100px; font-size: 48px; border-width: 3px; }
+  .profile-avatar { margin-top: -40px; width: 80px; height: 80px; font-size: 36px; border-width: 3px; }
   .profile-info { margin-top: 0; }
-  .profile-info h1 { font-size: 24px; }
+  .profile-info h1 { font-size: 20px; }
   .ap-item { flex-direction: column; padding: 16px; align-items: flex-start; gap: 12px; }
   .ap-item-arrow { align-self: flex-end; }
   
-  /* TOPBAR */
-  .topbar { padding: 12px 16px; flex-direction: column; gap: 12px; align-items: flex-start; }
-  .topbar-right { width: 100%; flex-direction: column; align-items: stretch; }
-  #batch-selector-container { flex-direction: column; align-items: stretch; width: 100%; }
-  #batch-select { width: 100%; }
+  /* TOPBAR (Dashboard) */
+  .topbar { padding: 12px 16px; flex-direction: row; justify-content: space-between; align-items: center; }
+  .topbar .brand-name span { display: none; } /* Hide | Viewer */
+  .topbar .tb-badge { display: none; } /* Hide Real-Time Sync badge to save space */
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  #batch-selector-container { display: none; } /* Hide batch selector in topbar on mobile if too cramped, but let's keep it stacked below if needed */
   
   /* PAGE HEADER */
   .page-header { padding: 24px 16px; }
-  .header-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
-  .header-meta { width: 100%; justify-content: space-between; gap: 12px; }
-  .hm { text-align: center; }
-  .hm-val { font-size: 20px; }
+  .header-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .header-text h1 { font-size: 24px; }
+  .header-text h1 em { font-size: 18px; }
+  .header-meta { width: 100%; justify-content: space-between; gap: 12px; background: rgba(0,0,0,0.1); padding: 12px; border-radius: 12px; }
+  .hm { text-align: center; width: 50%; }
+  .hm-val { font-size: 22px; }
   .hm-lbl { font-size: 10px; }
   
   /* BODY WRAP */
-  .body-wrap { padding: 0 16px; margin: 24px auto; }
+  .body-wrap { padding: 0 12px; margin: 20px auto; }
   
   /* KPI ROW */
-  .kpi-row { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .kpi-row { grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .kpi { padding: 16px; border-radius: 12px; }
+  .kpi-val { font-size: 26px; }
+  .kpi-lbl { font-size: 10px; }
   
   /* PROGRESS SUMMARY */
-  .progress-summary { padding: 16px; }
+  .progress-summary { padding: 16px; margin-bottom: 24px; }
   .ps-legend { flex-direction: column; gap: 8px; }
   
   /* FILTER BAR */
-  .viewer-filterbar { flex-direction: column; align-items: stretch; padding: 16px; gap: 12px; }
+  .viewer-filterbar { flex-direction: column; align-items: stretch; padding: 16px; gap: 12px; border-radius: 12px; }
   .search-wrap { width: 100% !important; }
+  .dept-dropdown { width: 100%; }
   
   /* TABLE SCROLLING */
-  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table { min-width: 800px; }
+  .table-card { border-radius: 12px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+  .table-head { padding: 16px; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
+  table { min-width: 700px; }
+  th, td { padding: 12px 16px; }
   
   /* DARK BANNER */
   .dark-banner { padding: 32px 16px; }
   .db-inner { flex-direction: column; align-items: center; text-align: center; gap: 16px; }
-  .db-logo-box { width: 100px; height: 100px; font-size: 40px; }
-  .db-title { font-size: 24px; }
+  .db-logo-box { width: 80px; height: 80px; font-size: 32px; border-radius: 16px; }
+  .db-title { font-size: 22px; }
 }
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
