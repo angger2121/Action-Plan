@@ -1282,9 +1282,6 @@ function init() {
       console.error("Migration error:", e);
       forms = JSON.parse(cachedForms) || [];
     }
-  } else {
-    window.location.replace("gateway.html?auto_seed=true&returnTo=admin");
-    return;
   }
 
   const urlParams = new URLSearchParams(window.location.search);

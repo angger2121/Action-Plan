@@ -1473,17 +1473,15 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         let forms = [];
         if (cachedForms && cachedForms !== '[]') {
           try { forms = JSON.parse(cachedForms); } catch (e) { forms = JSON.parse(cachedForms) || []; }
-        } else {
-          window.location.replace("gateway.html?auto_seed=true&returnTo=client");
-          return;
         }
+        
         const urlParams = new URLSearchParams(window.location.search);
         formId = urlParams.get('formId') || 'form_bayan';
 
         let currentForm = forms.find(f => f.id === formId);
-        if (!currentForm) {
+        if (!currentForm && forms.length > 0) {
           currentForm = forms[0];
-          formId = currentForm ? currentForm.id : 'form_bayan';
+          formId = currentForm.id;
         }
         FORM_CONFIG = currentForm;
         
