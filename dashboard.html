@@ -2902,16 +2902,9 @@ function handleStage2ExcelUpload(event) {
       return;
     }
 
-    const fieldMapping = {};
-    (FORM_CONFIG.fields || []).forEach(f => {
-      if (f.id === 'q_nama' || f.id === 'q_dept' || f.id === 'q_grade') return;
-      if (!f.id.startsWith("q_notes") && !f.id.startsWith("q_challenge")) return; // Only map stage 2 fields
-      
-      const matchIdx = headers.findIndex(h => h.includes(f.label.toLowerCase().trim()));
-      if (matchIdx !== -1) fieldMapping[f.id] = matchIdx;
-    });
-
     let statusIdx = headers.findIndex(h => h.includes("status") || h.includes("penyelesaian"));
+    let updateIdx = headers.findIndex(h => h.includes("update") || h.includes("notes"));
+    let challengeIdx = headers.findIndex(h => h.includes("challenge") || h.includes("roadblock"));
 
     let importedCount = 0;
     
@@ -2926,17 +2919,13 @@ function handleStage2ExcelUpload(event) {
       if (existingIdx !== -1) {
         const p = PARTICIPANTS_STAGE1[existingIdx];
         
-        Object.keys(fieldMapping).forEach(fieldId => {
-          const colIdx = fieldMapping[fieldId];
-          p.answers[fieldId] = (row[colIdx] || "").toString().trim();
-        });
+        if (updateIdx !== -1) p.s2Update = (row[updateIdx] || "").toString().trim();
+        if (challengeIdx !== -1) p.s2Challenge = (row[challengeIdx] || "").toString().trim();
 
         if (statusIdx !== -1) {
           const sVal = (row[statusIdx] || "").toString().toLowerCase();
           if (sVal.includes("complete") || sVal.includes("selesai")) p.status = "completed";
           else if (sVal.includes("progress")) p.status = "in_progress";
-        } else {
-          p.status = "completed"; 
         }
         importedCount++;
       }
