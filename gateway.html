@@ -598,6 +598,27 @@ input:checked + .slider:before {
 .client-action-btn:hover { background: rgba(255, 255, 255, 0.15) !important; transform: translateY(-1px); }
 
 .assign-select option { background: #fff; color: var(--mdi-dark); }
+  /* MOBILE RESPONSIVENESS */
+  @media (max-width: 768px) {
+    .app-layout { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 16px; }
+    .sidebar-header { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .sidebar-logo { width: 32px; height: 32px; font-size: 16px; }
+    .sidebar-brand { margin-bottom: 0; }
+    .sidebar-menu { display: flex; flex-direction: row; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+    .menu-item { white-space: nowrap; margin-bottom: 0; margin-right: 8px; flex-shrink: 0; padding: 10px 12px; }
+    .sidebar-footer { display: none; }
+    .main-content { padding: 16px; max-height: none; }
+    .header-layout { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .header-actions { width: 100%; justify-content: flex-start; }
+    .stats-grid { grid-template-columns: 1fr; gap: 12px; }
+    .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { min-width: 700px; }
+    .filter-bar { flex-direction: column; align-items: stretch; gap: 12px; }
+    .filter-bar .search-box { width: 100%; }
+    .modal-card { width: 95%; max-width: none !important; margin: 20px auto; }
+    div[style*="grid-template-columns: 320px 1fr"] { grid-template-columns: 1fr !important; }
+  }
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="db-config.js"></script>
