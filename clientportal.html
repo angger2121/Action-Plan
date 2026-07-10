@@ -26,6 +26,8 @@
   --bg-color:    #f8fafc;
   --card-bg:     #ffffff;
 }
+.description-text { color: #475569; }
+.muted-label { color: #64748b; }
 
 @keyframes appFadeSlideUp {
   from { opacity: 0; transform: translateY(25px); }
@@ -878,12 +880,12 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
         </div>
         
         <div style="margin-bottom: 24px;">
-          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 8px;">Nama Perusahaan:</label>
+          <label class="muted-label" style="display: block; font-size: 13px; margin-bottom: 8px;">Nama Perusahaan:</label>
           <input type="text" id="login-username" class="login-form-input" placeholder="contoh: MDI Tack" oninput="document.getElementById('login-error').style.display='none'">
         </div>
         
         <div style="margin-bottom: 24px;">
-          <label style="display: block; font-size: 13px; color: #64748b; margin-bottom: 8px;">PIN Akses:</label>
+          <label class="muted-label" style="display: block; font-size: 13px; margin-bottom: 8px;">PIN Akses:</label>
           <div style="position: relative;">
             <input type="password" id="login-pin" class="login-form-input" placeholder="••••••" maxlength="10" style="padding-right: 40px;" oninput="document.getElementById('login-error').style.display='none'" onkeypress="if(event.key === 'Enter') attemptLogin()">
             <button type="button" onclick="togglePin()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #94a3b8; padding: 4px; display: flex; align-items: center; justify-content: center;">
@@ -898,7 +900,7 @@ footer { text-align: center; padding: 24px; color: var(--mdi-muted); font-size: 
           </div>
         </div>
         
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; font-size: 13px; color: #64748b;">
+        <div class="description-text" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; font-size: 13px;">
           <label style="display: flex; align-items: center; cursor: pointer;">
             <input type="checkbox" id="login-remember" style="margin-right: 8px; cursor: pointer; accent-color: #c8872f;"> Remember me
           </label>
