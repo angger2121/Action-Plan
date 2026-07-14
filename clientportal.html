@@ -1126,10 +1126,20 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
           <div class="kpi-val" id="k-ap">-</div>
           <div class="kpi-sub" id="k-ap-avg">- per participant</div>
         </div>
+        <div class="kpi kpi-done" onclick="filterStatus('done')">
+          <div class="kpi-lbl">Completed (Selesai)</div>
+          <div class="kpi-val" id="k-done">-</div>
+          <div class="kpi-sub" id="k-done-pct">-% of batch</div>
+        </div>
+        <div class="kpi kpi-prog" onclick="filterStatus('prog')">
+          <div class="kpi-lbl">In Progress</div>
+          <div class="kpi-val" id="k-prog">-</div>
+          <div class="kpi-sub" id="k-prog-pct">-% of batch</div>
+        </div>
         <div class="kpi kpi-tracking" style="display:flex; align-items:center; gap:16px; padding:16px; min-width: 250px;">
           <div>
             <div class="kpi-lbl">Completion Tracking</div>
-            <div id="kpi-donut" style="margin-top:12px; width:70px; height:70px; border-radius:50%; background: conic-gradient(var(--mdi-orange) 0% 0%, #e2e8f0 0% 100%); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+            <div id="kpi-donut" style="margin-top:12px; width:70px; height:70px; border-radius:50%; background: conic-gradient(var(--done) 0% 0%, var(--prog) 0% 100%); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                <div id="kpi-donut-text" style="width:50px; height:50px; border-radius:50%; background:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; color:var(--mdi-navy);">0%</div>
             </div>
           </div>
@@ -1139,8 +1149,6 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
               <div>
                 <div style="font-size:11px; color:var(--mdi-muted); font-weight:600;">In Progress</div>
                 <div id="k-prog-lbl" style="font-size:12px; font-weight:700; color:var(--mdi-navy);">0 (0%)</div>
-                <div id="k-prog" style="display:none;">-</div>
-                <div id="k-prog-pct" style="display:none;">-</div>
               </div>
             </div>
             <div onclick="filterStatus('done')" style="cursor:pointer; display:flex; align-items:flex-start; gap:8px; transition: transform 0.2s;" onmouseover="this.style.transform='translateX(2px)'" onmouseout="this.style.transform='translateX(0)'">
@@ -1148,8 +1156,6 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
               <div>
                 <div style="font-size:11px; color:var(--mdi-muted); font-weight:600;">Completed</div>
                 <div id="k-done-lbl" style="font-size:12px; font-weight:700; color:var(--mdi-navy);">0 (0%)</div>
-                <div id="k-done" style="display:none;">-</div>
-                <div id="k-done-pct" style="display:none;">-</div>
               </div>
             </div>
           </div>
