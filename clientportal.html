@@ -177,12 +177,25 @@ body {
   font-family: inherit;
 }
 .menu-btn:hover { background: #e2e8f0; }
-.dropdown-menu {
-  position: absolute; top: 110%; left: 0; background: #fff; border: 1px solid var(--mdi-border);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 12px; width: 240px;
-  display: none; flex-direction: column; padding: 8px; z-index: 200;
-}
-.dropdown-menu.show { display: flex; }
+  .sidebar-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px);
+    z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+  }
+  .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+  .sliding-sidebar {
+    position: fixed; top: 0; left: 0; width: 280px; max-width: 80vw; height: 100vh;
+    background: #fff; z-index: 1000; display: flex; flex-direction: column;
+    transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+  }
+  .sliding-sidebar.open { transform: translateX(0); }
+  .sidebar-header {
+    padding: 24px 20px; border-bottom: 1px solid var(--mdi-border);
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .sidebar-links { flex-grow: 1; padding: 12px 0; overflow-y: auto; }
+  .sidebar-footer { padding: 20px; border-top: 1px solid var(--mdi-border); }
 .dd-client-name {
     font-size: 16px;
     font-weight: 800;
@@ -907,6 +920,21 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
     }
   </style>
 
+  <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
+  <div id="offcanvas-menu" class="sliding-sidebar">
+    <div class="sidebar-header">
+      <img src="Asset 7-0.png" alt="MDI Logo" style="height: 40px; object-fit: contain; align-self: flex-start;">
+      <div id="sidebar-client-name" class="dd-client-name" style="margin:0; border:none; padding:0;">CLIENT NAME</div>
+    </div>
+    <div class="sidebar-links">
+      <a class="dd-item" href="#" onclick="showProfileView(); toggleMenu(); return false;">📄 Action Plan</a>
+      <a class="dd-item" href="#" onclick="showReportView(); toggleMenu(); return false;">📊 Evaluasi & Training Report</a>
+    </div>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="handleLogout()" style="width:100%;">Logout</button>
+    </div>
+  </div>
+
   <div id="login-view">
     
     <!-- LEFT SIDE -->
@@ -981,11 +1009,6 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
       <div class="pv-brand">
         <div class="menu-wrapper">
           <button class="menu-btn" onclick="toggleMenu()"><span>≡</span> Menu</button>
-          <div class="dropdown-menu" id="profile-menu">
-            <div class="dd-client-name" id="menu-client-name-1">CLIENT NAME</div>
-            <a class="dd-item" href="#" onclick="showProfileView(); toggleMenu(); return false;">📄 Action Plan</a>
-            <a class="dd-item" href="#" onclick="showReportView(); toggleMenu(); return false;">📊 Evaluasi & Training Report</a>
-          </div>
         </div>
         <img src="Asset%207-0.png" alt="MDI Logo" style="height: 32px; object-fit: contain;">
         <div class="pv-brand-text" id="pv-header-brand-name"><span>| Client Portal</span></div>
@@ -1034,11 +1057,6 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
       <div class="pv-brand">
         <div class="menu-wrapper">
           <button class="menu-btn" onclick="toggleMenu()"><span>≡</span> Menu</button>
-          <div class="dropdown-menu" id="report-menu">
-            <div class="dd-client-name" id="menu-client-name-2">CLIENT NAME</div>
-            <a class="dd-item" href="#" onclick="showProfileView(); toggleMenu(); return false;">📄 Action Plan</a>
-            <a class="dd-item" href="#" onclick="showReportView(); toggleMenu(); return false;">📊 Evaluasi & Training Report</a>
-          </div>
         </div>
         <img src="Asset%207-0.png" alt="MDI Logo" style="height: 32px; object-fit: contain;">
         <span id="rv-header-brand-name"></span>
@@ -1266,21 +1284,10 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
       let PARTICIPANTS_STAGE1 = [];
 
       function toggleMenu() {
-        const dd = document.getElementById("profile-menu");
-        const dd2 = document.getElementById("report-menu");
-        if(dd) dd.classList.toggle('show');
-        if(dd2) dd2.classList.toggle('show');
-      }
-
-      window.onclick = function(event) {
-        if (!event.target.closest('.menu-wrapper')) {
-          const dropdowns = document.getElementsByClassName("dropdown-menu");
-          for (let i = 0; i < dropdowns.length; i++) {
-            if (dropdowns[i].classList.contains('show')) {
-              dropdowns[i].classList.remove('show');
-            }
-          }
-        }
+        const menu = document.getElementById("offcanvas-menu");
+        const overlay = document.getElementById("sidebar-overlay");
+        if(menu) menu.classList.toggle('open');
+        if(overlay) overlay.classList.toggle('open');
       }
 
       function showProfileView() {
@@ -1448,10 +1455,8 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
         document.getElementById("pv-header-brand-name").innerHTML = `<span style="font-weight:700; margin-left: 8px;">| ${loggedInClient.name}</span>`;
         document.getElementById("rv-header-brand-name").innerHTML = `<span style="font-weight:700; margin-left: 8px;">| ${loggedInClient.name}</span>`;
         
-        const mcn1 = document.getElementById("menu-client-name-1");
-        if(mcn1) mcn1.textContent = loggedInClient.name;
-        const mcn2 = document.getElementById("menu-client-name-2");
-        if(mcn2) mcn2.textContent = loggedInClient.name;
+        const mcn = document.getElementById("sidebar-client-name");
+        if(mcn) mcn.textContent = loggedInClient.name;
         
         // Load reports DB
         const savedReports = localStorage.getItem("mdi_training_reports");
