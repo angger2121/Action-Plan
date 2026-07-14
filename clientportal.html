@@ -183,6 +183,17 @@ body {
   display: none; flex-direction: column; padding: 8px; z-index: 200;
 }
 .dropdown-menu.show { display: flex; }
+.dd-client-name {
+    font-size: 16px;
+    font-weight: 800;
+    font-style: italic;
+    color: #cc0000;
+    padding: 12px 14px 8px 14px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--mdi-border);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 .dd-item {
   padding: 12px 14px; border-radius: 8px; color: var(--mdi-navy); text-decoration: none;
   font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px; cursor: pointer;
@@ -971,6 +982,7 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
         <div class="menu-wrapper">
           <button class="menu-btn" onclick="toggleMenu()"><span>≡</span> Menu</button>
           <div class="dropdown-menu" id="profile-menu">
+            <div class="dd-client-name" id="menu-client-name-1">CLIENT NAME</div>
             <a class="dd-item" href="#" onclick="showProfileView(); toggleMenu(); return false;">📄 Action Plan</a>
             <a class="dd-item" href="#" onclick="showReportView(); toggleMenu(); return false;">📊 Evaluasi & Training Report</a>
           </div>
@@ -1023,6 +1035,7 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
         <div class="menu-wrapper">
           <button class="menu-btn" onclick="toggleMenu()"><span>≡</span> Menu</button>
           <div class="dropdown-menu" id="report-menu">
+            <div class="dd-client-name" id="menu-client-name-2">CLIENT NAME</div>
             <a class="dd-item" href="#" onclick="showProfileView(); toggleMenu(); return false;">📄 Action Plan</a>
             <a class="dd-item" href="#" onclick="showReportView(); toggleMenu(); return false;">📊 Evaluasi & Training Report</a>
           </div>
@@ -1434,6 +1447,11 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
         document.getElementById("rv-client-name").textContent = loggedInClient.name;
         document.getElementById("pv-header-brand-name").innerHTML = `<span style="font-weight:700; margin-left: 8px;">| ${loggedInClient.name}</span>`;
         document.getElementById("rv-header-brand-name").innerHTML = `<span style="font-weight:700; margin-left: 8px;">| ${loggedInClient.name}</span>`;
+        
+        const mcn1 = document.getElementById("menu-client-name-1");
+        if(mcn1) mcn1.textContent = loggedInClient.name;
+        const mcn2 = document.getElementById("menu-client-name-2");
+        if(mcn2) mcn2.textContent = loggedInClient.name;
         
         // Load reports DB
         const savedReports = localStorage.getItem("mdi_training_reports");
