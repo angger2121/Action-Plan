@@ -1156,12 +1156,12 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
         <div class="kpi kpi-total active-filter" onclick="filterStatus('ALL')">
           <div class="kpi-lbl">Total Participants</div>
           <div class="kpi-val" id="k-total">-</div>
-          <div class="kpi-sub">Registered PICs</div>
+          <div class="kpi-sub">Participants</div>
         </div>
         <div class="kpi kpi-ap">
           <div class="kpi-lbl">ACTION PLANS</div>
           <div class="kpi-val" id="k-ap">-</div>
-          <div class="kpi-sub" id="k-ap-avg">- per participant</div>
+          <div class="kpi-sub" id="k-ap-avg">3 per participant</div>
         </div>
         <div class="kpi kpi-done" onclick="filterStatus('done')">
           <div class="kpi-lbl">Completed (Selesai)</div>
@@ -1173,26 +1173,28 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
           <div class="kpi-val" id="k-prog">-</div>
           <div class="kpi-sub" id="k-prog-pct">-% of batch</div>
         </div>
-        <div class="kpi kpi-tracking" style="display:flex; align-items:center; gap:10px; padding:12px;">
-          <div style="flex-shrink:0;">
-            <div class="kpi-lbl">Tracking</div>
-            <div id="kpi-donut" style="margin-top:8px; width:48px; height:48px; border-radius:50%; background: conic-gradient(var(--done) 0% 0%, var(--prog) 0% 100%); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-               <div id="kpi-donut-text" style="width:34px; height:34px; border-radius:50%; background:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:11px; color:var(--mdi-navy);">0%</div>
-            </div>
-          </div>
-          <div style="display:flex; flex-direction:column; gap:8px; margin-top: 14px;">
-            <div style="display:flex; align-items:flex-start; gap:4px;">
-              <span style="color:var(--prog); font-size:12px; margin-top:-2px;">●</span>
-              <div>
-                <div style="font-size:10px; color:var(--mdi-muted); font-weight:600; line-height:1;">In Progress</div>
-                <div id="kpi-prog-lbl" style="font-size:11px; font-weight:700; color:var(--mdi-navy); line-height:1; margin-top:2px;">0 (0%)</div>
+        <div class="kpi kpi-tracking" style="padding:12px;">
+          <div class="kpi-lbl">Tracking</div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="flex-shrink:0;">
+              <div id="kpi-donut" style="margin-top:8px; width:48px; height:48px; border-radius:50%; background: conic-gradient(var(--done) 0% 0%, var(--prog) 0% 100%); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                 <div id="kpi-donut-text" style="width:34px; height:34px; border-radius:50%; background:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:11px; color:var(--mdi-navy);">0%</div>
               </div>
             </div>
-            <div style="display:flex; align-items:flex-start; gap:4px;">
-              <span style="color:var(--done); font-size:12px; margin-top:-2px;">●</span>
-              <div>
-                <div style="font-size:10px; color:var(--mdi-muted); font-weight:600; line-height:1;">Completed</div>
-                <div id="kpi-done-lbl" style="font-size:11px; font-weight:700; color:var(--mdi-navy); line-height:1; margin-top:2px;">0 (0%)</div>
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top: 14px;">
+              <div style="display:flex; align-items:flex-start; gap:4px;">
+                <span style="color:var(--prog); font-size:12px; margin-top:-2px;">●</span>
+                <div>
+                  <div style="font-size:10px; color:var(--mdi-muted); font-weight:600; line-height:1;">In Progress</div>
+                  <div id="kpi-prog-lbl" style="font-size:11px; font-weight:700; color:var(--mdi-navy); line-height:1; margin-top:2px;">0 (0%)</div>
+                </div>
+              </div>
+              <div style="display:flex; align-items:flex-start; gap:4px;">
+                <span style="color:var(--done); font-size:12px; margin-top:-2px;">●</span>
+                <div>
+                  <div style="font-size:10px; color:var(--mdi-muted); font-weight:600; line-height:1;">Completed</div>
+                  <div id="kpi-done-lbl" style="font-size:11px; font-weight:700; color:var(--mdi-navy); line-height:1; margin-top:2px;">0 (0%)</div>
+                </div>
               </div>
             </div>
           </div>
@@ -1756,7 +1758,7 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
           document.getElementById("hdr-done-pct").textContent = "0%";
           document.getElementById("k-total").textContent = "0";
           document.getElementById("k-ap").textContent = "0";
-          document.getElementById("k-ap-avg").textContent = "0 per participant";
+          document.getElementById("k-ap-avg").textContent = "3 per participant";
           document.getElementById("k-done").textContent = "0";
           document.getElementById("k-done-pct").textContent = "0% of batch";
           document.getElementById("k-prog").textContent = "0";
@@ -1792,8 +1794,7 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
         let totalAP = 0;
         PARTICIPANTS.forEach(p => { totalAP += getActionPlans(p).length; });
         document.getElementById("k-ap").textContent = totalAP;
-        let avgAP = total > 0 ? Math.round(totalAP / total) : 0;
-        document.getElementById("k-ap-avg").textContent = avgAP + " per participant";
+        document.getElementById("k-ap-avg").textContent = "3 per participant";
         
         // Update Donut Chart
         const trackedTotal = done + prog;
