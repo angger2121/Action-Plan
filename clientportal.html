@@ -905,18 +905,6 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
         display: none;
       }
     }
-
-      /* W3 Sidebar Layout Styles */
-      @media (min-width: 769px) {
-        #profile-view, #report-view { margin-left: 25%; width: 75%; }
-        .pv-header { display: none !important; }
-        .w3-sidebar { width: 25%; background: #fff; border-right: 1px solid var(--mdi-border); height: 100vh; position: fixed; left: 0; top: 0; z-index: 100; overflow-y: auto; padding-top: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.05); }
-        .w3-bar-item { display: block; padding: 12px 20px; text-decoration: none; color: var(--mdi-navy); font-weight: 600; border-bottom: 1px solid #f1f5f9; transition: 0.2s; }
-        .w3-bar-item:hover { background: #f8fafc; color: #cc0000; }
-      }
-      @media (max-width: 768px) {
-        #w3-sidebar-container { display: none !important; }
-      }
   </style>
 
   <div id="login-view">
@@ -988,19 +976,6 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
 
   </div>
   
-  <!-- NEW W3 SIDEBAR FOR DESKTOP -->
-  <div id="w3-sidebar-container" class="w3-sidebar w3-bar-block" style="display:none;">
-    <div style="padding: 0 20px 20px 20px; border-bottom: 1px solid var(--mdi-border); margin-bottom:10px;">
-      <img src="Asset 7-0.png" alt="MDI Logo" style="height: 40px; object-fit: contain;">
-      <div id="sidebar-client-name" style="font-size: 16px; font-weight: 800; font-style: italic; color: #cc0000; text-transform: uppercase; margin-top:12px;">CLIENT NAME</div>
-    </div>
-    <a href="#" class="w3-bar-item w3-button" onclick="showProfileView(); return false;">📄 Action Plan</a>
-    <a href="#" class="w3-bar-item w3-button" onclick="showReportView(); return false;">📊 Evaluasi & Training Report</a>
-    <div style="padding: 20px; margin-top: 20px;">
-      <button class="logout-btn" onclick="handleLogout()" style="width:100%;">Logout</button>
-    </div>
-  </div>
-
   <div id="profile-view" style="display:none;">
     <div class="pv-header">
       <div class="pv-brand">
@@ -1478,9 +1453,6 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
         const mcn2 = document.getElementById("menu-client-name-2");
         if(mcn2) mcn2.textContent = loggedInClient.name;
         
-        const mcn3 = document.getElementById("sidebar-client-name");
-        if(mcn3) mcn3.textContent = loggedInClient.name;
-        
         // Load reports DB
         const savedReports = localStorage.getItem("mdi_training_reports");
         if (savedReports) {
@@ -1600,7 +1572,6 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
           
           loggedInClient = targetClient;
           document.getElementById("login-view").style.display = "none";
-          document.getElementById("w3-sidebar-container").style.display = "block";
           document.getElementById("profile-view").style.display = "block";
           renderProfile();
         } else {
