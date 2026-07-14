@@ -192,8 +192,14 @@ body {
   .sliding-sidebar.open { transform: translateX(0); }
   .sidebar-header {
     padding: 24px 20px; border-bottom: 1px solid var(--mdi-border);
-    display: flex; flex-direction: column; gap: 16px;
+    display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px;
   }
+  .sidebar-close-btn {
+    background: none; border: none; font-size: 20px; color: var(--mdi-muted);
+    cursor: pointer; padding: 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    transition: 0.2s;
+  }
+  .sidebar-close-btn:hover { background: #f1f5f9; color: var(--mdi-navy); }
   .sidebar-links { flex-grow: 1; padding: 12px 0; overflow-y: auto; }
   .sidebar-footer { padding: 20px; border-top: 1px solid var(--mdi-border); }
 .dd-client-name {
@@ -923,8 +929,8 @@ h3 { font-size: 20px; font-weight: 600; line-height: 1.4; margin-bottom: 12px; }
   <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
   <div id="offcanvas-menu" class="sliding-sidebar">
     <div class="sidebar-header">
-      <img src="Asset 7-0.png" alt="MDI Logo" style="height: 40px; object-fit: contain; align-self: flex-start;">
       <div id="sidebar-client-name" class="dd-client-name" style="margin:0; border:none; padding:0;">CLIENT NAME</div>
+      <button class="sidebar-close-btn" onclick="toggleMenu()" aria-label="Tutup Sidebar">✕</button>
     </div>
     <div class="sidebar-links">
       <a class="dd-item" href="#" onclick="showProfileView(); toggleMenu(); return false;">📄 Action Plan</a>
